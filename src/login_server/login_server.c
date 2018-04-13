@@ -21,23 +21,28 @@
 // - Limit to 40 guild cards for now.
 //
 
-#define NO_SQL
+//#define NO_SQL
 #define NO_CONNECT_TEST
 
-#include  <windows.h>
 #include  <stdio.h>
+#include  <ctype.h>
 #include  <string.h>
 #include  <time.h>
+#include  <netinet/in.h>
+#include  <netdb.h>
+#include  <unistd.h>
+#include  <arpa/inet.h>
+#include  <errno.h>
 
 #ifndef NO_SQL
-#include  <mysql.h>
+#include  <mysql/mysql.h>
 #endif
-#include  <md5.h>
+#include  <src/md5/include/md5.h>
 
 #include  "resource.h"
 #include  "pso_crypt.h"
 #include  "bbtable.h"
-#include  "prs.cpp"
+#include  "src/prs/prs.cpp"
 
 #define MAX_SIMULTANEOUS_CONNECTIONS 6
 #define LOGIN_COMPILED_MAX_CONNECTIONS 300
@@ -87,6 +92,26 @@ struct timeval select_timeout = {
   0,
   5000
 };
+
+/* added stuff */
+
+#define SOCKET_ERROR  -1
+
+void strupr(char * temp) {
+
+  // Convert to upper case
+  char *s = temp;
+  while (*s) {
+    *s = toupper((unsigned char) *s);
+    s++;
+  }
+
+}
+
+#define max(a,b) \
+   ({ __typeof__ (a) _a = (a); \
+       __typeof__ (b) _b = (b); \
+     _a > _b ? _a : _b; })
 
 /* functions */
 
@@ -241,11 +266,11 @@ MYSQL_RES * myResult;
 
 #endif
 
-#define NO_ALIGN __declspec(align(1))
+#define NO_ALIGN __attribute__ ((aligned (1)))
 
 /* Mag data structure */
 
-typedef struct NO_ALIGN st_mag
+typedef struct st_mag
 {
   unsigned char two; // "02" =P
   unsigned char mtype;
@@ -260,12 +285,12 @@ typedef struct NO_ALIGN st_mag
   unsigned char IQ;
   unsigned char PBflags;
   unsigned char color;
-} MAG;
+} NO_ALIGN MAG;
 
 
 /* Character Data Structure */
 
-typedef struct NO_ALIGN st_minichar {
+typedef struct st_minichar {
   unsigned short packetSize; // 0x00 - 0x01
   unsigned short command; // 0x02 - 0x03
   unsigned char flags[4]; // 0x04 - 0x07
@@ -297,37 +322,37 @@ typedef struct NO_ALIGN st_minichar {
   unsigned char name[24]; // 0x64 - 0x7B
   unsigned char unknown5[8] ; // 0x7C - 0x83
   unsigned playTime;
-} MINICHAR;
+} NO_ALIGN MINICHAR;
 
 //packetSize = 0x399C;
 //command = 0x00E7;
 
-typedef struct NO_ALIGN st_bank_item {
+typedef struct st_bank_item {
   unsigned char data[12]; // the standard $setitem1 - $setitem3 fare
   unsigned itemid; // player item id
   unsigned char data2[4]; // $setitem4 (mag use only)
   unsigned bank_count; // Why?
-} BANK_ITEM;
+} NO_ALIGN BANK_ITEM;
 
-typedef struct NO_ALIGN st_bank {
+typedef struct st_bank {
   unsigned bankUse;
   unsigned bankMeseta;
   BANK_ITEM bankInventory [200];
-} BANK;
+} NO_ALIGN BANK;
 
-typedef struct NO_ALIGN st_item {
+typedef struct st_item {
   unsigned char data[12]; // the standard $setitem1 - $setitem3 fare
   unsigned itemid; // player item id
   unsigned char data2[4]; // $setitem4 (mag use only)
-} ITEM;
+} NO_ALIGN ITEM;
 
-typedef struct NO_ALIGN st_inventory {
+typedef struct st_inventory {
   unsigned in_use; // 0x01 = item slot in use, 0xFF00 = unused
   unsigned flags; // 8 = equipped
   ITEM item;
-} INVENTORY;
+} NO_ALIGN INVENTORY;
 
-typedef struct NO_ALIGN st_chardata {
+typedef struct st_chardata {
   unsigned short packetSize; // 0x00-0x01  // Always set to 0x399C
   unsigned short command; // 0x02-0x03 // // Always set to 0x00E7
   unsigned char flags[4]; // 0x04-0x07
@@ -417,7 +442,7 @@ typedef struct NO_ALIGN st_chardata {
   unsigned unknown15; // 0x3194 - 0x3197
   unsigned char teamFlag[2048]; // 0x3198 - 0x3997
   unsigned char teamRewards[8]; // 0x3998 - 0x39A0
-} CHARDATA;
+} NO_ALIGN CHARDATA;
 
 
 /* Player Structure */
@@ -653,26 +678,23 @@ unsigned lastdump = 0;
 
 #endif
 
-#define MYWM_NOTIFYICON (WM_USER+2)
-int program_hidden = 1;
-HWND consoleHwnd;
-HWND backupHwnd;
-
+//FIXME - Dummied out timestamps
 void WriteLog(char *fmt, ...)
 {
 #define MAX_GM_MESG_LEN 4096
 
   va_list args;
   char text[ MAX_GM_MESG_LEN ];
-  SYSTEMTIME rawtime;
+//  SYSTEMTIME rawtime;
 
   FILE *fp;
 
-  GetLocalTime (&rawtime);
+//  GetLocalTime (&rawtime);
   va_start (args, fmt);
   strcpy (text + vsprintf( text,fmt,args), "\r\n");
   va_end (args);
 
+/*
   fp = fopen ( "login.log", "a");
   if (!fp)
   {
@@ -685,6 +707,8 @@ void WriteLog(char *fmt, ...)
 
   printf ("[%02u-%02u-%u, %02u:%02u] %s", rawtime.wMonth, rawtime.wDay, rawtime.wYear,
     rawtime.wHour, rawtime.wMinute, text);
+
+    */
 }
 
 
@@ -785,7 +809,7 @@ void convertIPString (char* IPData, unsigned IPLen, int fromConfig )
             printf ("tethealla.ini is corrupted. (Failed to read IP information from file!)\n"); else
             printf ("Failed to determine IP address.\n");
           printf ("Hit [ENTER]");
-          gets (&dp[0]);
+          fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
           exit (1);
         }
       }
@@ -798,7 +822,7 @@ void convertIPString (char* IPData, unsigned IPLen, int fromConfig )
             printf ("tethealla.ini is corrupted. (Failed to read IP information from file!)\n"); else
             printf ("Failed to determine IP address.\n");
           printf ("Hit [ENTER]");
-          gets (&dp[0]);
+          fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
           exit (1);
         }
         break;
@@ -839,7 +863,7 @@ void construct0xEB()
   {
     printf ("Missing e8send.txt\n");
     printf ("Hit [ENTER]");
-    gets (&dp[0]);
+    fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
     exit (1);
   }
   PacketEB01[0x02] = 0xEB;
@@ -858,7 +882,7 @@ void construct0xEB()
     {
       printf ("Could not open %s!\n", &EBFiles[ch][0]);
       printf ("Hit [ENTER]");
-      gets (&dp[0]);
+      fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
       exit (1);
     }
     fseek (fpb, 0, SEEK_END);
@@ -908,7 +932,7 @@ void construct0xEB()
     {
       printf ("Too much patch data to send.\n");
       printf ("Hit [ENTER]");
-      gets (&dp[0]);
+      fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
       exit (1);
     }
   }
@@ -945,7 +969,7 @@ void load_config_file()
   {
     printf ("The configuration file tethealla.ini appears to be missing.\n");
     printf ("Hit [ENTER]");
-    gets (&dp[0]);
+    fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
     exit (1);
   }
   else
@@ -999,7 +1023,7 @@ void load_config_file()
               if (!pn_host) {
                 printf ("Could not resolve www.pioneer2.net\n");
                 printf ("Hit [ENTER]");
-                gets (&dp[0]);
+                fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
                 exit (1);
               }
 
@@ -1008,7 +1032,7 @@ void load_config_file()
               {
                 printf ("Unable to create TCP/IP streaming socket.");
                 printf ("Hit [ENTER]");
-                gets (&dp[0]);
+                fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
                 exit(1);
               }
 
@@ -1026,7 +1050,7 @@ void load_config_file()
               {
                 printf ("\nCannot connect to www.pioneer2.net!");
                 printf ("Hit [ENTER]");
-                gets (&dp[0]);
+                fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
                 exit(1);
               }
 
@@ -1034,7 +1058,7 @@ void load_config_file()
 
               send_to_server ( pn_sockfd, HTTP_REQ );
               pn_len = recv(pn_sockfd, &pn_buf[0], sizeof(pn_buf) - 1, 0);
-              closesocket (pn_sockfd);
+              close (pn_sockfd);
               pn_buf[pn_len] = 0;
               pn_ipdata = strstr (&pn_buf[0], "/html");
               if (!pn_ipdata)
@@ -1126,25 +1150,25 @@ void load_config_file()
           break;
         case 0x13:
           // Global GM name color
-          (unsigned char) config_data[6] = hexToByte (&config_data[4]);
-          (unsigned char) config_data[7] = hexToByte (&config_data[2]);
-          (unsigned char) config_data[8] = hexToByte (&config_data[0]);
+          config_data[6] = (unsigned char) hexToByte (&config_data[4]);
+          config_data[7] = (unsigned char) hexToByte (&config_data[2]);
+          config_data[8] = (unsigned char) hexToByte (&config_data[0]);
           config_data[9]  = 0xFF;
           globalName = *(unsigned *) &config_data[6];
           break;
         case 0x14:
           // Local GM name color
-          (unsigned char) config_data[6] = hexToByte (&config_data[4]);
-          (unsigned char) config_data[7] = hexToByte (&config_data[2]);
-          (unsigned char) config_data[8] = hexToByte (&config_data[0]);
+          config_data[6] = (unsigned char) hexToByte (&config_data[4]);
+          config_data[7] = (unsigned char) hexToByte (&config_data[2]);
+          config_data[8] = (unsigned char) hexToByte (&config_data[0]);
           config_data[9]  = 0xFF;
           localName = *(unsigned *) &config_data[6];
           break;
         case 0x15:
           // Normal name color
-          (unsigned char) config_data[6] = hexToByte (&config_data[4]);
-          (unsigned char) config_data[7] = hexToByte (&config_data[2]);
-          (unsigned char) config_data[8] = hexToByte (&config_data[0]);
+          config_data[6] = (unsigned char) hexToByte (&config_data[4]);
+          config_data[7] = (unsigned char) hexToByte (&config_data[2]);
+          config_data[8] = (unsigned char) hexToByte (&config_data[0]);
           config_data[9]  = 0xFF;
           normalName = *(unsigned *) &config_data[6];
           break;
@@ -1160,7 +1184,7 @@ void load_config_file()
   {
     printf ("tethealla.ini seems to be corrupted.\n");
     printf ("Hit [ENTER]");
-    gets (&dp[0]);
+    fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
     exit (1);
   }
 }
@@ -1217,7 +1241,7 @@ void construct0xA0()
         PacketA0Data[ch2++] = 0x00;
         PacketA0Data[ch2++] = 0x28;
         PacketA0Data[ch2++] = 0x00;
-        _itoa (shipcheck->playerCount, &playerCountString[0], 10);
+        sprintf (&playerCountString[0], "%d", shipcheck->playerCount);
         shipName = &playerCountString[0];
         while (*shipName != 0x00)
         {
@@ -1291,7 +1315,7 @@ void initialize_connection (BANANA* connect)
         serverConnectionList[ch2++] = serverConnectionList[ch];
     }
     serverNumConnections = ch2;
-    closesocket (connect->plySockfd);
+    close (connect->plySockfd);
   }
   memset (connect, 0, sizeof (BANANA));
   connect->plySockfd = -1;
@@ -1316,7 +1340,7 @@ void initialize_ship (ORANGE* ship)
         serverShipList[ch2++] = serverShipList[ch];
     }
     serverNumShips = ch2;
-    closesocket (ship->shipSockfd);
+    close (ship->shipSockfd);
   }
   memset (ship, 0, sizeof (ORANGE) );
   for (ch=0;ch<128;ch++)
@@ -1389,17 +1413,18 @@ void start_encryption(BANANA* connect)
   connect->connected = (unsigned) servertime;
 }
 
+//FIXME: Dummied out time stuff
 void SendB1 (BANANA* client)
 {
-  SYSTEMTIME rawtime;
+//  SYSTEMTIME rawtime;
 
   if ((client->guildcard) && (client->slotnum != -1))
   {
-    GetSystemTime (&rawtime);
+//    GetSystemTime (&rawtime);
     *(long long*) &client->encryptbuf[0] = *(long long*) &PacketB1[0];
     memset (&client->encryptbuf[0x08], 0, 28);
-    sprintf (&client->encryptbuf[8], "%u:%02u:%02u: %02u:%02u:%02u.%03u", rawtime.wYear, rawtime.wMonth, rawtime.wDay,
-      rawtime.wHour, rawtime.wMinute, rawtime.wSecond, rawtime.wMilliseconds );
+//    sprintf (&client->encryptbuf[8], "%u:%02u:%02u: %02u:%02u:%02u.%03u", rawtime.wYear, rawtime.wMonth, rawtime.wDay,
+//      rawtime.wHour, rawtime.wMinute, rawtime.wSecond, rawtime.wMilliseconds );
     cipher_ptr = &client->server_cipher;
     encryptcopy (client, &client->encryptbuf[0], 0x24 );
   }
@@ -4778,7 +4803,7 @@ void CharacterProcessPacket (BANANA* client)
         memcpy (&client->encryptbuf[0], &PacketE6[0], sizeof (PacketE6));
         *(unsigned *) &client->encryptbuf[0x10] = gcn;
         client->guildcard = gcn;
-        _itoa (gcn, &client->guildcard_string[0], 10); /* auth'd, bitch */
+        sprintf(&client->guildcard_string[0], "%d", gcn);
         // Store some security shit in the E6 packet.
         *(long long*) &client->encryptbuf[0x38] = security_sixtyfour_check;
         if (security_thirtytwo_check == 0)
@@ -5223,7 +5248,7 @@ void LoadQuestAllow ()
   {
     printf ("questitem.txt is missing.\n");
     printf ("Press [ENTER] to quit...");
-    gets(&dp[0]);
+    fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
     exit (1);
   }
   else
@@ -5300,19 +5325,19 @@ void LoadDropData()
             strcat (&id_file[0], "drop\\ep4_mob_");
             break;
           }
-          _itoa (d, &convert_ch[0], 10);
+          sprintf( &convert_ch[0], "%d", d);
           strcat (&id_file[0], &convert_ch[0]);
           strcat (&id_file[0], "_");
-          _itoa (ch2, &convert_ch[0], 10);
+          sprintf( &convert_ch[0], "%d", ch2);
           strcat (&id_file[0], &convert_ch[0]);
           strcat (&id_file[0], ".txt");
           ch3 = 0;
           fp = fopen ( &id_file[0], "r" );
           if (!fp)
           {
-            printf ("Drop table not found \"%s\"", id_file[0] );
+            printf ("Drop table not found \"%s\"", id_file );
             printf ("Hit [ENTER] to quit...");
-            gets   (&dp[0]);
+            fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
             exit   (1);
           }
           look_rate = 1;
@@ -5329,12 +5354,12 @@ void LoadDropData()
               {
                 if ( strlen ( &dp[0] ) < 6 )
                 {
-                  printf ("Corrupted drop table \"%s\"", id_file[0] );
+                  printf ("Corrupted drop table \"%s\"", id_file );
                   printf ("Hit [ENTER] to quit...");
-                  gets   (&dp[0]);
+                  fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
                   exit   (1);
                 }
-                _strupr ( &dp[0] );
+                strupr ( &dp[0] );
                 rt_table[ch3++] = hexToByte ( &dp[0] );
                 rt_table[ch3++] = hexToByte ( &dp[2] );
                 rt_table[ch3++] = hexToByte ( &dp[4] );
@@ -5351,9 +5376,9 @@ void LoadDropData()
           fp = fopen ( &id_file[0], "r" );
           if (!fp)
           {
-            printf ("Drop table not found \"%s\"", id_file[0] );
+            printf ("Drop table not found \"%s\"", id_file );
             printf ("Hit [ENTER] to quit...");
-            gets   (&dp[0]);
+            fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
             exit   (1);
           }
           look_rate = 0;
@@ -5374,12 +5399,12 @@ void LoadDropData()
               case 0x02:
                 if ( strlen ( &dp[0] ) < 6 )
                 {
-                  printf ("Corrupted drop table \"%s\"", id_file[0] );
+                  printf ("Corrupted drop table \"%s\"", id_file );
                   printf ("Hit [ENTER] to quit...");
-                  gets   (&dp[0]);
+                  fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
                   exit   (1);
                 }
-                _strupr ( &dp[0] );
+                strupr ( &dp[0] );
                 rt_table[0x1B3 + ((ch3-0x194)*4)] = hexToByte ( &dp[0] );
                 rt_table[0x1B4 + ((ch3-0x194)*4)] = hexToByte ( &dp[2] );
                 rt_table[0x1B5 + ((ch3-0x194)*4)] = hexToByte ( &dp[4] );
@@ -5468,7 +5493,7 @@ void LoadDataFile ( const char* filename, unsigned* count, void** data, unsigned
       if (!data[ch])
       {
         printf ("Out of memory!\nHit [ENTER]");
-        gets (&dp[0]);
+        fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
         exit (1);
       }
       fread (data[ch], 1, record_size, fp);
@@ -5479,39 +5504,6 @@ void LoadDataFile ( const char* filename, unsigned* count, void** data, unsigned
 }
 
 #endif
-
-
-LRESULT CALLBACK WndProc( HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam )
-{
-  if(message == MYWM_NOTIFYICON)
-  {
-    switch (lParam)
-    {
-    case WM_LBUTTONDBLCLK:
-      switch (wParam)
-      {
-      case 100:
-        if (program_hidden)
-        {
-          program_hidden = 0;
-          ShowWindow (consoleHwnd, SW_NORMAL);
-          SetForegroundWindow (consoleHwnd);
-          SetFocus(consoleHwnd);
-        }
-        else
-        {
-          program_hidden = 1;
-          ShowWindow (consoleHwnd, SW_HIDE);
-        }
-        return TRUE;
-        break;
-      }
-      break;
-    }
-  }
-  return DefWindowProc( hwnd, message, wParam, lParam );
-}
-
 
 /********************************************************
 **
@@ -5537,15 +5529,6 @@ main( int argc, char * argv[] )
   //int wserror;
   unsigned char MDBuffer[17] = {0};
   unsigned connectNum, shipNum;
-  HINSTANCE hinst;
-    NOTIFYICONDATA nid = {0};
-  WNDCLASS wc = {0};
-  HWND hwndWindow;
-  MSG msg;
-  WSADATA winsock_data;
-
-  consoleHwnd = GetConsoleWindow();
-  hinst = GetModuleHandle(NULL);
 
   dp[0] = 0;
 
@@ -5554,7 +5537,6 @@ main( int argc, char * argv[] )
   strcat (&dp[0], "Tethealla Login Server version ");
   strcat (&dp[0], SERVER_VERSION );
   strcat (&dp[0], " coded by Sodaboy");
-  SetConsoleTitle (&dp[0]);
 
   printf ("\nTethealla Login Server version %s  Copyright (C) 2008  Terry Chatman Jr.\n", SERVER_VERSION);
   printf ("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
@@ -5569,8 +5551,6 @@ main( int argc, char * argv[] )
     Sleep (1000);
   }*/
   printf ("\n\n");
-
-  WSAStartup(MAKEWORD(1,1), &winsock_data);
 
   srand ( (unsigned) time(NULL) );
 
@@ -5605,7 +5585,7 @@ main( int argc, char * argv[] )
   {
     printf ("Can't proceed without plyleveltbl.bin!\n");
     printf ("Hit [ENTER]");
-    gets (&dp[0]);
+    fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
     exit (1);
   }
   fread ( &startingStats[0], 1, 12*14, fp );
@@ -5617,7 +5597,7 @@ main( int argc, char * argv[] )
   {
     printf ("Can't proceed without e2base.bin!\n");
     printf ("Hit [ENTER]");
-    gets (&dp[0]);
+    fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
     exit (1);
   }
   fread ( &E2_Base[0], 1, 2808, fp );
@@ -5629,7 +5609,7 @@ main( int argc, char * argv[] )
   {
     printf ("Can't proceed without e7base.bin!\n");
     printf ("Hit [ENTER]");
-    gets (&dp[0]);
+    fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
     exit (1);
   }
   fread ( &E7_Base, 1, sizeof(CHARDATA), fp );
@@ -5662,7 +5642,7 @@ main( int argc, char * argv[] )
   printf ("Character Port: %u\n", serverPort+1 );
   printf ("Maximum Connections: %u\n", serverMaxConnections );
   printf ("Maximum Ships: %u\n\n", serverMaxShips );
-  printf ("Allocating %u bytes of memory for connections...", sizeof (BANANA) * serverMaxConnections );
+  printf ("Allocating %lu bytes of memory for connections...", sizeof (BANANA) * serverMaxConnections );
   for (ch=0;ch<serverMaxConnections;ch++)
   {
     connections[ch] = malloc ( sizeof (BANANA) );
@@ -5670,13 +5650,13 @@ main( int argc, char * argv[] )
     {
       printf ("Out of memory!\n");
       printf ("Hit [ENTER]");
-      gets (&dp[0]);
+      fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
       exit (1);
     }
     initialize_connection (connections[ch]);
   }
   printf (" OK!\n");
-  printf ("Allocating %u bytes of memory for ships...", sizeof (ORANGE) * serverMaxShips );
+  printf ("Allocating %lu bytes of memory for ships...", sizeof (ORANGE) * serverMaxShips );
   memset (&ships, 0, 4 * serverMaxShips);
   for (ch=0;ch<serverMaxShips;ch++)
   {
@@ -5685,7 +5665,7 @@ main( int argc, char * argv[] )
     {
       printf ("Out of memory!\n");
       printf ("Hit [ENTER]");
-      gets (&dp[0]);
+      fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
       exit (1);
     }
     initialize_ship (ships[ch]);
@@ -5776,7 +5756,7 @@ main( int argc, char * argv[] )
   {
     printf ("Can't proceed without default.flag!\n");
     printf ("Hit [ENTER]");
-    gets (&dp[0]);
+    fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
     exit (1);
   }
   fread ( &DefaultTeamFlag[0], 1, 2048, fp );
@@ -5838,57 +5818,11 @@ main( int argc, char * argv[] )
   {
     printf ("Failed to open ports for connections.\n");
     printf ("Hit [ENTER]");
-    gets (&dp[0]);
+    fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
     exit (1);
   }
 
   printf ("\nListening...\n");
-
-  wc.hbrBackground =(HBRUSH)GetStockObject(WHITE_BRUSH);
-  wc.hIcon = LoadIcon( hinst, IDI_APPLICATION );
-  wc.hCursor = LoadCursor( hinst, IDC_ARROW );
-  wc.hInstance = hinst;
-  wc.lpfnWndProc = WndProc;
-  wc.lpszClassName = "sodaboy";
-  wc.style = CS_HREDRAW | CS_VREDRAW;
-
-  if (! RegisterClass( &wc ) )
-  {
-    printf ("RegisterClass failure.\n");
-    exit (1);
-  }
-
-  hwndWindow = CreateWindow ("sodaboy","hidden window", WS_MINIMIZE, 1, 1, 1, 1,
-    NULL,
-    NULL,
-    hinst,
-    NULL );
-
-  backupHwnd = hwndWindow;
-
-  if (!hwndWindow)
-  {
-    printf ("Failed to create window.");
-    exit (1);
-  }
-
-  ShowWindow ( hwndWindow, SW_HIDE );
-  UpdateWindow ( hwndWindow );
-  ShowWindow ( consoleHwnd, SW_HIDE );
-  UpdateWindow ( consoleHwnd );
-
-    nid.cbSize        = sizeof(nid);
-  nid.hWnd        = hwndWindow;
-  nid.uID         = 100;
-  nid.uCallbackMessage  = MYWM_NOTIFYICON;
-  nid.uFlags        = NIF_MESSAGE|NIF_ICON|NIF_TIP;
-    nid.hIcon       = LoadIcon(hinst, MAKEINTRESOURCE(IDI_ICON1));
-  nid.szTip[0] = 0;
-  strcat (&nid.szTip[0], "Tethealla Login ");
-  strcat (&nid.szTip[0], SERVER_VERSION);
-  strcat (&nid.szTip[0], " - Double click to show/hide");
-    Shell_NotifyIcon(NIM_ADD, &nid);
-
 
 #ifdef NO_SQL
 
@@ -5905,21 +5839,6 @@ main( int argc, char * argv[] )
     servertime = time(NULL);
 
     /* Process the system tray icon */
-
-    if ( backupHwnd != hwndWindow )
-    {
-      debug ("hwndWindow has been corrupted...");
-      display_packet ( (unsigned char*) &hwndWindow, sizeof (HWND));
-      hwndWindow = backupHwnd;
-      WriteLog ("hwndWindow corrupted %s", (char*) &dp[0] );
-    }
-
-    if ( PeekMessage( &msg, hwndWindow, 0, 0, 1 ) )
-    {
-      TranslateMessage(&msg);
-      DispatchMessage(&msg);
-    }
-
 
 #ifdef NO_SQL
 
@@ -6379,7 +6298,7 @@ void send_to_server(int sock, char* packet)
   {
     printf ("send_to_server(): failure");
     printf ("Hit [ENTER]");
-    gets (&dp[0]);
+    fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
     exit(1);
   }
 
@@ -6393,7 +6312,7 @@ int receive_from_server(int sock, char* packet)
   {
     printf ("receive_from_server(): failure");
     printf ("Hit [ENTER]");
-    gets (&dp[0]);
+    fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
     exit(1);
   }
   packet[pktlen] = 0;
@@ -6406,7 +6325,7 @@ void tcp_listen (int sockfd)
   {
     debug_perror ("Could not listen for connection");
     printf ("Hit [ENTER]");
-    gets (&dp[0]);
+    fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
     exit(1);
   }
 }
@@ -6466,7 +6385,7 @@ int tcp_sock_open(struct in_addr ip, int port)
   if( fd < 0 ){
     debug_perror("Could not create socket");
     printf ("Hit [ENTER]");
-    gets (&dp[0]);
+    fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
     exit(1);
   }
 
@@ -6482,7 +6401,7 @@ int tcp_sock_open(struct in_addr ip, int port)
   if (bind(fd, (struct sockaddr *)&sa, sizeof(struct sockaddr)) < 0){
     debug_perror("Could not bind to port");
     printf ("Hit [ENTER]");
-    gets (&dp[0]);
+    fgets (&dp[0], TCP_BUFFER_SIZE*4, stdin);
     exit(1);
   }
 
@@ -6872,20 +6791,20 @@ unsigned RleEncode(unsigned char *src, unsigned char *dest, unsigned src_size)
 {
   unsigned char currChar, prevChar;             /* current and previous characters */
   unsigned short count;                /* number of characters in a run */
-  unsigned src_end, dest_start;
+  unsigned char *src_end, *dest_start;
 
-  dest_start = (unsigned)dest;
-  src_end = (unsigned)src + src_size;
+  dest_start = dest;
+  src_end = src + src_size;
 
   prevChar  = 0xFF - *src;
 
-  while ((unsigned) src < src_end)
+  while ( src < src_end)
   {
     currChar = *(dest++) = *(src++);
 
     if ( currChar == prevChar )
     {
-      if ( (unsigned) src == src_end )
+      if ( src == src_end )
       {
         *(dest++) = 0;
         *(dest++) = 0;
@@ -6893,13 +6812,13 @@ unsigned RleEncode(unsigned char *src, unsigned char *dest, unsigned src_size)
       else
       {
         count = 0;
-        while (((unsigned)src < src_end) && (count < 0xFFF0))
+        while (( src < src_end) && (count < 0xFFF0))
         {
           if (*src == prevChar)
           {
             count++;
             src++;
-            if ( (unsigned) src == src_end )
+            if ( src == src_end )
             {
               *(unsigned short*) dest = count;
               dest += 2;
@@ -6918,16 +6837,16 @@ unsigned RleEncode(unsigned char *src, unsigned char *dest, unsigned src_size)
     else
       prevChar = currChar;
   }
-  return (unsigned)dest - dest_start;
+  return dest - dest_start;
 }
 
 void RleDecode(unsigned char *src, unsigned char *dest, unsigned src_size)
 {
     unsigned char currChar, prevChar;             /* current and previous characters */
     unsigned short count;                /* number of characters in a run */
-  unsigned src_end;
+  unsigned char *src_end;
 
-  src_end = (unsigned) src + src_size;
+  src_end = src + src_size;
 
     /* decode */
 
@@ -6935,7 +6854,7 @@ void RleDecode(unsigned char *src, unsigned char *dest, unsigned src_size)
 
     /* read input until there's nothing left */
 
-    while ((unsigned) src < src_end)
+    while ( src < src_end)
     {
     currChar = *(src++);
 
@@ -6945,12 +6864,12 @@ void RleDecode(unsigned char *src, unsigned char *dest, unsigned src_size)
         if (currChar == prevChar)
         {
             /* we have a run.  write it out. */
-      count = *(unsigned short*) src;
-      src += 2;
+            count = *(unsigned short*) src;
+            src += 2;
             while (count > 0)
             {
-        *(dest++) = currChar;
-                count--;
+              *(dest++) = currChar;
+              count--;
             }
 
             prevChar = 0xFF - *src;     /* force next char to be different */
