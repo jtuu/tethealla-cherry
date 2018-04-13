@@ -5317,13 +5317,13 @@ void LoadDropData()
           switch (ch)
           {
           case 0x01:
-            strcat (&id_file[0], "drop\\ep1_mob_");
+            strcat (&id_file[0], "drop/ep1_mob_");
             break;
           case 0x02:
-            strcat (&id_file[0], "drop\\ep2_mob_");
+            strcat (&id_file[0], "drop/ep2_mob_");
             break;
           case 0x04:
-            strcat (&id_file[0], "drop\\ep4_mob_");
+            strcat (&id_file[0], "drop/ep4_mob_");
             break;
           }
           sprintf( &convert_ch[0], "%d", d);
