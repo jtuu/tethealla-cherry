@@ -29,7 +29,6 @@
 #include  <linux/limits.h>
 #include  <ctype.h>
 #include  <time.h>
-#include  "resource.h"
 
 // Encryption data struct
 typedef struct {
