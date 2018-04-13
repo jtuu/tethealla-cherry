@@ -1,5 +1,5 @@
-#include  <windows.h>
 #include  <stdio.h>
+#include  <stdlib.h>
 #include  <string.h>
 #include  <time.h>
 #include  <math.h>
@@ -20,15 +20,8 @@ unsigned ds;
 L_SHIP_DATA *ship_data[SHIP_COMPILED_MAX_CONNECTIONS];
 
 #else
-#include  <mysql.h>
+#include  <mysql/mysql.h>
 #endif
-
-
-/* random number functions */
-
-extern void   mt_bestseed(void);
-extern void   mt_seed(void);  /* Choose seed from random input. */
-extern unsigned long  mt_lrand(void); /* Generate 32-bit random value */
 
 #ifdef NO_SQL
 
@@ -115,6 +108,8 @@ int main()
   char config_data[255];
 
 
+  srand (time (0));
+
   if ( ( fp = fopen ("tethealla.ini", "r" ) ) == NULL )
   {
     printf ("The configuration file tethealla.ini appears to be missing.\n");
@@ -123,6 +118,7 @@ int main()
   else
     while (fgets (&config_data[0], 255, fp) != NULL)
     {
+      strtok(config_data, "\r\n");
       if (config_data[0] != 0x23)
       {
         if (config_index < 0x04)
@@ -199,7 +195,7 @@ int main()
   printf ("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
 
   for (ch=0;ch<128;ch++)
-    ship_key[ch] = mt_lrand() % 256;
+    ship_key[ch] = rand() % 256;
 
 #ifdef NO_SQL
 
@@ -246,7 +242,8 @@ int main()
   fclose (fp);
   printf ("OK!!!\n");
   printf ("Hit [ENTER]");
-  gets (&ship_key[0]);
+  fgets (&ship_key[0], 1, stdin);
+  strtok(ship_key, "\r\n");
   exit (1);
   return 0;
 }
