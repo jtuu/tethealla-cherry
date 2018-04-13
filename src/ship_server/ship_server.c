@@ -2189,8 +2189,8 @@ void initialize_game (BANANA* client)
       {
         l->bptable = &ep1battle[0x60 * l->difficulty];
 
-        LoadMapData ( l, 0, "map\\map_city00_00e.dat" );
-        LoadObjectData ( l, 0, "map\\map_city00_00o.dat" );
+        LoadMapData ( l, 0, "map/map_city00_00e.dat" );
+        LoadObjectData ( l, 0, "map/map_city00_00o.dat" );
 
         l->gameMap[12]=(unsigned char) rand() % 5; // Forest 1
         LoadMapData ( l, 0, Forest1_Online_Maps [l->gameMap[12]] );
@@ -2244,8 +2244,8 @@ void initialize_game (BANANA* client)
       {
         l->bptable = &ep1battle_off[0x60 * l->difficulty];
 
-        LoadMapData ( l, 0, "map\\map_city00_00e_s.dat");
-        LoadObjectData ( l, 0, "map\\map_city00_00o_s.dat");
+        LoadMapData ( l, 0, "map/map_city00_00e_s.dat");
+        LoadObjectData ( l, 0, "map/map_city00_00o_s.dat");
 
         l->gameMap[12]=(unsigned char) rand() % 3; // Forest 1
         LoadMapData ( l, 0, Forest1_Offline_Maps [l->gameMap[12]] );
@@ -2292,25 +2292,25 @@ void initialize_game (BANANA* client)
         LoadMapData ( l, 0, Ruins3_Online_Maps [( l->gameMap[80] * 2 ) + l->gameMap[84]] );
         LoadObjectData ( l, 0, Ruins3_Online_Maps [( l->gameMap[80] * 2 ) + l->gameMap[84]] );
       }
-      LoadMapData ( l, 0, "map\\map_boss01e.dat" );
-      LoadObjectData ( l, 0, "map\\map_boss01o.dat");
-      LoadMapData ( l, 0, "map\\map_boss02e.dat" );
-      LoadObjectData ( l, 0, "map\\map_boss02o.dat");
-      LoadMapData ( l, 0, "map\\map_boss03e.dat" );
-      LoadObjectData ( l, 0, "map\\map_boss03o.dat");
-      LoadMapData ( l, 0, "map\\map_boss04e.dat" );
+      LoadMapData ( l, 0, "map/map_boss01e.dat" );
+      LoadObjectData ( l, 0, "map/map_boss01o.dat");
+      LoadMapData ( l, 0, "map/map_boss02e.dat" );
+      LoadObjectData ( l, 0, "map/map_boss02o.dat");
+      LoadMapData ( l, 0, "map/map_boss03e.dat" );
+      LoadObjectData ( l, 0, "map/map_boss03o.dat");
+      LoadMapData ( l, 0, "map/map_boss04e.dat" );
       if ( l->oneperson )
-        LoadObjectData ( l, 0, "map\\map_boss04_offo.dat");
+        LoadObjectData ( l, 0, "map/map_boss04_offo.dat");
       else
-        LoadObjectData ( l, 0, "map\\map_boss04o.dat");
+        LoadObjectData ( l, 0, "map/map_boss04o.dat");
       break;
     case 0x02:
       // Episode 2
       if (!l->oneperson)
       {
         l->bptable = &ep2battle[0x60 * l->difficulty];
-        LoadMapData ( l, 0, "map\\map_labo00_00e.dat");
-        LoadObjectData ( l, 0, "map\\map_labo00_00o.dat");
+        LoadMapData ( l, 0, "map/map_labo00_00e.dat");
+        LoadObjectData ( l, 0, "map/map_labo00_00o.dat");
 
         l->gameMap[8]  = (unsigned char) rand() % 2; // Temple 1
         l->gameMap[12] = 0x00;
@@ -2370,8 +2370,8 @@ void initialize_game (BANANA* client)
       else
       {
         l->bptable = &ep2battle_off[0x60 * l->difficulty];
-        LoadMapData ( l, 0, "map\\map_labo00_00e_s.dat");
-        LoadObjectData ( l, 0, "map\\map_labo00_00o_s.dat");
+        LoadMapData ( l, 0, "map/map_labo00_00e_s.dat");
+        LoadObjectData ( l, 0, "map/map_labo00_00o_s.dat");
 
         l->gameMap[8]  = (unsigned char) rand() % 2; // Temple 1
         l->gameMap[12] = 0x00;
@@ -2426,23 +2426,23 @@ void initialize_game (BANANA* client)
         LoadMapData ( l, 0, Seabed2_Offline_Maps [l->gameMap[88]] );
         LoadObjectData ( l, 0, Seabed2_Offline_Maps [l->gameMap[88]] );
       }
-      LoadMapData ( l, 0, "map\\map_boss05e.dat");
-      LoadMapData ( l, 0, "map\\map_boss06e.dat");
-      LoadMapData ( l, 0, "map\\map_boss07e.dat");
-      LoadMapData ( l, 0, "map\\map_boss08e.dat");
+      LoadMapData ( l, 0, "map/map_boss05e.dat");
+      LoadMapData ( l, 0, "map/map_boss06e.dat");
+      LoadMapData ( l, 0, "map/map_boss07e.dat");
+      LoadMapData ( l, 0, "map/map_boss08e.dat");
       if ( l->oneperson )
       {
-        LoadObjectData ( l, 0, "map\\map_boss05_offo.dat");
-        LoadObjectData ( l, 0, "map\\map_boss06_offo.dat");
-        LoadObjectData ( l, 0, "map\\map_boss07_offo.dat");
-        LoadObjectData ( l, 0, "map\\map_boss08_offo.dat");
+        LoadObjectData ( l, 0, "map/map_boss05_offo.dat");
+        LoadObjectData ( l, 0, "map/map_boss06_offo.dat");
+        LoadObjectData ( l, 0, "map/map_boss07_offo.dat");
+        LoadObjectData ( l, 0, "map/map_boss08_offo.dat");
       }
       else
       {
-        LoadObjectData ( l, 0, "map\\map_boss05o.dat");
-        LoadObjectData ( l, 0, "map\\map_boss06o.dat");
-        LoadObjectData ( l, 0, "map\\map_boss07o.dat");
-        LoadObjectData ( l, 0, "map\\map_boss08o.dat");
+        LoadObjectData ( l, 0, "map/map_boss05o.dat");
+        LoadObjectData ( l, 0, "map/map_boss06o.dat");
+        LoadObjectData ( l, 0, "map/map_boss07o.dat");
+        LoadObjectData ( l, 0, "map/map_boss08o.dat");
       }
       break;
     case 0x03:
@@ -2450,14 +2450,14 @@ void initialize_game (BANANA* client)
       if (!l->oneperson)
       {
         l->bptable = &ep4battle[0x60 * l->difficulty];
-        LoadMapData (l, 0, "map\\map_city02_00_00e.dat");
-        LoadObjectData (l, 0, "map\\map_city02_00_00o.dat");
+        LoadMapData (l, 0, "map/map_city02_00_00e.dat");
+        LoadObjectData (l, 0, "map/map_city02_00_00o.dat");
       }
       else
       {
         l->bptable = &ep4battle_off[0x60 * l->difficulty];
-        LoadMapData (l, 0, "map\\map_city02_00_00e_s.dat");
-        LoadObjectData (l, 0, "map\\map_city02_00_00o_s.dat");
+        LoadMapData (l, 0, "map/map_city02_00_00e_s.dat");
+        LoadObjectData (l, 0, "map/map_city02_00_00o_s.dat");
       }
 
       l->gameMap[12] = (unsigned char) rand() % 3; // Crater East
@@ -2492,9 +2492,9 @@ void initialize_game (BANANA* client)
       LoadMapData ( l, 1, Desert3_Online_Maps [l->gameMap[64]] );
       LoadObjectData ( l, 1, Desert3_Online_Maps [l->gameMap[64]] );
 
-      LoadMapData (l, 0, "map\\map_boss09_00_00e.dat");
-      LoadObjectData (l, 0, "map\\map_boss09_00_00o.dat");
-      //LoadMapData (l, "map\\map_test01_00_00e.dat");
+      LoadMapData (l, 0, "map/map_boss09_00_00e.dat");
+      LoadObjectData (l, 0, "map/map_boss09_00_00o.dat");
+      //LoadMapData (l, "map/map_test01_00_00e.dat");
       break;
     default:
       break;
@@ -14355,7 +14355,7 @@ void LoadQuests (const char* filename, unsigned category)
       if ((qfile[ch] == 10) || (qfile[ch] == 13))
         qfile[ch] = 0; // Reserved
     qfile3[0] = 0;
-    strcat ( &qfile3[0], "quest\\");
+    strcat ( &qfile3[0], "quest/");
     strcat ( &qfile3[0], &qfile[0] );
     memcpy ( &qfile[0], &qfile3[0], strlen ( &qfile3[0] ) + 1 );
     strcat ( &qfile3[0], "quest.lst");
@@ -14848,7 +14848,7 @@ void LoadArmorParam()
 {
   unsigned ch,wi1;
 
-  LoadCSV ("param\\armorpmt.ini");
+  LoadCSV ("param//armorpmt.ini");
   for (ch=0;ch<csv_lines;ch++)
   {
     wi1 = hexToByte (&csv_params[ch][0][6]);
@@ -14859,7 +14859,7 @@ void LoadArmorParam()
     //printf ("armor index %02x, dfp: %u, evp: %u, eq: %u, lv: %u \n", wi1, armor_dfpvar_table[wi1], armor_evpvar_table[wi1], armor_equip_table[wi1], armor_level_table[wi1]);
   }
   FreeCSV ();
-  LoadCSV ("param\\shieldpmt.ini");
+  LoadCSV ("param/shieldpmt.ini");
   for (ch=0;ch<csv_lines;ch++)
   {
     wi1 = hexToByte (&csv_params[ch][0][6]);
@@ -14884,7 +14884,7 @@ void LoadWeaponParam()
 {
   unsigned ch,wi1,wi2;
 
-  LoadCSV ("param\\weaponpmt.ini");
+  LoadCSV ("param/weaponpmt.ini");
   for (ch=0;ch<csv_lines;ch++)
   {
     wi1 = hexToByte (&csv_params[ch][0][4]);
@@ -14907,7 +14907,7 @@ void LoadTechParam()
 {
   unsigned ch,ch2;
 
-  LoadCSV ("param\\tech.ini");
+  LoadCSV ("param/tech.ini");
   if (csv_lines != 19)
   {
     printf ("Technique CSV file is corrupt.\n");
@@ -14936,10 +14936,10 @@ void LoadTechParam()
 void LoadShopData2()
 {
   FILE *fp;
-  fp = fopen ("shop\\shop2.dat", "rb");
+  fp = fopen ("shop/shop2.dat", "rb");
   if (!fp)
   {
-    printf ("shop\\shop2.dat is missing.");
+    printf ("shop/shop2.dat is missing.");
     printf ("Press [ENTER] to quit...");
     fgets(&dp[0],1,stdin);
     exit (1);
@@ -15052,12 +15052,12 @@ int main()
     tnlxp[ch] = tnlxp[ch-1] + tnlxp[ch];
 
   printf ("Loading battle parameter files...\n\n");
-  LoadBattleParam (&ep1battle_off[0], "param\\BattleParamEntry.dat", 374, 0x8fef1ffe);
-  LoadBattleParam (&ep1battle[0], "param\\BattleParamEntry_on.dat", 374, 0xb8a2d950);
-  LoadBattleParam (&ep2battle_off[0], "param\\BattleParamEntry_lab.dat", 374, 0x3dc217f5);
-  LoadBattleParam (&ep2battle[0], "param\\BattleParamEntry_lab_on.dat", 374, 0x4d4059cf);
-  LoadBattleParam (&ep4battle_off[0], "param\\BattleParamEntry_ep4.dat", 332, 0x50841167);
-  LoadBattleParam (&ep4battle[0], "param\\BattleParamEntry_ep4_on.dat", 332, 0x42bf9716);
+  LoadBattleParam (&ep1battle_off[0], "param/BattleParamEntry.dat", 374, 0x8fef1ffe);
+  LoadBattleParam (&ep1battle[0], "param/BattleParamEntry_on.dat", 374, 0xb8a2d950);
+  LoadBattleParam (&ep2battle_off[0], "param/BattleParamEntry_lab.dat", 374, 0x3dc217f5);
+  LoadBattleParam (&ep2battle[0], "param/BattleParamEntry_lab_on.dat", 374, 0x4d4059cf);
+  LoadBattleParam (&ep4battle_off[0], "param/BattleParamEntry_ep4.dat", 332, 0x50841167);
+  LoadBattleParam (&ep4battle[0], "param/BattleParamEntry_ep4_on.dat", 332, 0x42bf9716);
 
   for (ch=0;ch<374;ch++)
     if (ep2battle_off[ch].HP)
@@ -15090,8 +15090,8 @@ int main()
 
   printf (".. done!\n\n");
 
-  printf ("Loading param\\ItemPT.gsl...\n");
-  fp = fopen ("param\\ItemPT.gsl", "rb");
+  printf ("Loading param/ItemPT.gsl...\n");
+  fp = fopen ("param/ItemPT.gsl", "rb");
   if (!fp)
   {
     printf ("Can't proceed without ItemPT.gsl\n");
@@ -15499,8 +15499,8 @@ int main()
 
   fclose (fp);
   printf ("\n.. done!\n\n");
-  printf ("Loading param\\PlyLevelTbl.bin ... ");
-  fp = fopen ( "param\\PlyLevelTbl.bin", "rb" );
+  printf ("Loading param/PlyLevelTbl.bin ... ");
+  fp = fopen ( "param/PlyLevelTbl.bin", "rb" );
   if (!fp)
   {
     printf ("Can't proceed without PlyLevelTbl.bin!\n");
@@ -15529,22 +15529,22 @@ int main()
   // 9 = Battle
   // 10 = Challenge
 
-  LoadQuests ("quest\\ep1team.ini", 0);
-  LoadQuests ("quest\\ep2team.ini", 1);
-  LoadQuests ("quest\\ep4team.ini", 2);
-  LoadQuests ("quest\\ep1solo.ini", 3);
-  LoadQuests ("quest\\ep2solo.ini", 4);
-  LoadQuests ("quest\\ep4solo.ini", 5);
-  LoadQuests ("quest\\ep1gov.ini", 6);
-  LoadQuests ("quest\\ep2gov.ini", 7);
-  LoadQuests ("quest\\ep4gov.ini", 8);
-  LoadQuests ("quest\\battle.ini", 9);
+  LoadQuests ("quest/ep1team.ini", 0);
+  LoadQuests ("quest/ep2team.ini", 1);
+  LoadQuests ("quest/ep4team.ini", 2);
+  LoadQuests ("quest/ep1solo.ini", 3);
+  LoadQuests ("quest/ep2solo.ini", 4);
+  LoadQuests ("quest/ep4solo.ini", 5);
+  LoadQuests ("quest/ep1gov.ini", 6);
+  LoadQuests ("quest/ep2gov.ini", 7);
+  LoadQuests ("quest/ep4gov.ini", 8);
+  LoadQuests ("quest/battle.ini", 9);
 
   printf ("\n%u bytes of memory allocated for %u quests...\n\n", questsMemory, numQuests);
 
-  printf ("Loading shop\\shop.dat ...");
+  printf ("Loading shop/shop.dat ...");
 
-  fp = fopen ( "shop\\shop.dat", "rb" );
+  fp = fopen ( "shop/shop.dat", "rb" );
 
   if (!fp)
   {
