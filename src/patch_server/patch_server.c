@@ -15,9 +15,19 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************/
 
-#include  <windows.h>
+#include  <stdarg.h>
 #include  <stdio.h>
+#include  <stdlib.h>
+#include  <netdb.h>
+#include  <unistd.h>
 #include  <string.h>
+#include  <sys/time.h>
+#include  <sys/socket.h>
+#include  <netinet/in.h>
+#include  <arpa/inet.h>
+#include  <errno.h>
+#include  <linux/limits.h>
+#include  <ctype.h>
 #include  <time.h>
 #include  "resource.h"
 
@@ -50,6 +60,26 @@ struct timeval select_timeout = {
   0,
   5000
 };
+
+/* added stuff */
+
+#define SOCKET_ERROR  -1
+
+void strupr(char * temp) {
+
+  // Convert to upper case
+  char *s = temp;
+  while (*s) {
+    *s = toupper((unsigned char) *s);
+    s++;
+  }
+
+}
+
+#define max(a,b) \
+   ({ __typeof__ (a) _a = (a); \
+       __typeof__ (b) _b = (b); \
+     _a > _b ? _a : _b; })
 
 /* functions */
 
@@ -99,9 +129,9 @@ int maxbytes  = 0;
 typedef struct st_patch_data {
   unsigned file_size;
   unsigned checksum;
-  char full_file_name[MAX_PATH+48];
+  char full_file_name[PATH_MAX+48];
   char file_name[48];
-  char folder[MAX_PATH];
+  char folder[PATH_MAX];
   unsigned char patch_folders[128]; // Command to get to the folder this file resides in...
   unsigned patch_folders_size;
   unsigned patch_steps; // How many steps from the root folder this file is...
@@ -144,7 +174,7 @@ typedef struct st_banana {
   unsigned connected;
   unsigned char sendCheck[MAX_SENDCHECK+2];
   int todc;
-  char patch_folder[MAX_PATH];
+  char patch_folder[PATH_MAX];
   unsigned patch_steps;
   unsigned chunk;
   unsigned char IP_Address[16];
@@ -167,11 +197,6 @@ void decryptcopy ( void* dest, void* source, unsigned size );
 void encryptcopy ( BANANA* client, void* source, unsigned size );
 
 CRYPT_SETUP *cipher_ptr;
-
-#define MYWM_NOTIFYICON (WM_USER+2)
-int program_hidden = 1;
-HWND consoleHwnd;
-
 
 void display_packet ( unsigned char* buf, int len )
 {
@@ -239,6 +264,7 @@ void convertIPString (char* IPData, unsigned IPLen, int fromConfig )
       convert_buffer[p3] = 0;
       if (IPData[p] == 46) // .
       {
+
         serverIP[p2] = atoi (&convert_buffer[0]);
         p2++;
         p3 = 0;
@@ -375,7 +401,7 @@ void load_config_file()
 
               send_to_server ( pn_sockfd, HTTP_REQ );
               pn_len = recv(pn_sockfd, &pn_buf[0], sizeof(pn_buf) - 1, 0);
-              closesocket (pn_sockfd);
+              close (pn_sockfd);
               pn_buf[pn_len] = 0;
               pn_ipdata = strstr (&pn_buf[0], "/html");
               if (!pn_ipdata)
@@ -505,7 +531,7 @@ void initialize_connection (BANANA* connect)
         serverConnectionList[ch2++] = serverConnectionList[ch];
     }
     serverNumConnections = ch2;
-    closesocket (connect->plySockfd);
+    close (connect->plySockfd);
   }
   memset (connect, 0, sizeof (BANANA));
   connect->plySockfd = -1;
@@ -721,11 +747,12 @@ void PatchProcessPacket (BANANA* client)
   }
 }
 
-char patch_folder[MAX_PATH] = {0};
+char patch_folder[PATH_MAX] = {0};
 unsigned patch_steps = 0;
 int now_folder = -1;
 
-int scandir(char *path, BOOL recursive);
+// FIXME: Redo with linux stuff
+//int scandir(char *path, BOOL recursive);
 int fixpath(char *inpath, char *outpath);
 
 void change_client_folder (unsigned patchNum, BANANA* client)
@@ -768,7 +795,7 @@ void change_client_folder (unsigned patchNum, BANANA* client)
         encryptcopy (client, &client->encryptbuf[0x00], 0x44);
       }
     }
-    memcpy (&client->patch_folder[0], &s_data[patchNum].folder, MAX_PATH);
+    memcpy (&client->patch_folder[0], &s_data[patchNum].folder, PATH_MAX);
     client->patch_steps = s_data[patchNum].patch_steps;
   }
   // Now let's send the information about the file coming in...
@@ -818,17 +845,18 @@ void change_patch_folder (unsigned patchNum)
         patch_size += 0x44;
       }
     }
-    memcpy (&patch_folder[0], &s_data[patchNum].folder, MAX_PATH);
+    memcpy (&patch_folder[0], &s_data[patchNum].folder, PATH_MAX);
     patch_steps = s_data[patchNum].patch_steps;
   }
 }
 
-
+//TODO: Redo with linux stuff
+/*
 int scandir(char *_path,BOOL recursive)
 {
   HANDLE fh;
-  char   path[MAX_PATH];
-  char   tmppath[MAX_PATH];
+  char   path[PATH_MAX];
+  char   tmppath[PATH_MAX];
   WIN32_FIND_DATA *fd;
   void *pd;
   FILE* pf;
@@ -910,18 +938,6 @@ int scandir(char *_path,BOOL recursive)
           s_data[serverNumPatches].patch_folders_size = 1;
         }
 
-        /*
-
-        printf ("file patch\n\nfile_size: %u\n", s_data[serverNumPatches].file_size);
-        printf ("checksum: %08x\n", s_data[serverNumPatches].checksum);
-        printf ("full file name: %s\n", s_data[serverNumPatches].full_file_name);
-        printf ("file name: %s\n", s_data[serverNumPatches].file_name);
-        printf ("folder: %s\n", s_data[serverNumPatches].folder);
-        printf ("patch_folders_size: %u\n", s_data[serverNumPatches].patch_folders_size);
-        printf ("patch_steps: %u\n", s_data[serverNumPatches].patch_steps);
-
-        */
-
         s_data[serverNumPatches++].patch_steps = now_folder;
         change_patch_folder (serverNumPatches - 1);
         ch = serverNumPatches - 1;
@@ -944,7 +960,7 @@ int scandir(char *_path,BOOL recursive)
 
   return 1;
 }
-
+*/
 int fixpath(char *inpath, char *outpath)
 {
   int   n=0;
@@ -962,36 +978,6 @@ int fixpath(char *inpath, char *outpath)
   return 0;
 }
 
-LRESULT CALLBACK WndProc( HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam )
-{
-  if(message == MYWM_NOTIFYICON)
-  {
-    switch (lParam)
-    {
-    case WM_LBUTTONDBLCLK:
-      switch (wParam)
-      {
-      case 100:
-        if (program_hidden)
-        {
-          program_hidden = 0;
-          ShowWindow (consoleHwnd, SW_NORMAL);
-          SetForegroundWindow (consoleHwnd);
-          SetFocus(consoleHwnd);
-        }
-        else
-        {
-          program_hidden = 1;
-          ShowWindow (consoleHwnd, SW_HIDE);
-        }
-        return TRUE;
-        break;
-      }
-      break;
-    }
-  }
-  return DefWindowProc( hwnd, message, wParam, lParam );
-}
 
 /********************************************************
 **
@@ -1013,11 +999,6 @@ int main( int argc, char * argv[] )
   unsigned short *w2;
   unsigned num_sends = 0;
   patch_data *pd;
-  HINSTANCE hinst;
-    NOTIFYICONDATA nid = {0};
-  WNDCLASS wc = {0};
-  HWND hwndWindow;
-  MSG msg;
 
   FILE* fp;
   //int wserror;
@@ -1025,17 +1006,12 @@ int main( int argc, char * argv[] )
   unsigned connectNum;
   unsigned to_send, checksum;
   int data_send, data_remaining;
-  WSADATA winsock_data;
-
-  consoleHwnd = GetConsoleWindow();
-  hinst = GetModuleHandle(NULL);
 
   dp[0] = 0;
 
   strcat (&dp[0], "Tethealla Patch Server version ");
   strcat (&dp[0], SERVER_VERSION );
   strcat (&dp[0], " coded by Sodaboy");
-  SetConsoleTitle (&dp[0]);
 
   printf ("\nTethealla Patch Server version %s  Copyright (C) 2008  Terry Chatman Jr.\n", SERVER_VERSION);
   printf ("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
@@ -1047,13 +1023,11 @@ int main( int argc, char * argv[] )
   for (ch=0;ch<5;ch++)
   {
     printf (".");
-    Sleep (1000);
+    sleep (1);
   }
   printf ("\n\n");
 
   data_remaining = 0;
-
-  WSAStartup(MAKEWORD(1,1), &winsock_data);
 
   srand ( (unsigned) time(NULL) );
 
@@ -1072,10 +1046,10 @@ int main( int argc, char * argv[] )
   printf ("Maximum Connections: %u\n", serverMaxConnections );
   printf ("Upload speed: ");
   if (maxbytes)
-    printf ("%u KB/s\n", maxbytes / 1024L);
+    printf ("%lu KB/s\n", maxbytes / 1024L);
   else
     printf ("Max\n");
-  printf ("Allocating %u bytes of memory for connections...", sizeof (BANANA) * serverMaxConnections );
+  printf ("Allocating %lu bytes of memory for connections...", sizeof (BANANA) * serverMaxConnections );
   for (ch=0;ch<serverMaxConnections;ch++)
   {
     connections[ch] = malloc ( sizeof (BANANA) );
@@ -1096,7 +1070,8 @@ int main( int argc, char * argv[] )
   patch_packet[patch_size+0x02] = 0x09;
   patch_packet[patch_size+0x04] = 0x2E;
   patch_size += 0x44;
-  scandir ("patches",1);
+  //FIXME Reimplement this function using linux stuff
+  //scandir ("patches",1);
   patch_packet[patch_size++] = 0x04;
   patch_packet[patch_size++] = 0x00;
   patch_packet[patch_size++] = 0x0A;
@@ -1120,7 +1095,7 @@ int main( int argc, char * argv[] )
   {
     printf ("\nwelcome.txt seems to be missing.\nPlease be sure it's in the same folder as patch_server.exe\n");
     printf ("Hit [ENTER]");
-    gets (&Welcome_Message[0]);
+    fgets (&Welcome_Message[0], 1, stdin);
     exit (1);
   }
   fseek ( fp, 0, SEEK_END );
@@ -1190,61 +1165,9 @@ int main( int argc, char * argv[] )
 
   printf ("\nListening...\n");
 
-  wc.hbrBackground =(HBRUSH)GetStockObject(WHITE_BRUSH);
-  wc.hIcon = LoadIcon( hinst, IDI_APPLICATION );
-  wc.hCursor = LoadCursor( hinst, IDC_ARROW );
-  wc.hInstance = hinst;
-  wc.lpfnWndProc = WndProc;
-  wc.lpszClassName = "sodaboy";
-  wc.style = CS_HREDRAW | CS_VREDRAW;
-
-  if (! RegisterClass( &wc ) )
-  {
-    printf ("RegisterClass failure.\n");
-    exit (1);
-  }
-
-  hwndWindow = CreateWindow ("sodaboy","hidden window", WS_MINIMIZE, 1, 1, 1, 1,
-    NULL,
-    NULL,
-    hinst,
-    NULL );
-
-  if (!hwndWindow)
-  {
-    printf ("Failed to create window.");
-    exit (1);
-  }
-
-  ShowWindow ( hwndWindow, SW_HIDE );
-  UpdateWindow ( hwndWindow );
-  ShowWindow ( consoleHwnd, SW_HIDE );
-  UpdateWindow ( consoleHwnd );
-
-    nid.cbSize        = sizeof(nid);
-  nid.hWnd        = hwndWindow;
-  nid.uID         = 100;
-  nid.uCallbackMessage  = MYWM_NOTIFYICON;
-  nid.uFlags        = NIF_MESSAGE|NIF_ICON|NIF_TIP;
-    nid.hIcon       = LoadIcon(hinst, MAKEINTRESOURCE(IDI_ICON1));
-  nid.szTip[0] = 0;
-  strcat (&nid.szTip[0], "Tethealla Patch ");
-  strcat (&nid.szTip[0], SERVER_VERSION);
-  strcat (&nid.szTip[0], " - Double click to show/hide");
-    Shell_NotifyIcon(NIM_ADD, &nid);
-
-
   for (;;)
   {
     int nfds = 0;
-
-    /* Process the system tray icon */
-
-    if ( PeekMessage( &msg, hwndWindow, 0, 0, 1 ) )
-    {
-      TranslateMessage(&msg);
-      DispatchMessage(&msg);
-    }
 
     /* Ping pong?! */
 
