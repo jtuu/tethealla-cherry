@@ -30,7 +30,7 @@ int readLocalGMFile()
     char inistring[512];
     int i;
 
-	printf( "Loading Local GMs and permissions..\n" );
+  printf( "Loading Local GMs and permissions..\n" );
 
     gmfile = fopen("localgms.ini", "r");
 
@@ -57,7 +57,7 @@ int readLocalGMFile()
                             localgms[localgmcount].guildcard = atoi(strtok(inistring,","));
                             localgms[localgmcount].level = atoi(strtok(NULL,","));
 
-							printf ("Added GM # %u with rights level %u\n", localgms[localgmcount].guildcard, localgms[localgmcount].level);
+              printf ("Added GM # %u with rights level %u\n", localgms[localgmcount].guildcard, localgms[localgmcount].level);
 
                         }
                         if ( inistring[0] == '[' )
@@ -100,8 +100,8 @@ int readLocalGMFile()
 
         for(i=0;i<10;i++)
         {
-			if ( localgmrights[i] )
-				printf(" Index %i: Permission %i\n", i, localgmrights[i]);
+      if ( localgmrights[i] )
+        printf(" Index %i: Permission %i\n", i, localgmrights[i]);
         }
 
         fclose(gmfile);

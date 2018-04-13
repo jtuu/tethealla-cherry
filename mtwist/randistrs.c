@@ -86,97 +86,97 @@ static char Rcs_Id[] =
 /*
  * Table of contents:
  */
-long			rds_iuniform(mt_state * state, long lower, long upper);
-					/* (Integer) uniform distribution */
+long      rds_iuniform(mt_state * state, long lower, long upper);
+          /* (Integer) uniform distribution */
 #ifndef MT_NO_LONGLONG
-long long		rds_liuniform(mt_state * state, long long lower,
-			  long long upper);
-					/* (Integer) uniform distribution */
+long long   rds_liuniform(mt_state * state, long long lower,
+        long long upper);
+          /* (Integer) uniform distribution */
 #endif /* MT_NO_LONGLONG */
-double			rds_uniform(mt_state * state,
-			  double lower, double upper);
-					/* (Floating) uniform distribution */
-double			rds_luniform(mt_state * state,
-			  double lower, double upper);
-					/* (Floating) uniform distribution */
-double			rds_exponential(mt_state * state, double mean);
-					/* Exponential distribution */
-double			rds_lexponential(mt_state * state, double mean);
-					/* Exponential distribution */
-double			rds_erlang(mt_state * state, int p, double mean);
-					/* p-Erlang distribution */
-double			rds_lerlang(mt_state * state, int p, double mean);
-					/* p-Erlang distribution */
-double			rds_weibull(mt_state * state,
-			  double shape, double scale);
-					/* Weibull distribution */
-double			rds_lweibull(mt_state * state,
-			  double shape, double scale);
-					/* Weibull distribution */
-double			rds_normal(mt_state * state,
-			  double mean, double sigma);
-					/* Normal distribution */
-double			rds_lnormal(mt_state * state,
-			  double mean, double sigma);
-					/* Normal distribution */
-double			rds_lognormal(mt_state * state,
-			  double shape, double scale);
-					/* Lognormal distribution */
-double			rds_llognormal(mt_state * state,
-			  double shape, double scale);
-					/* Lognormal distribution */
-double			rds_triangular(mt_state * state,
-			  double lower, double upper, double mode);
-					/* Triangular distribution */
-double			rds_ltriangular(mt_state * state,
-			  double lower, double upper, double mode);
-					/* Triangular distribution */
-double			rds_empirical(mt_state * state,
-			  int n_probs, double * values, double * probs);
-					/* Empirical distribution */
-double			rds_lempirical(mt_state * state,
-			  int n_probs, double * values, double * probs);
-					/* Empirical distribution */
-long			rd_iuniform(long lower, long upper);
-					/* (Integer) uniform distribution */
+double      rds_uniform(mt_state * state,
+        double lower, double upper);
+          /* (Floating) uniform distribution */
+double      rds_luniform(mt_state * state,
+        double lower, double upper);
+          /* (Floating) uniform distribution */
+double      rds_exponential(mt_state * state, double mean);
+          /* Exponential distribution */
+double      rds_lexponential(mt_state * state, double mean);
+          /* Exponential distribution */
+double      rds_erlang(mt_state * state, int p, double mean);
+          /* p-Erlang distribution */
+double      rds_lerlang(mt_state * state, int p, double mean);
+          /* p-Erlang distribution */
+double      rds_weibull(mt_state * state,
+        double shape, double scale);
+          /* Weibull distribution */
+double      rds_lweibull(mt_state * state,
+        double shape, double scale);
+          /* Weibull distribution */
+double      rds_normal(mt_state * state,
+        double mean, double sigma);
+          /* Normal distribution */
+double      rds_lnormal(mt_state * state,
+        double mean, double sigma);
+          /* Normal distribution */
+double      rds_lognormal(mt_state * state,
+        double shape, double scale);
+          /* Lognormal distribution */
+double      rds_llognormal(mt_state * state,
+        double shape, double scale);
+          /* Lognormal distribution */
+double      rds_triangular(mt_state * state,
+        double lower, double upper, double mode);
+          /* Triangular distribution */
+double      rds_ltriangular(mt_state * state,
+        double lower, double upper, double mode);
+          /* Triangular distribution */
+double      rds_empirical(mt_state * state,
+        int n_probs, double * values, double * probs);
+          /* Empirical distribution */
+double      rds_lempirical(mt_state * state,
+        int n_probs, double * values, double * probs);
+          /* Empirical distribution */
+long      rd_iuniform(long lower, long upper);
+          /* (Integer) uniform distribution */
 #ifndef MT_NO_LONGLONG
-long long		rd_liuniform(long long lower, long long upper);
-					/* (Integer) uniform distribution */
+long long   rd_liuniform(long long lower, long long upper);
+          /* (Integer) uniform distribution */
 #endif /* MT_NO_LONGLONG */
-double			rd_uniform(double lower, double upper);
-					/* (Floating) uniform distribution */
-double			rd_luniform(double lower, double upper);
-					/* (Floating) uniform distribution */
-double			rd_exponential(double mean);
-					/* Exponential distribution */
-double			rd_lexponential(double mean);
-					/* Exponential distribution */
-double			rd_erlang(int p, double mean);
-					/* p-Erlang distribution */
-double			rd_lerlang(int p, double mean);
-					/* p-Erlang distribution */
-double			rd_weibull(double shape, double scale);
-					/* Weibull distribution */
-double			rd_lweibull(double shape, double scale);
-					/* Weibull distribution */
-double			rd_normal(double mean, double sigma);
-					/* Normal distribution */
-double			rd_lnormal(double mean, double sigma);
-					/* Normal distribution */
-double			rd_lognormal(double shape, double scale);
-					/* Lognormal distribution */
-double			rd_llognormal(double shape, double scale);
-					/* Lognormal distribution */
-double			rd_triangular(double lower, double upper, double mode);
-					/* Triangular distribution */
-double			rd_ltriangular(double lower, double upper, double mode);
-					/* Triangular distribution */
-double			rd_empirical(int n_probs,
-			  double * values, double * probs);
-					/* Empirical distribution */
-double			rd_lempirical(int n_probs,
-			  double * values, double * probs);
-					/* Empirical distribution */
+double      rd_uniform(double lower, double upper);
+          /* (Floating) uniform distribution */
+double      rd_luniform(double lower, double upper);
+          /* (Floating) uniform distribution */
+double      rd_exponential(double mean);
+          /* Exponential distribution */
+double      rd_lexponential(double mean);
+          /* Exponential distribution */
+double      rd_erlang(int p, double mean);
+          /* p-Erlang distribution */
+double      rd_lerlang(int p, double mean);
+          /* p-Erlang distribution */
+double      rd_weibull(double shape, double scale);
+          /* Weibull distribution */
+double      rd_lweibull(double shape, double scale);
+          /* Weibull distribution */
+double      rd_normal(double mean, double sigma);
+          /* Normal distribution */
+double      rd_lnormal(double mean, double sigma);
+          /* Normal distribution */
+double      rd_lognormal(double shape, double scale);
+          /* Lognormal distribution */
+double      rd_llognormal(double shape, double scale);
+          /* Lognormal distribution */
+double      rd_triangular(double lower, double upper, double mode);
+          /* Triangular distribution */
+double      rd_ltriangular(double lower, double upper, double mode);
+          /* Triangular distribution */
+double      rd_empirical(int n_probs,
+        double * values, double * probs);
+          /* Empirical distribution */
+double      rd_lempirical(int n_probs,
+        double * values, double * probs);
+          /* Empirical distribution */
 
 /*
  * The Mersenne Twist PRNG makes it default state available as an
@@ -186,7 +186,7 @@ double			rd_lempirical(int n_probs,
  * written.  It would be better to write in C++, where I could control
  * the access to the state.)
  */
-extern mt_state		mt_default_state;
+extern mt_state   mt_default_state;
 
 /*
  * Threshold below which it is OK for uniform integer distributions to make
@@ -196,7 +196,7 @@ extern mt_state		mt_default_state;
  * equivalent to mapping a 32-bit integer into the range by using the
  * following formula:
  *
- *	final = upper * mt_lrand() / (1 << 32);
+ *  final = upper * mt_lrand() / (1 << 32);
  *
  * That formula can't be computed using integer arithmetic, since the
  * multiplication must precede the division and would cause overflow.
@@ -228,10 +228,10 @@ extern mt_state		mt_default_state;
  * will be used.
  */
 #ifndef RD_MAX_BIAS
-#define RD_MAX_BIAS		0.0001
+#define RD_MAX_BIAS   0.0001
 #endif /* RD_MAX_BIAS */
 #ifndef RD_UNIFORM_THRESHOLD
-#define RD_UNIFORM_THRESHOLD	((int)((double)(1u << 31) * 2.0 * RD_MAX_BIAS))
+#define RD_UNIFORM_THRESHOLD  ((int)((double)(1u << 31) * 2.0 * RD_MAX_BIAS))
 #endif /* RD_UNIFORM_THRESHOLD */
 
 /*
@@ -242,82 +242,82 @@ extern mt_state		mt_default_state;
  * one that works.
  */
 long rds_iuniform(
-    mt_state *		state,		/* State of the MT PRNG to use */
-    long		lower,		/* Lower limit of distribution */
-    long		upper)		/* Upper limit of distribution */
+    mt_state *    state,    /* State of the MT PRNG to use */
+    long    lower,    /* Lower limit of distribution */
+    long    upper)    /* Upper limit of distribution */
     {
-    unsigned long	range = upper - lower;
-					/* Range of requested distribution */
+    unsigned long range = upper - lower;
+          /* Range of requested distribution */
 
     if (range <= RD_UNIFORM_THRESHOLD)
-	return lower + (long)(mts_ldrand(state) * range);
+  return lower + (long)(mts_ldrand(state) * range);
     else
-	{
-	/*
-	 * Using the simple formula would produce too much bias.
-	 * Instead, draw numbers until we get one within the range.
-	 * To save time, we first calculate a mask so that we only
-	 * look at the number of bits we actually need.  Since finding
-	 * the mask is expensive, we do a bit of caching here (note
-	 * that the caching makes the code non-reentrant; set
-	 * MT_NO_CACHING to achieve reentrancy).
-	 *
-	 * Incidentally, the astute reader will note that we use the
-	 * low-order bits of the PRNG output.  If the PRNG were linear
-	 * congruential, using the low-order bits wouuld be a major
-	 * no-no.  However, the Mersenne Twist PRNG doesn't have that
-	 * drawback.
-	 */
+  {
+  /*
+   * Using the simple formula would produce too much bias.
+   * Instead, draw numbers until we get one within the range.
+   * To save time, we first calculate a mask so that we only
+   * look at the number of bits we actually need.  Since finding
+   * the mask is expensive, we do a bit of caching here (note
+   * that the caching makes the code non-reentrant; set
+   * MT_NO_CACHING to achieve reentrancy).
+   *
+   * Incidentally, the astute reader will note that we use the
+   * low-order bits of the PRNG output.  If the PRNG were linear
+   * congruential, using the low-order bits wouuld be a major
+   * no-no.  However, the Mersenne Twist PRNG doesn't have that
+   * drawback.
+   */
 #ifdef MT_NO_CACHING
-	unsigned long	rangemask = 0;	/* Mask for range */
+  unsigned long rangemask = 0;  /* Mask for range */
 #else /* MT_NO_CACHING */
-	static unsigned long
-			lastrange = 0;	/* Range used last time */
-	static unsigned long
-			rangemask = 0;	/* Mask for range */
+  static unsigned long
+      lastrange = 0;  /* Range used last time */
+  static unsigned long
+      rangemask = 0;  /* Mask for range */
 #endif /* MT_NO_CACHING */
-	register unsigned long
-			ranval;		/* Random value from mts_lrand */
+  register unsigned long
+      ranval;   /* Random value from mts_lrand */
 
 #ifndef MT_NO_CACHING
-	if (range != lastrange)
+  if (range != lastrange)
 #endif /* MT_NO_CACHING */
-	    {
-	    /*
-	     * Range is different from last time, recalculate mask.
-	     *
-	     * A few iterations could be trimmed off of the loop if we
-	     * started rangemask at the next power of 2 above
-	     * RD_UNIFORM_THRESHOLD.  However, I don't currently know
-	     * a formula for generating that value (though there is
-	     * probably one in HAKMEM).
-	     */
+      {
+      /*
+       * Range is different from last time, recalculate mask.
+       *
+       * A few iterations could be trimmed off of the loop if we
+       * started rangemask at the next power of 2 above
+       * RD_UNIFORM_THRESHOLD.  However, I don't currently know
+       * a formula for generating that value (though there is
+       * probably one in HAKMEM).
+       */
 #ifndef MT_NO_CACHING
-	    lastrange = range;
+      lastrange = range;
 #endif /* MT_NO_CACHING */
-	    for (rangemask = 1;
-	      rangemask < range  &&  rangemask != 0;
-	      rangemask <<= 1)
-		;
+      for (rangemask = 1;
+        rangemask < range  &&  rangemask != 0;
+        rangemask <<= 1)
+    ;
 
-	    /*
-	     * If rangemask became zero, the range is over 2^31.  In
-	     * that case, subtracting 1 from rangemask will produce a
-	     * full-word mask, which is what we need.
-	     */
-	    rangemask -= 1;
-	    }
+      /*
+       * If rangemask became zero, the range is over 2^31.  In
+       * that case, subtracting 1 from rangemask will produce a
+       * full-word mask, which is what we need.
+       */
+      rangemask -= 1;
+      }
 
-	/*
-	 * Draw random numbers until we get one in the requested range.
-	 */
-	do
-	    {
-	    ranval = mts_lrand(state) & rangemask;
-	    }
-	    while (ranval >= range);
-	return lower + ranval;
-	}
+  /*
+   * Draw random numbers until we get one in the requested range.
+   */
+  do
+      {
+      ranval = mts_lrand(state) & rangemask;
+      }
+      while (ranval >= range);
+  return lower + ranval;
+  }
     }
 
 #ifndef MT_NO_LONGLONG
@@ -326,12 +326,12 @@ long rds_iuniform(
  * [lower, upper).
  */
 long long rds_liuniform(
-    mt_state *		state,		/* State of the MT PRNG to use */
-    long long		lower,		/* Lower limit of distribution */
-    long long		upper)		/* Upper limit of distribution */
+    mt_state *    state,    /* State of the MT PRNG to use */
+    long long   lower,    /* Lower limit of distribution */
+    long long   upper)    /* Upper limit of distribution */
     {
-    unsigned long long	range = upper - lower;
-					/* Range of requested distribution */
+    unsigned long long  range = upper - lower;
+          /* Range of requested distribution */
 
     /*
      * Draw numbers until we get one within the range.  To save time,
@@ -340,47 +340,47 @@ long long rds_liuniform(
      * do a bit of caching here.  See rds_iuniform for more information.
      */
 #ifdef MT_NO_CACHING
-    unsigned long	rangemask = 0;	/* Mask for range */
+    unsigned long rangemask = 0;  /* Mask for range */
 #else /* MT_NO_CACHING */
     static unsigned long
-		    lastrange = 0;	/* Range used last time */
+        lastrange = 0;  /* Range used last time */
     static unsigned long
-		    rangemask = 0;	/* Mask for range */
+        rangemask = 0;  /* Mask for range */
 #endif /* MT_NO_CACHING */
     register unsigned long
-		    ranval;		/* Random value from mts_lrand */
+        ranval;   /* Random value from mts_lrand */
 
 #ifndef MT_NO_CACHING
     if (range != lastrange)
 #endif /* MT_NO_CACHING */
-	{
-	/*
-	 * Range is different from last time, recalculate mask.
-	 */
+  {
+  /*
+   * Range is different from last time, recalculate mask.
+   */
 #ifndef MT_NO_CACHING
-	lastrange = range;
+  lastrange = range;
 #endif /* MT_NO_CACHING */
-	for (rangemask = 1;
-	  rangemask < range  &&  rangemask != 0;
-	  rangemask <<= 1)
-	    ;
+  for (rangemask = 1;
+    rangemask < range  &&  rangemask != 0;
+    rangemask <<= 1)
+      ;
 
-	/*
-	 * If rangemask became zero, the range is over 2^31.  In
-	 * that case, subtracting 1 from rangemask will produce a
-	 * full-word mask, which is what we need.
-	 */
-	rangemask -= 1;
-	}
+  /*
+   * If rangemask became zero, the range is over 2^31.  In
+   * that case, subtracting 1 from rangemask will produce a
+   * full-word mask, which is what we need.
+   */
+  rangemask -= 1;
+  }
 
     /*
      * Draw random numbers until we get one in the requested range.
      */
     do
-	{
-	ranval = mts_llrand(state) & rangemask;
-	}
-	while (ranval >= range);
+  {
+  ranval = mts_llrand(state) & rangemask;
+  }
+  while (ranval >= range);
     return lower + ranval;
     }
 #endif /* MT_NO_LONGLONG */
@@ -389,9 +389,9 @@ long long rds_liuniform(
  * Generate a uniform distribution on the half-open interval [lower, upper).
  */
 double rds_uniform(
-    mt_state *		state,		/* State of the MT PRNG to use */
-    double		lower,		/* Lower limit of distribution */
-    double		upper)		/* Upper limit of distribution */
+    mt_state *    state,    /* State of the MT PRNG to use */
+    double    lower,    /* Lower limit of distribution */
+    double    upper)    /* Upper limit of distribution */
     {
     return lower + mts_drand(state) * (upper - lower);
     }
@@ -400,9 +400,9 @@ double rds_uniform(
  * Generate a uniform distribution on the half-open interval [lower, upper).
  */
 double rds_luniform(
-    mt_state *		state,		/* State of the MT PRNG to use */
-    double		lower,		/* Lower limit of distribution */
-    double		upper)		/* Upper limit of distribution */
+    mt_state *    state,    /* State of the MT PRNG to use */
+    double    lower,    /* Lower limit of distribution */
+    double    upper)    /* Upper limit of distribution */
     {
     return lower + mts_ldrand(state) * (upper - lower);
     }
@@ -411,13 +411,13 @@ double rds_luniform(
  * Generate an exponential distribution with the given mean.
  */
 double rds_exponential(
-    mt_state *		state,		/* State of the MT PRNG to use */
-    double		mean)		/* Mean of generated distribution */
+    mt_state *    state,    /* State of the MT PRNG to use */
+    double    mean)   /* Mean of generated distribution */
     {
-    double		random_value;	/* Random sample on [0,1) */
+    double    random_value; /* Random sample on [0,1) */
 
     do
-	random_value = mts_drand(state);
+  random_value = mts_drand(state);
     while (random_value == 0.0);
     return -mean * log(random_value);
     }
@@ -426,13 +426,13 @@ double rds_exponential(
  * Generate an exponential distribution with the given mean.
  */
 double rds_lexponential(
-    mt_state *		state,		/* State of the MT PRNG to use */
-    double		mean)		/* Mean of generated distribution */
+    mt_state *    state,    /* State of the MT PRNG to use */
+    double    mean)   /* Mean of generated distribution */
     {
-    double		random_value;	/* Random sample on [0,1) */
+    double    random_value; /* Random sample on [0,1) */
 
     do
-	random_value = mts_ldrand(state);
+  random_value = mts_ldrand(state);
     while (random_value == 0.0);
     return -mean * log(random_value);
     }
@@ -441,21 +441,21 @@ double rds_lexponential(
  * Generate a p-Erlang distribution with the given mean.
  */
 double rds_erlang(
-    mt_state *		state,		/* State of the MT PRNG to use */
-    int			p,		/* Order of distribution to generate */
-    double		mean)		/* Mean of generated distribution */
+    mt_state *    state,    /* State of the MT PRNG to use */
+    int     p,    /* Order of distribution to generate */
+    double    mean)   /* Mean of generated distribution */
     {
-    int			order;		/* Order generated so far */
-    double		random_value;	/* Value generated so far */
+    int     order;    /* Order generated so far */
+    double    random_value; /* Value generated so far */
 
     do
-	{
-	if (p <= 1)
-	    p = 1;
-	random_value = mts_drand(state);
-	for (order = 1;  order < p;  order++)
-	    random_value *= mts_drand(state);
-	}
+  {
+  if (p <= 1)
+      p = 1;
+  random_value = mts_drand(state);
+  for (order = 1;  order < p;  order++)
+      random_value *= mts_drand(state);
+  }
     while (random_value == 0.0);
     return -mean * log(random_value) / p;
     }
@@ -464,21 +464,21 @@ double rds_erlang(
  * Generate a p-Erlang distribution with the given mean.
  */
 double rds_lerlang(
-    mt_state *		state,		/* State of the MT PRNG to use */
-    int			p,		/* Order of distribution to generate */
-    double		mean)		/* Mean of generated distribution */
+    mt_state *    state,    /* State of the MT PRNG to use */
+    int     p,    /* Order of distribution to generate */
+    double    mean)   /* Mean of generated distribution */
     {
-    int			order;		/* Order generated so far */
-    double		random_value;	/* Value generated so far */
+    int     order;    /* Order generated so far */
+    double    random_value; /* Value generated so far */
 
     do
-	{
-	if (p <= 1)
-	    p = 1;
-	random_value = mts_ldrand(state);
-	for (order = 1;  order < p;  order++)
-	    random_value *= mts_ldrand(state);
-	}
+  {
+  if (p <= 1)
+      p = 1;
+  random_value = mts_ldrand(state);
+  for (order = 1;  order < p;  order++)
+      random_value *= mts_ldrand(state);
+  }
     while (random_value == 0.0);
     return -mean * log(random_value) / p;
     }
@@ -487,47 +487,47 @@ double rds_lerlang(
  * Generate a Weibull distribution with the given shape and scale parameters.
  */
 double rds_weibull(
-    mt_state *		state,		/* State of the MT PRNG to use */
-    double		shape,		/* Shape of the distribution */
-    double		scale)		/* Scale of the distribution */
+    mt_state *    state,    /* State of the MT PRNG to use */
+    double    shape,    /* Shape of the distribution */
+    double    scale)    /* Scale of the distribution */
     {
-    double		random_value;	/* Random sample on [0,1) */
+    double    random_value; /* Random sample on [0,1) */
 
     do
-	random_value = mts_drand(state);
+  random_value = mts_drand(state);
     while (random_value == 0.0);
     return scale * exp(log(-log(random_value)) / shape);
     }
-					/* Weibull distribution */
+          /* Weibull distribution */
 /*
  * Generate a Weibull distribution with the given shape and scale parameters.
  */
 double rds_lweibull(
-    mt_state *		state,		/* State of the MT PRNG to use */
-    double		shape,		/* Shape of the distribution */
-    double		scale)		/* Scale of the distribution */
+    mt_state *    state,    /* State of the MT PRNG to use */
+    double    shape,    /* Shape of the distribution */
+    double    scale)    /* Scale of the distribution */
     {
-    double		random_value;	/* Random sample on [0,1) */
+    double    random_value; /* Random sample on [0,1) */
 
     do
-	random_value = mts_ldrand(state);
+  random_value = mts_ldrand(state);
     while (random_value == 0.0);
     return scale * exp(log(-log(random_value)) / shape);
     }
-					/* Weibull distribution */
+          /* Weibull distribution */
 /*
  * Generate a normal distribution with the given mean and standard
  * deviation.  See Law and Kelton, p. 491.
  */
 double rds_normal(
-    mt_state *		state,		/* State of the MT PRNG to use */
-    double		mean,		/* Mean of generated distribution */
-    double		sigma)		/* Standard deviation to generate */
+    mt_state *    state,    /* State of the MT PRNG to use */
+    double    mean,   /* Mean of generated distribution */
+    double    sigma)    /* Standard deviation to generate */
     {
-    double		mag;		/* Magnitude of (x,y) point */
-    double		offset;		/* Unscaled offset from mean */
-    double		xranval;	/* First random value on [-1,1) */
-    double		yranval;	/* Second random value on [-1,1) */
+    double    mag;    /* Magnitude of (x,y) point */
+    double    offset;   /* Unscaled offset from mean */
+    double    xranval;  /* First random value on [-1,1) */
+    double    yranval;  /* Second random value on [-1,1) */
 
     /*
      * Generating a normal distribution is a bit tricky.  We may need
@@ -536,11 +536,11 @@ double rds_normal(
      * which we discard.
      */
     do
-	{
-	xranval = 2.0 * mts_drand(state) - 1.0;
-	yranval = 2.0 * mts_drand(state) - 1.0;
-	mag = xranval * xranval + yranval * yranval;
-	}
+  {
+  xranval = 2.0 * mts_drand(state) - 1.0;
+  yranval = 2.0 * mts_drand(state) - 1.0;
+  mag = xranval * xranval + yranval * yranval;
+  }
     while (mag > 1.0  ||  mag == 0.0);
 
     offset = sqrt((-2.0 * log(mag)) / mag);
@@ -562,14 +562,14 @@ double rds_normal(
  * deviation.  See Law and Kelton, p. 491.
  */
 double rds_lnormal(
-    mt_state *		state,		/* State of the MT PRNG to use */
-    double		mean,		/* Mean of generated distribution */
-    double		sigma)		/* Standard deviation to generate */
+    mt_state *    state,    /* State of the MT PRNG to use */
+    double    mean,   /* Mean of generated distribution */
+    double    sigma)    /* Standard deviation to generate */
     {
-    double		mag;		/* Magnitude of (x,y) point */
-    double		offset;		/* Unscaled offset from mean */
-    double		xranval;	/* First random value on [-1,1) */
-    double		yranval;	/* Second random value on [-1,1) */
+    double    mag;    /* Magnitude of (x,y) point */
+    double    offset;   /* Unscaled offset from mean */
+    double    xranval;  /* First random value on [-1,1) */
+    double    yranval;  /* Second random value on [-1,1) */
 
     /*
      * Generating a normal distribution is a bit tricky.  We may need
@@ -578,11 +578,11 @@ double rds_lnormal(
      * which we discard.
      */
     do
-	{
-	xranval = 2.0 * mts_ldrand(state) - 1.0;
-	yranval = 2.0 * mts_ldrand(state) - 1.0;
-	mag = xranval * xranval + yranval * yranval;
-	}
+  {
+  xranval = 2.0 * mts_ldrand(state) - 1.0;
+  yranval = 2.0 * mts_ldrand(state) - 1.0;
+  mag = xranval * xranval + yranval * yranval;
+  }
     while (mag > 1.0  ||  mag == 0.0);
 
     offset = sqrt((-2.0 * log(mag)) / mag);
@@ -604,9 +604,9 @@ double rds_lnormal(
  * parameters.
  */
 double rds_lognormal(
-    mt_state *		state,		/* State of the MT PRNG to use */
-    double		shape,		/* Shape of the distribution */
-    double		scale)		/* Scale of the distribution */
+    mt_state *    state,    /* State of the MT PRNG to use */
+    double    shape,    /* Shape of the distribution */
+    double    scale)    /* Scale of the distribution */
     {
     return exp(rds_normal(state, scale, shape));
     }
@@ -616,9 +616,9 @@ double rds_lognormal(
  * parameters.
  */
 double rds_llognormal(
-    mt_state *		state,		/* State of the MT PRNG to use */
-    double		shape,		/* Shape of the distribution */
-    double		scale)		/* Scale of the distribution */
+    mt_state *    state,    /* State of the MT PRNG to use */
+    double    shape,    /* Shape of the distribution */
+    double    scale)    /* Scale of the distribution */
     {
     return exp(rds_lnormal(state, scale, shape));
     }
@@ -628,20 +628,20 @@ double rds_llognormal(
  * given mode.
  */
 double rds_triangular(
-    mt_state *		state,		/* State of the MT PRNG to use */
-    double		lower,		/* Lower limit of distribution */
-    double		upper,		/* Upper limit of distribution */
-    double		mode)		/* Highest point of distribution */
+    mt_state *    state,    /* State of the MT PRNG to use */
+    double    lower,    /* Lower limit of distribution */
+    double    upper,    /* Upper limit of distribution */
+    double    mode)   /* Highest point of distribution */
     {
-    double		ran_value;	/* Value generated by PRNG */
-    double		scaled_mode;	/* Scaled version of mode */
+    double    ran_value;  /* Value generated by PRNG */
+    double    scaled_mode;  /* Scaled version of mode */
 
     scaled_mode = (mode - lower) / (upper - lower);
     ran_value = mts_drand(state);
     if (ran_value <= scaled_mode)
-	ran_value = sqrt(scaled_mode * ran_value);
+  ran_value = sqrt(scaled_mode * ran_value);
     else
-	ran_value = 1.0 - sqrt((1.0 - scaled_mode) * (1.0 - ran_value));
+  ran_value = 1.0 - sqrt((1.0 - scaled_mode) * (1.0 - ran_value));
     return lower + (upper - lower) * ran_value;
     }
 
@@ -650,20 +650,20 @@ double rds_triangular(
  * given mode.
  */
 double rds_ltriangular(
-    mt_state *		state,		/* State of the MT PRNG to use */
-    double		lower,		/* Lower limit of distribution */
-    double		upper,		/* Upper limit of distribution */
-    double		mode)		/* Highest point of distribution */
+    mt_state *    state,    /* State of the MT PRNG to use */
+    double    lower,    /* Lower limit of distribution */
+    double    upper,    /* Upper limit of distribution */
+    double    mode)   /* Highest point of distribution */
     {
-    double		ran_value;	/* Value generated by PRNG */
-    double		scaled_mode;	/* Scaled version of mode */
+    double    ran_value;  /* Value generated by PRNG */
+    double    scaled_mode;  /* Scaled version of mode */
 
     scaled_mode = (mode - lower) / (upper - lower);
     ran_value = mts_ldrand(state);
     if (ran_value <= scaled_mode)
-	ran_value = sqrt(scaled_mode * ran_value);
+  ran_value = sqrt(scaled_mode * ran_value);
     else
-	ran_value = 1.0 - sqrt((1.0 - scaled_mode) * (1.0 - ran_value));
+  ran_value = 1.0 - sqrt((1.0 - scaled_mode) * (1.0 - ran_value));
     return lower + (upper - lower) * ran_value;
     }
 
@@ -672,13 +672,13 @@ double rds_ltriangular(
  * probabilities.
  */
 double rds_empirical(
-    mt_state *		state,		/* State of the MT PRNG to use */
-    int			n_probs,	/* Number of probabilities given */
-    double *		values,		/* Vals returned with various probs */
-    double *		probs)		/* Probs of various values */
+    mt_state *    state,    /* State of the MT PRNG to use */
+    int     n_probs,  /* Number of probabilities given */
+    double *    values,   /* Vals returned with various probs */
+    double *    probs)    /* Probs of various values */
     {
-    int			i;		/* Index into both arrays */
-    double		ran_value;	/* Value generated by PRNG */
+    int     i;    /* Index into both arrays */
+    double    ran_value;  /* Value generated by PRNG */
 
     ran_value = mts_drand(state);
     /*
@@ -686,10 +686,10 @@ double rds_empirical(
      * moderately large (e.g., more than about 5-7).
      */
     for (i = 0;  i < n_probs;  i++)
-	{
-	if (ran_value <= probs[i])
-	    return values[i];
-	}
+  {
+  if (ran_value <= probs[i])
+      return values[i];
+  }
     return values[n_probs];
     }
 
@@ -698,13 +698,13 @@ double rds_empirical(
  * probabilities.
  */
 double rds_lempirical(
-    mt_state *		state,		/* State of the MT PRNG to use */
-    int			n_probs,	/* Number of probabilities given */
-    double *		values,		/* Vals returned with various probs */
-    double *		probs)		/* Probs of various values */
+    mt_state *    state,    /* State of the MT PRNG to use */
+    int     n_probs,  /* Number of probabilities given */
+    double *    values,   /* Vals returned with various probs */
+    double *    probs)    /* Probs of various values */
     {
-    int			i;		/* Index into both arrays */
-    double		ran_value;	/* Value generated by PRNG */
+    int     i;    /* Index into both arrays */
+    double    ran_value;  /* Value generated by PRNG */
 
     ran_value = mts_ldrand(state);
     /*
@@ -712,10 +712,10 @@ double rds_lempirical(
      * moderately large (e.g., more than about 5-7).
      */
     for (i = 0;  i < n_probs;  i++)
-	{
-	if (ran_value <= probs[i])
-	    return values[i];
-	}
+  {
+  if (ran_value <= probs[i])
+      return values[i];
+  }
     return values[n_probs];
     }
 
@@ -724,8 +724,8 @@ double rds_lempirical(
  * [lower, upper).  See comments on rds_iuniform.
  */
 long rd_iuniform(
-    long		lower,		/* Lower limit of distribution */
-    long		upper)		/* Upper limit of distribution */
+    long    lower,    /* Lower limit of distribution */
+    long    upper)    /* Upper limit of distribution */
     {
     return rds_iuniform(&mt_default_state, lower, upper);
     }
@@ -736,8 +736,8 @@ long rd_iuniform(
  * [lower, upper).  See comments on rds_iuniform.
  */
 long long rd_liuniform(
-    long long		lower,		/* Lower limit of distribution */
-    long long		upper)		/* Upper limit of distribution */
+    long long   lower,    /* Lower limit of distribution */
+    long long   upper)    /* Upper limit of distribution */
     {
     return rds_liuniform(&mt_default_state, lower, upper);
     }
@@ -747,8 +747,8 @@ long long rd_liuniform(
  * Generate a uniform distribution on the open interval [lower, upper).
  */
 double rd_uniform(
-    double		lower,		/* Lower limit of distribution */
-    double		upper)		/* Upper limit of distribution */
+    double    lower,    /* Lower limit of distribution */
+    double    upper)    /* Upper limit of distribution */
     {
     return rds_uniform (&mt_default_state, lower, upper);
     }
@@ -757,8 +757,8 @@ double rd_uniform(
  * Generate a uniform distribution on the open interval [lower, upper).
  */
 double rd_luniform(
-    double		lower,		/* Lower limit of distribution */
-    double		upper)		/* Upper limit of distribution */
+    double    lower,    /* Lower limit of distribution */
+    double    upper)    /* Upper limit of distribution */
     {
     return rds_luniform (&mt_default_state, lower, upper);
     }
@@ -767,7 +767,7 @@ double rd_luniform(
  * Generate an exponential distribution with the given mean.
  */
 double rd_exponential(
-    double		mean)		/* Mean of generated distribution */
+    double    mean)   /* Mean of generated distribution */
     {
     return rds_exponential (&mt_default_state, mean);
     }
@@ -776,7 +776,7 @@ double rd_exponential(
  * Generate an exponential distribution with the given mean.
  */
 double rd_lexponential(
-    double		mean)		/* Mean of generated distribution */
+    double    mean)   /* Mean of generated distribution */
     {
     return rds_lexponential (&mt_default_state, mean);
     }
@@ -785,8 +785,8 @@ double rd_lexponential(
  * Generate a p-Erlang distribution with the given mean.
  */
 double rd_erlang(
-    int			p,		/* Order of distribution to generate */
-    double		mean)		/* Mean of generated distribution */
+    int     p,    /* Order of distribution to generate */
+    double    mean)   /* Mean of generated distribution */
     {
     return rds_erlang (&mt_default_state, p, mean);
     }
@@ -795,8 +795,8 @@ double rd_erlang(
  * Generate a p-Erlang distribution with the given mean.
  */
 double rd_lerlang(
-    int			p,		/* Order of distribution to generate */
-    double		mean)		/* Mean of generated distribution */
+    int     p,    /* Order of distribution to generate */
+    double    mean)   /* Mean of generated distribution */
     {
     return rds_lerlang (&mt_default_state, p, mean);
     }
@@ -805,8 +805,8 @@ double rd_lerlang(
  * Generate a Weibull distribution with the given shape and scale parameters.
  */
 double rd_weibull(
-    double		shape,		/* Shape of the distribution */
-    double		scale)		/* Scale of the distribution */
+    double    shape,    /* Shape of the distribution */
+    double    scale)    /* Scale of the distribution */
     {
     return rds_weibull (&mt_default_state, shape, scale);
     }
@@ -815,8 +815,8 @@ double rd_weibull(
  * Generate a Weibull distribution with the given shape and scale parameters.
  */
 double rd_lweibull(
-    double		shape,		/* Shape of the distribution */
-    double		scale)		/* Scale of the distribution */
+    double    shape,    /* Shape of the distribution */
+    double    scale)    /* Scale of the distribution */
     {
     return rds_lweibull (&mt_default_state, shape, scale);
     }
@@ -826,8 +826,8 @@ double rd_lweibull(
  * deviation.  See Law and Kelton, p. 491.
  */
 double rd_normal(
-    double		mean,		/* Mean of generated distribution */
-    double		sigma)		/* Standard deviation to generate */
+    double    mean,   /* Mean of generated distribution */
+    double    sigma)    /* Standard deviation to generate */
     {
     return rds_normal (&mt_default_state, mean, sigma);
     }
@@ -837,8 +837,8 @@ double rd_normal(
  * deviation.  See Law and Kelton, p. 491.
  */
 double rd_lnormal(
-    double		mean,		/* Mean of generated distribution */
-    double		sigma)		/* Standard deviation to generate */
+    double    mean,   /* Mean of generated distribution */
+    double    sigma)    /* Standard deviation to generate */
     {
     return rds_lnormal (&mt_default_state, mean, sigma);
     }
@@ -848,8 +848,8 @@ double rd_lnormal(
  * parameters.
  */
 double rd_lognormal(
-    double		shape,		/* Shape of the distribution */
-    double		scale)		/* Scale of the distribution */
+    double    shape,    /* Shape of the distribution */
+    double    scale)    /* Scale of the distribution */
     {
     return rds_lognormal (&mt_default_state, shape, scale);
     }
@@ -859,8 +859,8 @@ double rd_lognormal(
  * parameters.
  */
 double rd_llognormal(
-    double		shape,		/* Shape of the distribution */
-    double		scale)		/* Scale of the distribution */
+    double    shape,    /* Shape of the distribution */
+    double    scale)    /* Scale of the distribution */
     {
     return rds_llognormal (&mt_default_state, shape, scale);
     }
@@ -870,9 +870,9 @@ double rd_llognormal(
  * given mode.
  */
 double rd_triangular(
-    double		lower,		/* Lower limit of distribution */
-    double		upper,		/* Upper limit of distribution */
-    double		mode)
+    double    lower,    /* Lower limit of distribution */
+    double    upper,    /* Upper limit of distribution */
+    double    mode)
     {
     return rds_triangular (&mt_default_state, lower, upper, mode);
     }
@@ -882,9 +882,9 @@ double rd_triangular(
  * given mode.
  */
 double rd_ltriangular(
-    double		lower,		/* Lower limit of distribution */
-    double		upper,		/* Upper limit of distribution */
-    double		mode)
+    double    lower,    /* Lower limit of distribution */
+    double    upper,    /* Upper limit of distribution */
+    double    mode)
     {
     return rds_ltriangular (&mt_default_state, lower, upper, mode);
     }
@@ -894,9 +894,9 @@ double rd_ltriangular(
  * probabilities.
  */
 double rd_empirical(
-    int			n_probs,	/* Number of probabilities given */
-    double *		values,		/* Vals returned with various probs */
-    double *		probs)		/* Probs of various values */
+    int     n_probs,  /* Number of probabilities given */
+    double *    values,   /* Vals returned with various probs */
+    double *    probs)    /* Probs of various values */
     {
     return rds_empirical (&mt_default_state, n_probs, values, probs);
     }
@@ -906,9 +906,9 @@ double rd_empirical(
  * probabilities.
  */
 double rd_lempirical(
-    int			n_probs,	/* Number of probabilities given */
-    double *		values,		/* Vals returned with various probs */
-    double *		probs)		/* Probs of various values */
+    int     n_probs,  /* Number of probabilities given */
+    double *    values,   /* Vals returned with various probs */
+    double *    probs)    /* Probs of various values */
     {
     return rds_lempirical (&mt_default_state, n_probs, values, probs);
     }
