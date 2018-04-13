@@ -1,10 +1,6 @@
 #include "stdio.h"
-#include "windows.h"
-#include "process.h"
 #define _CRT_SECURE_NO_DEPRECATE
 #include "string.h"
-#include <winuser.h>
-#include <winbase.h>
 
 char convert_file_name[255];
 unsigned short packet_length;
