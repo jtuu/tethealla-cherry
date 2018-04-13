@@ -1,10 +1,8 @@
 /* random number functions */
 
 #include <stdio.h>
-
-extern void   mt_bestseed(void);
-extern void   mt_seed(void);  /* Choose seed from random input. */
-extern unsigned long  mt_lrand(void); /* Generate 32-bit random value */
+#include <time.h>
+#include <stdlib.h>
 
 typedef struct st_pcrys
 {
@@ -21,14 +19,14 @@ void main()
   unsigned ch;
 
   pcry = &pcrys;
-  mt_bestseed();
+  srand (time (0));
 
   fp = fopen ("bbtable.h","w");
   bp = fopen ("bbtable.bin", "wb");
   fprintf (fp, "\n\nstatic const unsigned long bbtable[18+1024] =\n{\n");
   for (ch=0;ch<1024+18;ch++)
   {
-    value = mt_lrand();
+    value = rand();
     fprintf (fp, "0x%08x,\n", value, value );
     fwrite (&value, 1, 4, bp);
   }
