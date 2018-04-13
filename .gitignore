@@ -50,3 +50,15 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+
+# Visual Studio junk
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*/Debug/*
+*/Release/*
+
+#Other
+*.swp
