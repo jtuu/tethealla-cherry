@@ -86,7 +86,6 @@
 #include  <stdarg.h>
 #include  <ctype.h>
 
-#include  "resource.h"
 #include  "src/login_server/pso_crypt.h"
 #include  "src/login_server/bbtable.h"
 #include  "localgms.h"
