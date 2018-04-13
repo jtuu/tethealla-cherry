@@ -8,17 +8,13 @@
 /*    07/22/2008  TC  First version...            */
 /****************************************************************/
 
-//#define NO_SQL
-
-#include  <windows.h>
 #include  <stdio.h>
+#include  <stdlib.h>
 #include  <string.h>
 #include  <time.h>
 
-#ifndef NO_SQL
-#include  <mysql.h>
-#endif
-#include  <md5.h>
+#include  <mysql/mysql.h>
+#include  "src/md5/include/md5.h"
 
 /* Computes the message digest for string inString.
    Prints out message digest, a space, the string (in quotes) and a
@@ -41,35 +37,6 @@ char *outString;
     outString++;
   }
 }
-
-#ifdef NO_SQL
-
-#define MAX_ACCOUNTS 2000
-
-typedef struct st_account {
-  char username[18];
-  char password[33];
-  char email[255];
-  unsigned regtime;
-  char lastip[16];
-  long long lasthwinfo;
-  unsigned guildcard;
-  int isgm;
-  int isbanned;
-  int islogged;
-  int isactive;
-  int teamid;
-  int privlevel;
-  unsigned char lastchar[24];
-} L_ACCOUNT_DATA;
-
-L_ACCOUNT_DATA *account_data[MAX_ACCOUNTS];
-
-unsigned ds,ds2,num_accounts;
-unsigned highid = 0;
-int ds_found, new_record, free_record;
-
-#endif
 
 void UpdateDataFile ( const char* filename, unsigned count, void* data, unsigned record_size, int new_record )
 {
@@ -152,12 +119,10 @@ main( int argc, char * argv[] )
   unsigned reg_seconds;
   unsigned char max_fields;
 
-#ifndef NO_SQL
   MYSQL * myData;
   char myQuery[255] = {0};
   MYSQL_ROW myRow ;
   MYSQL_RES * myResult;
-#endif
   int num_rows, pw_ok, pw_same;
   unsigned guildcard_number;
 
@@ -226,7 +191,6 @@ main( int argc, char * argv[] )
     return 1;
   }
 
-#ifndef NO_SQL
   if ( (myData = mysql_init((MYSQL*) 0)) &&
     mysql_real_connect( myData, &mySQL_Host[0], &mySQL_Username[0], &mySQL_Password[0], NULL, mySQL_Port,
     NULL, 0 ) )
@@ -244,11 +208,6 @@ main( int argc, char * argv[] )
     mysql_close( myData ) ;
     return 1 ;
   }
-#else
-    num_accounts = 0;
-    LoadDataFile ("account.dat", &num_accounts, &account_data[0], sizeof(L_ACCOUNT_DATA));
-#endif
-
 
   printf ("Tethealla Server Account Addition\n");
   printf ("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
@@ -259,19 +218,6 @@ main( int argc, char * argv[] )
     scanf ("%s", inputstr );
     if (strlen(inputstr) < 17)
     {
-#ifdef NO_SQL
-      pw_ok = 1;
-      for (ds=0;ds<num_accounts;ds++)
-      {
-        if (!strcmp(&inputstr[0],&account_data[ds]->username[0]))
-        {
-          pw_ok = 0;
-          break;
-        }
-      }
-      if (!pw_ok)
-        printf ("There's already an account by that name on the server.\n");
-#else
       sprintf (&myQuery[0], "SELECT * from account_data WHERE username='%s'", inputstr );
       // Check to see if that account already exists.
       //printf ("Executing MySQL query: %s\n", myQuery );
@@ -298,7 +244,6 @@ main( int argc, char * argv[] )
         printf ("Couldn't query the MySQL server.\n");
         return 1;
       }
-#endif
     }
     else
       printf ("Desired account name length should be 16 characters or less.\n");
@@ -338,24 +283,6 @@ main( int argc, char * argv[] )
     scanf ("%s", inputstr );
     memcpy (&email[0], &inputstr[0], strlen (inputstr)+1 );
     // Check to see if the e-mail address has already been registered to an account.
-#ifdef NO_SQL
-      pw_ok = 1;
-      for (ds=0;ds<num_accounts;ds++)
-      {
-        if (!strcmp(&email[0],&account_data[ds]->email[0]))
-        {
-          pw_ok = 0;
-          break;
-        }
-      }
-      if (!pw_ok)
-      {
-        printf ("That e-mail address is already in use.\n");
-        num_rows = 1;
-      }
-      else
-        num_rows = 0;
-#else
     sprintf (&myQuery[0], "SELECT * from account_data WHERE email='%s'", email );
     //printf ("Executing MySQL query: %s\n", myQuery );
     if ( ! mysql_query ( myData, &myQuery[0] ) )
@@ -371,7 +298,6 @@ main( int argc, char * argv[] )
       printf ("Couldn't query the MySQL server.\n");
       return 1;
     }
-#endif
     if (!num_rows)
     {
       printf ("Verify e-mail address: ");
@@ -389,9 +315,6 @@ main( int argc, char * argv[] )
         printf ("The input e-mail addresses did not match.\n");
     }
   }
-#ifdef NO_SQL
-  num_rows = num_accounts;
-#else
   // Check to see if any accounts already registered in the database at all.
   sprintf (&myQuery[0], "SELECT * from account_data" );
   //printf ("Executing MySQL query: %s\n", myQuery );
@@ -408,10 +331,9 @@ main( int argc, char * argv[] )
     printf ("Couldn't query the MySQL server.\n");
     return 1;
   }
-#endif
   reg_seconds = (unsigned) regtime / 3600L;
   ch = strlen (&password[0]);
-  _itoa (reg_seconds, &config_data[0], 10 );
+  sprintf (&config_data[0], "%d", reg_seconds);
   //Throw some salt in the game ;)
   sprintf (&password[ch], "_%s_salt", &config_data[0] );
   //printf ("New password = %s\n", password );
@@ -423,51 +345,14 @@ main( int argc, char * argv[] )
   {
     /* First account created is always GM. */
     guildcard_number = 42000001;
-#ifdef NO_SQL
-    account_data[num_accounts] = malloc ( sizeof ( L_ACCOUNT_DATA ) );
-    memset (account_data[num_accounts], 0, sizeof ( L_ACCOUNT_DATA ) );
-    memcpy (&account_data[num_accounts]->username, &username, 18 );
-    memcpy (&account_data[num_accounts]->password, &md5password, 33 );
-    memcpy (&account_data[num_accounts]->email, &email, 255 );
-    account_data[num_accounts]->regtime = reg_seconds;
-    account_data[num_accounts]->guildcard = 42000001;
-    account_data[num_accounts]->isactive = 1;
-    account_data[num_accounts]->isgm = 1;
-    account_data[num_accounts]->teamid = -1;
-    UpdateDataFile ( "account.dat", 0, account_data[num_accounts], sizeof ( L_ACCOUNT_DATA ), 1 );
-#else
     sprintf (&myQuery[0], "INSERT into account_data (username,password,email,regtime,guildcard,isgm,isactive) VALUES ('%s','%s','%s','%u','%u','1','1')", username, md5password, email, reg_seconds, guildcard_number );
-#endif
   }
   else
   {
-#ifdef NO_SQL
-    for (ds=0;ds<num_accounts;ds++)
-    {
-      if (account_data[ds]->guildcard > highid)
-        highid = account_data[ds]->guildcard;
-    }
-    highid++;
-    account_data[num_accounts] = malloc ( sizeof ( L_ACCOUNT_DATA ) );
-    memset (account_data[num_accounts], 0, sizeof ( L_ACCOUNT_DATA ) );
-    memcpy (&account_data[num_accounts]->username, &username, 18 );
-    memcpy (&account_data[num_accounts]->password, &md5password, 33 );
-    memcpy (&account_data[num_accounts]->email, &email, 255 );
-    account_data[num_accounts]->regtime = reg_seconds;
-    account_data[num_accounts]->isactive = 1;
-    account_data[num_accounts]->guildcard = highid;
-    account_data[num_accounts]->isgm = 0;
-    account_data[num_accounts]->teamid = -1;
-    UpdateDataFile ( "account.dat", num_accounts, account_data[num_accounts], sizeof ( L_ACCOUNT_DATA ), 1 );
-#else
     sprintf (&myQuery[0], "INSERT into account_data (username,password,email,regtime,isactive) VALUES ('%s','%s','%s','%u','1')", username, md5password, email, reg_seconds );
-#endif
   }
   // Insert into table.
   //printf ("Executing MySQL query: %s\n", myQuery );
-#ifdef NO_SQL
-  printf ("Account added.");
-#else
   if ( ! mysql_query ( myData, &myQuery[0] ) )
     printf ("Account successfully added to the database!");
   else
@@ -476,6 +361,5 @@ main( int argc, char * argv[] )
     return 1;
   }
   mysql_close( myData ) ;
-#endif
   return 0;
 }
