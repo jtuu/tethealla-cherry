@@ -15,11 +15,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************/
 
-#define reveal_window \
-  ShowWindow ( consoleHwnd, SW_NORMAL ); \
-  SetForegroundWindow ( consoleHwnd ); \
-  SetFocus ( consoleHwnd )
-
 #define swapendian(x) ( ( x & 0xFF ) << 8 ) + ( x >> 8 )
 #define FLOAT_PRECISION 0.00001
 
@@ -77,17 +72,25 @@
 #define MALE_FLAG 64  // Bit 7
 #define FEMALE_FLAG 128 // Bit 8
 
-#include  <windows.h>
 #include  <stdio.h>
+#include  <stdlib.h>
 #include  <string.h>
 #include  <time.h>
 #include  <math.h>
+#include  <sys/socket.h>
+#include  <netinet/in.h>
+#include  <arpa/inet.h>
+#include  <errno.h>
+#include  <netdb.h>
+#include  <unistd.h>
+#include  <stdarg.h>
+#include  <ctype.h>
 
 #include  "resource.h"
-#include  "pso_crypt.h"
-#include  "bbtable.h"
+#include  "src/login_server/pso_crypt.h"
+#include  "src/login_server/bbtable.h"
 #include  "localgms.h"
-#include  "prs.cpp"
+#include  "src/prs/prs.cpp"
 #include  "def_map.h" // Map file name definitions
 #include  "def_block.h" // Blocked packet definitions
 #include  "def_packets.h" // Pre-made packet definitions
@@ -96,11 +99,27 @@
 
 const unsigned char Message03[] = { "Tethealla Ship v.144" };
 
-/* function defintions */
+/* added stuff */
 
-extern void mt_bestseed(void);
-extern void mt_seed(void);  /* Choose seed from random input. */
-extern unsigned long  mt_lrand(void); /* Generate 32-bit random value */
+#define SOCKET_ERROR  -1
+
+void strupr(char * temp) {
+
+  // Convert to upper case
+  char *s = temp;
+  while (*s) {
+    *s = toupper((unsigned char) *s);
+    s++;
+  }
+
+}
+
+#define max(a,b) \
+   ({ __typeof__ (a) _a = (a); \
+       __typeof__ (b) _b = (b); \
+     _a > _b ? _a : _b; })
+
+/* function defintions */
 
 char* Unicode_to_ASCII (unsigned short* ucs);
 void WriteLog(char *fmt, ...);
@@ -283,10 +302,6 @@ char max_tech_level[19][12];
 
 PSO_CRYPT* cipher_ptr;
 
-#define MYWM_NOTIFYICON (WM_USER+2)
-int program_hidden = 1;
-HWND consoleHwnd;
-
 unsigned wstrlen ( unsigned short* dest )
 {
   unsigned l = 0;
@@ -397,7 +412,7 @@ void convertIPString (char* IPData, unsigned IPLen, int fromConfig, unsigned cha
             printf ("ship.ini is corrupted. (Failed to read IP information from file!)\n"); else
             printf ("Failed to determine IP address.\n");
           printf ("Press [ENTER] to quit...");
-          gets(&dp[0]);
+          fgets(&dp[0], 1, stdin);
           exit (1);
         }
       }
@@ -410,7 +425,7 @@ void convertIPString (char* IPData, unsigned IPLen, int fromConfig, unsigned cha
             printf ("ship.ini is corrupted. (Failed to read IP information from file!)\n"); else
             printf ("Failed to determine IP address.\n");
           printf ("Press [ENTER] to quit...");
-          gets(&dp[0]);
+          fgets(&dp[0], 1, stdin);
           exit (1);
         }
         break;
@@ -567,7 +582,7 @@ void load_config_file()
   {
     printf ("The configuration file ship.ini appears to be missing.\n");
     printf ("Press [ENTER] to quit...");
-    gets(&dp[0]);
+    fgets(&dp[0], 1, stdin);
     exit (1);
   }
   else
@@ -653,7 +668,7 @@ void load_config_file()
               {
                 printf ("Could not resolve host name.");
                 printf ("Press [ENTER] to quit...");
-                gets(&dp[0]);
+                fgets(&dp[0],1,stdin);
                 exit (1);
               }
               *(unsigned *) &loginIP[0] = *(unsigned *) IP_host->h_addr;
@@ -694,11 +709,11 @@ void load_config_file()
           {
             printf ("\nWARNING: You have your experience rate set to a very high number.\n");
             printf ("As of ship_server.exe version 0.038, you now just use single digits\n");
-            printf ("to represent 100%% increments.  (ex. 1 for 100%, 2 for 200%)\n\n");
+            printf ("to represent 100%% increments.  (ex. 1 for 100%%, 2 for 200%%)\n\n");
              ("If you've set the high value of %u%% experience on purpose,\n", EXPERIENCE_RATE * 100 );
             printf ("press [ENTER] to continue, otherwise press CTRL+C to abort.\n");
             printf (":");
-            gets   (&dp[0]);
+            fgets   (&dp[0],1,stdin);
             printf ("\n\n");
           }
           break;
@@ -717,7 +732,7 @@ void load_config_file()
     {
       printf ("ship.ini seems to be corrupted.\n");
       printf ("Press [ENTER] to quit...");
-      gets(&dp[0]);
+      fgets   (&dp[0],1,stdin);
       exit (1);
     }
     common_rates[0] = 100000 / WEAPON_DROP_RATE;
@@ -860,7 +875,7 @@ void ConstructBlockPacket()
 
   Packet07Data[0x02] = 0x07;
   Packet07Data[0x04] = serverBlocks+1;
-  _itoa (serverID, &tempName[0], 10);
+  sprintf( &tempName[0], "%d", serverID);
   if (serverID < 10)
   {
     tempName[0] = 0x30;
@@ -868,7 +883,7 @@ void ConstructBlockPacket()
     tempName[2] = 0x00;
   }
   else
-    _itoa (serverID, &tempName[0], 10);
+    sprintf( &tempName[0], "%d", serverID );
   strcat (&tempName[0], ":");
   strcat (&tempName[0], &Ship_Name[0]);
   Packet07Data[0x32] = 0x08;
@@ -918,7 +933,7 @@ void initialize_logon()
   logon_tick = 0;
   logon = &logon_structure;
   if ( logon->sockfd >= 0 )
-    closesocket ( logon->sockfd );
+    close ( logon->sockfd );
   memset (logon, 0, sizeof (ORANGE));
   logon->sockfd = -1;
   for (ch=0;ch<128;ch++)
@@ -993,7 +1008,7 @@ void initialize_connection (BANANA* connect)
         serverConnectionList[ch2++] = serverConnectionList[ch];
     }
     serverNumConnections = ch2;
-    closesocket (connect->plySockfd);
+    close (connect->plySockfd);
   }
 
   if (logon_ready)
@@ -1061,8 +1076,8 @@ void start_encryption(BANANA* connect)
   memcpy (&connect->sndbuf[0], &Packet03[0], sizeof (Packet03));
   for (c=0;c<0x30;c++)
   {
-    connect->sndbuf[0x68+c] = (unsigned char) mt_lrand() % 255;
-    connect->sndbuf[0x98+c] = (unsigned char) mt_lrand() % 255;
+    connect->sndbuf[0x68+c] = (unsigned char) rand() % 255;
+    connect->sndbuf[0x98+c] = (unsigned char) rand() % 255;
   }
   connect->snddata += sizeof (Packet03);
   cipher_ptr = &connect->server_cipher;
@@ -1253,7 +1268,7 @@ void ParseMapData (LOBBY* l, MAP_MONSTER* mapData, int aMob, unsigned num_record
       if ( mm->skin & 0x01 ) // Set rare from a quest?
         r = 1;
       else
-        if ( ( l->rareIndex < 0x1E ) && ( mt_lrand() < hildebear_rate ) )
+        if ( ( l->rareIndex < 0x1E ) && ( rand() < hildebear_rate ) )
         {
           *(unsigned short*) &l->rareData[l->rareIndex] = (unsigned short) l->mapIndex;
           l->rareIndex += 2;
@@ -1276,7 +1291,7 @@ void ParseMapData (LOBBY* l, MAP_MONSTER* mapData, int aMob, unsigned num_record
       if ( mm->skin & 0x01 ) // Set rare from a quest?
         r = 1;
       else
-        if ( ( l->rareIndex < 0x1E ) && ( mt_lrand() < rappy_rate ) )
+        if ( ( l->rareIndex < 0x1E ) && ( rand() < rappy_rate ) )
         {
           *(unsigned short*) &l->rareData[l->rareIndex] = (unsigned short) l->mapIndex;
           l->rareIndex += 2;
@@ -1404,7 +1419,7 @@ void ParseMapData (LOBBY* l, MAP_MONSTER* mapData, int aMob, unsigned num_record
          ( ( mm->reserved11 + FLOAT_PRECISION ) > (float) 1.00000 ) ) // set rare?
         r = 1;
       else
-        if ( ( l->rareIndex < 0x1E ) && ( mt_lrand() < lily_rate ) )
+        if ( ( l->rareIndex < 0x1E ) && (rand() < lily_rate ) )
         {
           *(unsigned short*) &l->rareData[l->rareIndex] = (unsigned short) l->mapIndex;
           l->rareIndex += 2;
@@ -1458,7 +1473,7 @@ void ParseMapData (LOBBY* l, MAP_MONSTER* mapData, int aMob, unsigned num_record
          ( ( mm->reserved11 + FLOAT_PRECISION ) > (float) 1.00000 ) ) // set rare?
         r = 1;
       else
-        if ( ( l->rareIndex < 0x1E ) && ( mt_lrand() < slime_rate ) )
+        if ( ( l->rareIndex < 0x1E ) && ( rand() < slime_rate ) )
         {
           *(unsigned short*) &l->rareData[l->rareIndex] = (unsigned short) l->mapIndex;
           l->rareIndex += 2;
@@ -1479,7 +1494,7 @@ void ParseMapData (LOBBY* l, MAP_MONSTER* mapData, int aMob, unsigned num_record
         l->mapIndex++;
         mm++;
         r = 0;
-        if ( ( l->rareIndex < 0x1E ) && ( mt_lrand() < slime_rate ) )
+        if ( ( l->rareIndex < 0x1E ) && ( rand() < slime_rate ) )
         {
           *(unsigned short*) &l->rareData[l->rareIndex] = (unsigned short) l->mapIndex;
           l->rareIndex += 2;
@@ -1878,7 +1893,7 @@ void ParseMapData (LOBBY* l, MAP_MONSTER* mapData, int aMob, unsigned num_record
       if ( mm->skin & 0x01 ) // Set rare from a quest?
         r = 1;
       else
-        if ( ( l->rareIndex < 0x1E ) && ( mt_lrand() < merissa_rate ) )
+        if ( ( l->rareIndex < 0x1E ) && ( rand() < merissa_rate ) )
         {
           *(unsigned short*) &l->rareData[l->rareIndex] = (unsigned short) l->mapIndex;
           l->rareIndex += 2;
@@ -1906,7 +1921,7 @@ void ParseMapData (LOBBY* l, MAP_MONSTER* mapData, int aMob, unsigned num_record
       if ( mm->skin & 0x01 ) // Set rare from a quest?
         r = 1;
       else
-        if ( ( l->rareIndex < 0x1E ) && ( mt_lrand() < pazuzu_rate ) )
+        if ( ( l->rareIndex < 0x1E ) && ( rand() < pazuzu_rate ) )
         {
           *(unsigned short*) &l->rareData[l->rareIndex] = (unsigned short) l->mapIndex;
           l->rareIndex += 2;
@@ -1964,7 +1979,7 @@ void ParseMapData (LOBBY* l, MAP_MONSTER* mapData, int aMob, unsigned num_record
       if ( mm->skin & 0x01 ) // Set rare from a quest?
         r = 1;
       else
-        if ( ( l->rareIndex < 0x1E ) && ( mt_lrand() < dorphon_rate ) )
+        if ( ( l->rareIndex < 0x1E ) && ( rand() < dorphon_rate ) )
         {
           *(unsigned short*) &l->rareData[l->rareIndex] = (unsigned short) l->mapIndex;
           l->rareIndex += 2;
@@ -2007,7 +2022,7 @@ void ParseMapData (LOBBY* l, MAP_MONSTER* mapData, int aMob, unsigned num_record
          ( ( mm->reserved11 + FLOAT_PRECISION ) > (float) 1.00000 ) ) // set rare?
         r = 1;
       else
-        if ( ( l->rareIndex < 0x20 ) && ( mt_lrand() < kondrieu_rate ) )
+        if ( ( l->rareIndex < 0x20 ) && ( rand() < kondrieu_rate ) )
         {
           *(unsigned short*) &l->rareData[l->rareIndex] = (unsigned short) l->mapIndex;
           l->rareIndex += 2;
@@ -2146,10 +2161,10 @@ void initialize_game (BANANA* client)
     memcpy (&l->gameName[0], &client->decryptbuf[0x14], 30);
     memcpy (&l->gamePassword[0], &client->decryptbuf[0x30], 32);
     l->in_use = 1;
-    l->gameMonster[0] = (unsigned char) mt_lrand() % 256;
-    l->gameMonster[1] = (unsigned char) mt_lrand() % 256;
-    l->gameMonster[2] = (unsigned char) mt_lrand() % 256;
-    l->gameMonster[3] = (unsigned char) mt_lrand() % 16;
+    l->gameMonster[0] = (unsigned char) rand() % 256;
+    l->gameMonster[1] = (unsigned char) rand() % 256;
+    l->gameMonster[2] = (unsigned char) rand() % 256;
+    l->gameMonster[3] = (unsigned char) rand() % 16;
     memset (&l->gameMap[0], 0, 128);
     l->playerItemID[0] = 0x10000;
     l->playerItemID[1] = 0x210000;
@@ -2178,51 +2193,51 @@ void initialize_game (BANANA* client)
         LoadMapData ( l, 0, "map\\map_city00_00e.dat" );
         LoadObjectData ( l, 0, "map\\map_city00_00o.dat" );
 
-        l->gameMap[12]=(unsigned char) mt_lrand() % 5; // Forest 1
+        l->gameMap[12]=(unsigned char) rand() % 5; // Forest 1
         LoadMapData ( l, 0, Forest1_Online_Maps [l->gameMap[12]] );
         LoadObjectData ( l, 0, Forest1_Online_Maps [l->gameMap[12]] );
 
-        l->gameMap[20]=(unsigned char) mt_lrand() % 5; // Forest 2
+        l->gameMap[20]=(unsigned char) rand() % 5; // Forest 2
         LoadMapData ( l, 0, Forest2_Online_Maps [l->gameMap[20]] );
         LoadObjectData ( l, 0, Forest2_Online_Maps [l->gameMap[20]] );
 
-        l->gameMap[24]=(unsigned char) mt_lrand() % 3; // Cave 1
-        l->gameMap[28]=(unsigned char) mt_lrand() % 2;
+        l->gameMap[24]=(unsigned char) rand() % 3; // Cave 1
+        l->gameMap[28]=(unsigned char) rand() % 2;
         LoadMapData ( l, 0, Cave1_Online_Maps [( l->gameMap[24] * 2 ) + l->gameMap[28]] );
         LoadObjectData ( l, 0, Cave1_Online_Maps [( l->gameMap[24] * 2 ) + l->gameMap[28]] );
 
-        l->gameMap[32]=(unsigned char) mt_lrand() % 3; // Cave 2
-        l->gameMap[36]=(unsigned char) mt_lrand() % 2;
+        l->gameMap[32]=(unsigned char) rand() % 3; // Cave 2
+        l->gameMap[36]=(unsigned char) rand() % 2;
         LoadMapData ( l, 0, Cave2_Online_Maps [( l->gameMap[32] * 2 ) + l->gameMap[36]] );
         LoadObjectData ( l, 0, Cave2_Online_Maps [( l->gameMap[32] * 2 ) + l->gameMap[36]] );
 
-        l->gameMap[40]=(unsigned char) mt_lrand() % 3; // Cave 3
-        l->gameMap[44]=(unsigned char) mt_lrand() % 2;
+        l->gameMap[40]=(unsigned char) rand() % 3; // Cave 3
+        l->gameMap[44]=(unsigned char) rand() % 2;
         LoadMapData ( l, 0, Cave3_Online_Maps [( l->gameMap[40] * 2 ) + l->gameMap[44]] );
         LoadObjectData ( l, 0, Cave3_Online_Maps [( l->gameMap[40] * 2 ) + l->gameMap[44]] );
 
-        l->gameMap[48]=(unsigned char) mt_lrand() % 3; // Mine 1
-        l->gameMap[52]=(unsigned char) mt_lrand() % 2;
+        l->gameMap[48]=(unsigned char) rand() % 3; // Mine 1
+        l->gameMap[52]=(unsigned char) rand() % 2;
         LoadMapData ( l, 0, Mine1_Online_Maps [( l->gameMap[48] * 2 ) + l->gameMap[52]] );
         LoadObjectData ( l, 0, Mine1_Online_Maps [( l->gameMap[48] * 2 ) + l->gameMap[52]] );
 
-        l->gameMap[56]=(unsigned char) mt_lrand() % 3; // Mine 2
-        l->gameMap[60]=(unsigned char) mt_lrand() % 2;
+        l->gameMap[56]=(unsigned char) rand() % 3; // Mine 2
+        l->gameMap[60]=(unsigned char) rand() % 2;
         LoadMapData ( l, 0, Mine2_Online_Maps [( l->gameMap[56] * 2 ) + l->gameMap[60]] );
         LoadObjectData ( l, 0, Mine2_Online_Maps [( l->gameMap[56] * 2 ) + l->gameMap[60]] );
 
-        l->gameMap[64]=(unsigned char) mt_lrand() % 3; // Ruins 1
-        l->gameMap[68]=(unsigned char) mt_lrand() % 2;
+        l->gameMap[64]=(unsigned char) rand() % 3; // Ruins 1
+        l->gameMap[68]=(unsigned char) rand() % 2;
         LoadMapData ( l, 0, Ruins1_Online_Maps [( l->gameMap[64] * 2 ) + l->gameMap[68]] );
         LoadObjectData ( l, 0, Ruins1_Online_Maps [( l->gameMap[64] * 2 ) + l->gameMap[68]] );
 
-        l->gameMap[72]=(unsigned char) mt_lrand() % 3; // Ruins 2
-        l->gameMap[76]=(unsigned char) mt_lrand() % 2;
+        l->gameMap[72]=(unsigned char) rand() % 3; // Ruins 2
+        l->gameMap[76]=(unsigned char) rand() % 2;
         LoadMapData ( l, 0, Ruins2_Online_Maps [( l->gameMap[72] * 2 ) + l->gameMap[76]] );
         LoadObjectData ( l, 0, Ruins2_Online_Maps [( l->gameMap[72] * 2 ) + l->gameMap[76]] );
 
-        l->gameMap[80]=(unsigned char) mt_lrand() % 3; // Ruins 3
-        l->gameMap[84]=(unsigned char) mt_lrand() % 2;
+        l->gameMap[80]=(unsigned char) rand() % 3; // Ruins 3
+        l->gameMap[84]=(unsigned char) rand() % 2;
         LoadMapData ( l, 0, Ruins3_Online_Maps [( l->gameMap[80] * 2 ) + l->gameMap[84]] );
         LoadObjectData ( l, 0, Ruins3_Online_Maps [( l->gameMap[80] * 2 ) + l->gameMap[84]] );
       }
@@ -2233,48 +2248,48 @@ void initialize_game (BANANA* client)
         LoadMapData ( l, 0, "map\\map_city00_00e_s.dat");
         LoadObjectData ( l, 0, "map\\map_city00_00o_s.dat");
 
-        l->gameMap[12]=(unsigned char) mt_lrand() % 3; // Forest 1
+        l->gameMap[12]=(unsigned char) rand() % 3; // Forest 1
         LoadMapData ( l, 0, Forest1_Offline_Maps [l->gameMap[12]] );
         LoadObjectData ( l, 0, Forest1_Offline_Objects [l->gameMap[12]] );
 
-        l->gameMap[20]=(unsigned char) mt_lrand() % 3; // Forest 2
+        l->gameMap[20]=(unsigned char) rand() % 3; // Forest 2
         LoadMapData ( l, 0, Forest2_Offline_Maps [l->gameMap[20]] );
         LoadObjectData ( l, 0, Forest2_Offline_Objects [l->gameMap[20]] );
 
-        l->gameMap[24]=(unsigned char) mt_lrand() % 3; // Cave 1
+        l->gameMap[24]=(unsigned char) rand() % 3; // Cave 1
         LoadMapData ( l, 0, Cave1_Offline_Maps [l->gameMap[24]]);
         LoadObjectData ( l, 0, Cave1_Offline_Objects [l->gameMap[24]]);
 
-        l->gameMap[32]=(unsigned char) mt_lrand() % 3; // Cave 2
+        l->gameMap[32]=(unsigned char) rand() % 3; // Cave 2
         LoadMapData ( l, 0, Cave2_Offline_Maps [l->gameMap[32]]);
         LoadObjectData ( l, 0, Cave2_Offline_Objects [l->gameMap[32]]);
 
-        l->gameMap[40]=(unsigned char) mt_lrand() % 3; // Cave 3
+        l->gameMap[40]=(unsigned char) rand() % 3; // Cave 3
         LoadMapData ( l, 0, Cave3_Offline_Maps [l->gameMap[40]]);
         LoadObjectData ( l, 0, Cave3_Offline_Objects [l->gameMap[40]]);
 
-        l->gameMap[48]=(unsigned char) mt_lrand() % 3; // Mine 1
-        l->gameMap[52]=(unsigned char) mt_lrand() % 2;
+        l->gameMap[48]=(unsigned char) rand() % 3; // Mine 1
+        l->gameMap[52]=(unsigned char) rand() % 2;
         LoadMapData ( l, 0, Mine1_Online_Maps [( l->gameMap[48] * 2 ) + l->gameMap[52]] );
         LoadObjectData ( l, 0, Mine1_Online_Maps [( l->gameMap[48] * 2 ) + l->gameMap[52]] );
 
-        l->gameMap[56]=(unsigned char) mt_lrand() % 3; // Mine 2
-        l->gameMap[60]=(unsigned char) mt_lrand() % 2;
+        l->gameMap[56]=(unsigned char) rand() % 3; // Mine 2
+        l->gameMap[60]=(unsigned char) rand() % 2;
         LoadMapData ( l, 0, Mine2_Online_Maps [( l->gameMap[56] * 2 ) + l->gameMap[60]] );
         LoadObjectData ( l, 0, Mine2_Online_Maps [( l->gameMap[56] * 2 ) + l->gameMap[60]] );
 
-        l->gameMap[64]=(unsigned char) mt_lrand() % 3; // Ruins 1
-        l->gameMap[68]=(unsigned char) mt_lrand() % 2;
+        l->gameMap[64]=(unsigned char) rand() % 3; // Ruins 1
+        l->gameMap[68]=(unsigned char) rand() % 2;
         LoadMapData ( l, 0, Ruins1_Online_Maps [( l->gameMap[64] * 2 ) + l->gameMap[68]] );
         LoadObjectData ( l, 0, Ruins1_Online_Maps [( l->gameMap[64] * 2 ) + l->gameMap[68]] );
 
-        l->gameMap[72]=(unsigned char) mt_lrand() % 3; // Ruins 2
-        l->gameMap[76]=(unsigned char) mt_lrand() % 2;
+        l->gameMap[72]=(unsigned char) rand() % 3; // Ruins 2
+        l->gameMap[76]=(unsigned char) rand() % 2;
         LoadMapData ( l, 0, Ruins2_Online_Maps [( l->gameMap[72] * 2 ) + l->gameMap[76]] );
         LoadObjectData ( l, 0, Ruins2_Online_Maps [( l->gameMap[72] * 2 ) + l->gameMap[76]] );
 
-        l->gameMap[80]=(unsigned char) mt_lrand() % 3; // Ruins 3
-        l->gameMap[84]=(unsigned char) mt_lrand() % 2;
+        l->gameMap[80]=(unsigned char) rand() % 3; // Ruins 3
+        l->gameMap[84]=(unsigned char) rand() % 2;
         LoadMapData ( l, 0, Ruins3_Online_Maps [( l->gameMap[80] * 2 ) + l->gameMap[84]] );
         LoadObjectData ( l, 0, Ruins3_Online_Maps [( l->gameMap[80] * 2 ) + l->gameMap[84]] );
       }
@@ -2298,58 +2313,58 @@ void initialize_game (BANANA* client)
         LoadMapData ( l, 0, "map\\map_labo00_00e.dat");
         LoadObjectData ( l, 0, "map\\map_labo00_00o.dat");
 
-        l->gameMap[8]  = (unsigned char) mt_lrand() % 2; // Temple 1
+        l->gameMap[8]  = (unsigned char) rand() % 2; // Temple 1
         l->gameMap[12] = 0x00;
         LoadMapData ( l, 0, Temple1_Online_Maps [l->gameMap[8]] );
         LoadObjectData ( l, 0, Temple1_Online_Maps [l->gameMap[8]] );
 
-        l->gameMap[16] = (unsigned char) mt_lrand() % 2; // Temple 2
+        l->gameMap[16] = (unsigned char) rand() % 2; // Temple 2
         l->gameMap[20] = 0x00;
         LoadMapData ( l, 0, Temple2_Online_Maps [l->gameMap[16]] );
         LoadObjectData ( l, 0, Temple2_Online_Maps [l->gameMap[16]] );
 
-        l->gameMap[24] = (unsigned char) mt_lrand() % 2; // Spaceship 1
+        l->gameMap[24] = (unsigned char) rand() % 2; // Spaceship 1
         l->gameMap[28] = 0x00;
         LoadMapData ( l, 0, Spaceship1_Online_Maps [l->gameMap[24]] );
         LoadObjectData ( l, 0, Spaceship1_Online_Maps [l->gameMap[24]] );
 
-        l->gameMap[32] = (unsigned char) mt_lrand() % 2; // Spaceship 2
+        l->gameMap[32] = (unsigned char) rand() % 2; // Spaceship 2
         l->gameMap[36] = 0x00;
         LoadMapData ( l, 0, Spaceship2_Online_Maps [l->gameMap[32]] );
         LoadObjectData ( l, 0, Spaceship2_Online_Maps [l->gameMap[32]] );
 
         l->gameMap[40] = 0x00;
-        l->gameMap[44] = (unsigned char) mt_lrand() % 3; // Jungle 1
+        l->gameMap[44] = (unsigned char) rand() % 3; // Jungle 1
         LoadMapData ( l, 0, Jungle1_Online_Maps [l->gameMap[44]] );
         LoadObjectData ( l, 0, Jungle1_Online_Maps [l->gameMap[44]] );
 
         l->gameMap[48] = 0x00;
-        l->gameMap[52] = (unsigned char) mt_lrand() % 3; // Jungle 2
+        l->gameMap[52] = (unsigned char) rand() % 3; // Jungle 2
         LoadMapData ( l, 0, Jungle2_Online_Maps [l->gameMap[52]] );
         LoadObjectData ( l, 0, Jungle2_Online_Maps [l->gameMap[52]] );
 
         l->gameMap[56] = 0x00;
-        l->gameMap[60] = (unsigned char) mt_lrand() % 3; // Jungle 3
+        l->gameMap[60] = (unsigned char) rand() % 3; // Jungle 3
         LoadMapData ( l, 0, Jungle3_Online_Maps [l->gameMap[60]] );
         LoadObjectData ( l, 0, Jungle3_Online_Maps [l->gameMap[60]] );
 
-        l->gameMap[64] = (unsigned char) mt_lrand() % 2; // Jungle 4
-        l->gameMap[68] = (unsigned char) mt_lrand() % 2;
+        l->gameMap[64] = (unsigned char) rand() % 2; // Jungle 4
+        l->gameMap[68] = (unsigned char) rand() % 2;
         LoadMapData ( l, 0, Jungle4_Online_Maps [(l->gameMap[64] * 2 ) + l->gameMap[68]] );
         LoadObjectData ( l, 0, Jungle4_Online_Maps [(l->gameMap[64] * 2 ) + l->gameMap[68]] );
 
         l->gameMap[72] = 0x00;
-        l->gameMap[76] = (unsigned char) mt_lrand() % 3; // Jungle 5
+        l->gameMap[76] = (unsigned char) rand() % 3; // Jungle 5
         LoadMapData ( l, 0, Jungle5_Online_Maps [l->gameMap[76]] );
         LoadObjectData ( l, 0, Jungle5_Online_Maps [l->gameMap[76]] );
 
-        l->gameMap[80] = (unsigned char) mt_lrand() % 2; // Seabed 1
-        l->gameMap[84] = (unsigned char) mt_lrand() % 2;
+        l->gameMap[80] = (unsigned char) rand() % 2; // Seabed 1
+        l->gameMap[84] = (unsigned char) rand() % 2;
         LoadMapData ( l, 0, Seabed1_Online_Maps [(l->gameMap[80] * 2 ) + l->gameMap[84]] );
         LoadObjectData ( l, 0, Seabed1_Online_Maps [(l->gameMap[80] * 2 ) + l->gameMap[84]] );
 
-        l->gameMap[88] = (unsigned char) mt_lrand() % 2; // Seabed 2
-        l->gameMap[92] = (unsigned char) mt_lrand() % 2;
+        l->gameMap[88] = (unsigned char) rand() % 2; // Seabed 2
+        l->gameMap[92] = (unsigned char) rand() % 2;
         LoadMapData ( l, 0, Seabed2_Online_Maps [(l->gameMap[88] * 2 ) + l->gameMap[92]] );
         LoadObjectData ( l, 0, Seabed2_Online_Maps [(l->gameMap[88] * 2 ) + l->gameMap[92]] );
       }
@@ -2359,56 +2374,56 @@ void initialize_game (BANANA* client)
         LoadMapData ( l, 0, "map\\map_labo00_00e_s.dat");
         LoadObjectData ( l, 0, "map\\map_labo00_00o_s.dat");
 
-        l->gameMap[8]  = (unsigned char) mt_lrand() % 2; // Temple 1
+        l->gameMap[8]  = (unsigned char) rand() % 2; // Temple 1
         l->gameMap[12] = 0x00;
         LoadMapData ( l, 0, Temple1_Offline_Maps [l->gameMap[8]] );
         LoadObjectData ( l, 0, Temple1_Offline_Maps [l->gameMap[8]] );
 
-        l->gameMap[16] = (unsigned char) mt_lrand() % 2; // Temple 2
+        l->gameMap[16] = (unsigned char) rand() % 2; // Temple 2
         l->gameMap[20] = 0x00;
         LoadMapData ( l, 0, Temple2_Offline_Maps [l->gameMap[16]] );
         LoadObjectData ( l, 0, Temple2_Offline_Maps [l->gameMap[16]] );
 
-        l->gameMap[24] = (unsigned char) mt_lrand() % 2; // Spaceship 1
+        l->gameMap[24] = (unsigned char) rand() % 2; // Spaceship 1
         l->gameMap[28] = 0x00;
         LoadMapData ( l, 0, Spaceship1_Offline_Maps [l->gameMap[24]] );
         LoadObjectData ( l, 0, Spaceship1_Offline_Maps [l->gameMap[24]] );
 
-        l->gameMap[32] = (unsigned char) mt_lrand() % 2; // Spaceship 2
+        l->gameMap[32] = (unsigned char) rand() % 2; // Spaceship 2
         l->gameMap[36] = 0x00;
         LoadMapData ( l, 0, Spaceship2_Offline_Maps [l->gameMap[32]] );
         LoadObjectData ( l, 0, Spaceship2_Offline_Maps [l->gameMap[32]] );
 
         l->gameMap[40] = 0x00;
-        l->gameMap[44] = (unsigned char) mt_lrand() % 3; // Jungle 1
+        l->gameMap[44] = (unsigned char) rand() % 3; // Jungle 1
         LoadMapData ( l, 0, Jungle1_Offline_Maps [l->gameMap[44]] );
         LoadObjectData ( l, 0, Jungle1_Offline_Maps [l->gameMap[44]] );
 
         l->gameMap[48] = 0x00;
-        l->gameMap[52] = (unsigned char) mt_lrand() % 3; // Jungle 2
+        l->gameMap[52] = (unsigned char) rand() % 3; // Jungle 2
         LoadMapData ( l, 0, Jungle2_Offline_Maps [l->gameMap[52]] );
         LoadObjectData ( l, 0, Jungle2_Offline_Maps [l->gameMap[52]] );
 
         l->gameMap[56] = 0x00;
-        l->gameMap[60] = (unsigned char) mt_lrand() % 3; // Jungle 3
+        l->gameMap[60] = (unsigned char) rand() % 3; // Jungle 3
         LoadMapData ( l, 0, Jungle3_Offline_Maps [l->gameMap[60]] );
         LoadObjectData ( l, 0, Jungle3_Offline_Maps [l->gameMap[60]] );
 
-        l->gameMap[64] = (unsigned char) mt_lrand() % 2; // Jungle 4
-        l->gameMap[68] = (unsigned char) mt_lrand() % 2;
+        l->gameMap[64] = (unsigned char) rand() % 2; // Jungle 4
+        l->gameMap[68] = (unsigned char) rand() % 2;
         LoadMapData ( l, 0, Jungle4_Offline_Maps [(l->gameMap[64] * 2 ) + l->gameMap[68]] );
         LoadObjectData ( l, 0, Jungle4_Offline_Maps [(l->gameMap[64] * 2 ) + l->gameMap[68]] );
 
         l->gameMap[72] = 0x00;
-        l->gameMap[76] = (unsigned char) mt_lrand() % 3; // Jungle 5
+        l->gameMap[76] = (unsigned char) rand() % 3; // Jungle 5
         LoadMapData ( l, 0, Jungle5_Offline_Maps [l->gameMap[76]] );
         LoadObjectData ( l, 0, Jungle5_Offline_Maps [l->gameMap[76]] );
 
-        l->gameMap[80] = (unsigned char) mt_lrand() % 2; // Seabed 1
+        l->gameMap[80] = (unsigned char) rand() % 2; // Seabed 1
         LoadMapData ( l, 0, Seabed1_Offline_Maps [l->gameMap[80]] );
         LoadObjectData ( l, 0, Seabed1_Offline_Maps [l->gameMap[80]] );
 
-        l->gameMap[88] = (unsigned char) mt_lrand() % 2; // Seabed 2
+        l->gameMap[88] = (unsigned char) rand() % 2; // Seabed 2
         LoadMapData ( l, 0, Seabed2_Offline_Maps [l->gameMap[88]] );
         LoadObjectData ( l, 0, Seabed2_Offline_Maps [l->gameMap[88]] );
       }
@@ -2446,35 +2461,35 @@ void initialize_game (BANANA* client)
         LoadObjectData (l, 0, "map\\map_city02_00_00o_s.dat");
       }
 
-      l->gameMap[12] = (unsigned char) mt_lrand() % 3; // Crater East
+      l->gameMap[12] = (unsigned char) rand() % 3; // Crater East
       LoadMapData ( l, 0, Crater_East_Online_Maps [l->gameMap[12]] );
       LoadObjectData ( l, 0, Crater_East_Online_Maps [l->gameMap[12]] );
 
-      l->gameMap[20] = (unsigned char) mt_lrand() % 3; // Crater West
+      l->gameMap[20] = (unsigned char) rand() % 3; // Crater West
       LoadMapData ( l, 0, Crater_West_Online_Maps [l->gameMap[20]] );
       LoadObjectData ( l, 0, Crater_West_Online_Maps [l->gameMap[20]] );
 
-      l->gameMap[28] = (unsigned char) mt_lrand() % 3; // Crater South
+      l->gameMap[28] = (unsigned char) rand() % 3; // Crater South
       LoadMapData ( l, 0, Crater_South_Online_Maps [l->gameMap[28]] );
       LoadObjectData ( l, 0, Crater_South_Online_Maps [l->gameMap[28]] );
 
-      l->gameMap[36] = (unsigned char) mt_lrand() % 3; // Crater North
+      l->gameMap[36] = (unsigned char) rand() % 3; // Crater North
       LoadMapData ( l, 0, Crater_North_Online_Maps [l->gameMap[36]] );
       LoadObjectData ( l, 0, Crater_North_Online_Maps [l->gameMap[36]] );
 
-      l->gameMap[44] = (unsigned char) mt_lrand() % 3; // Crater Interior
+      l->gameMap[44] = (unsigned char) rand() % 3; // Crater Interior
       LoadMapData ( l, 0, Crater_Interior_Online_Maps [l->gameMap[44]] );
       LoadObjectData ( l, 0, Crater_Interior_Online_Maps [l->gameMap[44]] );
 
-      l->gameMap[48] = (unsigned char) mt_lrand() % 3; // Desert 1
+      l->gameMap[48] = (unsigned char) rand() % 3; // Desert 1
       LoadMapData ( l, 1, Desert1_Online_Maps [l->gameMap[48]] );
       LoadObjectData ( l, 1, Desert1_Online_Maps [l->gameMap[48]] );
 
-      l->gameMap[60] = (unsigned char) mt_lrand() % 3; // Desert 2
+      l->gameMap[60] = (unsigned char) rand() % 3; // Desert 2
       LoadMapData ( l, 1, Desert2_Online_Maps [l->gameMap[60]] );
       LoadObjectData ( l, 1, Desert2_Online_Maps [l->gameMap[60]] );
 
-      l->gameMap[64] = (unsigned char) mt_lrand() % 3; // Desert 3
+      l->gameMap[64] = (unsigned char) rand() % 3; // Desert 3
       LoadMapData ( l, 1, Desert3_Online_Maps [l->gameMap[64]] );
       LoadObjectData ( l, 1, Desert3_Online_Maps [l->gameMap[64]] );
 
@@ -4734,42 +4749,36 @@ void LogonProcessPacket (ORANGE* ship)
       case 0x00:
         printf ("This ship's version is incompatible with the login server.\n");
         printf ("Press [ENTER] to quit...");
-        reveal_window;
-        gets (&dp[0]);
+        fgets (&dp[0],1,stdin);
         exit (1);
         break;
       case 0x02:
         printf ("This ship's IP address is already registered with the logon server.\n");
         printf ("The IP address cannot be registered twice.  Retry in %u seconds...\n", LOGIN_RECONNECT_SECONDS);
-        reveal_window;
         break;
       case 0x03:
         printf ("This ship did not pass the connection test the login server ran on it.\n");
         printf ("Please be sure the IP address specified in ship.ini is correct, your\n");
         printf ("firewall has ship_serv.exe on allow.  If behind a router, please be\n");
         printf ("sure your ports are forwarded.  Retry in %u seconds...\n", LOGIN_RECONNECT_SECONDS);
-        reveal_window;
         break;
       case 0x04:
         printf ("Please do not modify any data not instructed to when connecting to this\n");
         printf ("login server...\n");
         printf ("Press [ENTER] to quit...");
-        reveal_window;
-        gets (&dp[0]);
+        fgets (&dp[0],1,stdin);
         exit (1);
         break;
       case 0x05:
         printf ("Your ship_key.bin file seems to be invalid.\n");
         printf ("Press [ENTER] to quit...");
-        reveal_window;
-        gets (&dp[0]);
+        fgets (&dp[0],1,stdin);
         exit (1);
         break;
       case 0x06:
         printf ("Your ship key appears to already be in use!\n");
         printf ("Press [ENTER] to quit...");
-        reveal_window;
-        gets (&dp[0]);
+        fgets (&dp[0],1,stdin);
         exit (1);
         break;
       }
@@ -5601,7 +5610,7 @@ void LogonProcessPacket (ORANGE* ship)
       times_won = 0;
       for (ch2=0;ch2<1000000;ch2++)
       {
-        if (mt_lrand() < mob_calc)
+        if (rand() < mob_calc)
           times_won++;
       }
 */
@@ -7378,13 +7387,13 @@ void UseItem (unsigned itemid, BANANA* client)
         switch ( i.item.data[2] )
         {
         case 0x00:
-          new_item = 0x0D0E03 + ( ( mt_lrand() % 9 ) * 0x10000 );
+          new_item = 0x0D0E03 + ( ( rand() % 9 ) * 0x10000 );
           break;
         case 0x01:
-          new_item = easter_drops[mt_lrand() % 9];
+          new_item = easter_drops[rand() % 9];
           break;
         case 0x02:
-          new_item = jacko_drops[mt_lrand() % 8];
+          new_item = jacko_drops[rand() % 8];
           break;
         default:
           break;
@@ -9163,7 +9172,7 @@ void Send60 (BANANA* client)
               if (ai)
               {
                 // Attribute already on weapon, increase it
-                (char) work_item2.item.data[ai] += attrib_add;
+                work_item2.item.data[ai] += (char) attrib_add;
                 if (work_item2.item.data[ai] > 100)
                   work_item2.item.data[ai] = 100;
               }
@@ -9173,7 +9182,7 @@ void Send60 (BANANA* client)
                 if (num_attribs < 3)
                 {
                   work_item2.item.data[6 + (num_attribs * 2)] = client->decryptbuf[0x24];
-                  (char) work_item2.item.data[7 + (num_attribs * 2)] = attrib_add;
+                  work_item2.item.data[7 + (num_attribs * 2)] = (char) attrib_add;
                 }
               }
               DeleteItemFromClient ( work_item2.item.itemid, 1, 0, client );
@@ -9238,14 +9247,14 @@ void Send60 (BANANA* client)
             client->encryptbuf[0x08] = client->decryptbuf[0x0E];
             client->encryptbuf[0x0A] = client->decryptbuf[0x0D];
             for (ci=0;ci<8;ci++)
-              client->encryptbuf[0x0C + (ci << 2)] = (mt_lrand() % (sizeof(good_luck) >> 2)) + 1;
+              client->encryptbuf[0x0C + (ci << 2)] = (rand() % (sizeof(good_luck) >> 2)) + 1;
             cipher_ptr = &client->server_cipher;
             encryptcopy (client, &client->encryptbuf[0x00], 0x2C);
           }
           else
           {
             memset (&add_item, 0, sizeof (INVENTORY_ITEM));
-            *(unsigned *) &add_item.item.data[0] = good_luck[mt_lrand() % (sizeof(good_luck) >> 2)];
+            *(unsigned *) &add_item.item.data[0] = good_luck[rand() % (sizeof(good_luck) >> 2)];
             DeleteItemFromClient (itemid, 1, 0, client);
             memset (&client->encryptbuf[0x00], 0, 0x18);
             client->encryptbuf[0x00] = 0x18;
@@ -9279,7 +9288,7 @@ void Send60 (BANANA* client)
             client->encryptbuf[0x08] = client->decryptbuf[0x0E];
             client->encryptbuf[0x0A] = client->decryptbuf[0x0D];
             for (ci=0;ci<8;ci++)
-              client->encryptbuf[0x0C + (ci << 2)] = (mt_lrand() % (sizeof(good_luck) >> 2)) + 1;
+              client->encryptbuf[0x0C + (ci << 2)] = (rand() % (sizeof(good_luck) >> 2)) + 1;
             cipher_ptr = &client->server_cipher;
             encryptcopy (client, &client->encryptbuf[0x00], 0x2C);
           }
@@ -9528,13 +9537,13 @@ void GenerateRandomAttributes (unsigned char sid, GAME_ITEM* i, LOBBY* l, BANANA
     if ( !rare )
     {
 
-      r = 100 - ( mt_lrand() % 100 );
+      r = 100 - ( rand() % 100 );
 
       if ( ( r > ptd->element_probability[area] ) && ( ptd->element_ranking[area] ) )
       {
         i->item.data[4] = 0xFF;
         while (i->item.data[4] == 0xFF) // give a special
-          i->item.data[4] = elemental_table[(12 * ( ptd->element_ranking[area] - 1 ) ) + ( mt_lrand() % 12 )];
+          i->item.data[4] = elemental_table[(12 * ( ptd->element_ranking[area] - 1 ) ) + ( rand() % 12 )];
       }
       else
         i->item.data[4] = 0;
@@ -9545,9 +9554,9 @@ void GenerateRandomAttributes (unsigned char sid, GAME_ITEM* i, LOBBY* l, BANANA
       // Add a grind
 
       if ( l->episode == 0x02 )
-        ch = power_patterns_ep2[sid][l->difficulty][ptd->area_pattern[area]][mt_lrand() % 4096];
+        ch = power_patterns_ep2[sid][l->difficulty][ptd->area_pattern[area]][rand() % 4096];
       else
-        ch = power_patterns_ep1[sid][l->difficulty][ptd->area_pattern[area]][mt_lrand() % 4096];
+        ch = power_patterns_ep1[sid][l->difficulty][ptd->area_pattern[area]][rand() % 4096];
 
       i->item.data[3] = (unsigned char) ch;
     }
@@ -9565,20 +9574,20 @@ void GenerateRandomAttributes (unsigned char sid, GAME_ITEM* i, LOBBY* l, BANANA
     for (ch=0;ch<max_percent;ch++)
     {
       if (l->episode == 0x02)
-        do_area = attachment_ep2[sid][l->difficulty][area][mt_lrand() % 4096];
+        do_area = attachment_ep2[sid][l->difficulty][area][rand() % 4096];
       else
-        do_area = attachment_ep1[sid][l->difficulty][area][mt_lrand() % 4096];
+        do_area = attachment_ep1[sid][l->difficulty][area][rand() % 4096];
       if ( ( do_area ) && ( !did_area[do_area] ) )
       {
         did_area[do_area] = 1;
         i->item.data[6+(num_percents*2)] = (unsigned char) do_area;
         if ( l->episode == 0x02 )
-          percent = percent_patterns_ep2[sid][l->difficulty][ptd->area_pattern[area]][mt_lrand() % 4096];
+          percent = percent_patterns_ep2[sid][l->difficulty][ptd->area_pattern[area]][rand() % 4096];
         else
-          percent = percent_patterns_ep1[sid][l->difficulty][ptd->area_pattern[area]][mt_lrand() % 4096];
+          percent = percent_patterns_ep1[sid][l->difficulty][ptd->area_pattern[area]][rand() % 4096];
         percent -= 2;
         percent *= 5;
-        (char) i->item.data[6+(num_percents*2)+1] = percent;
+        i->item.data[6+(num_percents*2)+1] = (char) percent;
         num_percents++;
       }
     }
@@ -9588,30 +9597,30 @@ void GenerateRandomAttributes (unsigned char sid, GAME_ITEM* i, LOBBY* l, BANANA
     {
     case 0x01:
       // Armor variance
-      r = mt_lrand() % 11;
+      r = rand() % 11;
       if (r < 7)
       {
         if (armor_dfpvar_table[i->item.data[2]])
-          i->item.data[6] = (unsigned char) (mt_lrand() % (armor_dfpvar_table[i->item.data[2]] + 1));
+          i->item.data[6] = (unsigned char) (rand() % (armor_dfpvar_table[i->item.data[2]] + 1));
         if (armor_evpvar_table[i->item.data[2]])
-          i->item.data[8] = (unsigned char) (mt_lrand() % (armor_evpvar_table[i->item.data[2]] + 1));
+          i->item.data[8] = (unsigned char) (rand() % (armor_evpvar_table[i->item.data[2]] + 1));
       }
 
       // Slots
       if ( l->episode == 0x02 )
-        i->item.data[5] = slots_ep2[sid][l->difficulty][mt_lrand() % 4096];
+        i->item.data[5] = slots_ep2[sid][l->difficulty][rand() % 4096];
       else
-        i->item.data[5] = slots_ep1[sid][l->difficulty][mt_lrand() % 4096];
+        i->item.data[5] = slots_ep1[sid][l->difficulty][rand() % 4096];
       break;
     case 0x02:
       // Shield variance
-      r = mt_lrand() % 11;
+      r = rand() % 11;
       if (r < 2)
       {
         if (barrier_dfpvar_table[i->item.data[2]])
-          i->item.data[6] = (unsigned char) (mt_lrand() % (barrier_dfpvar_table[i->item.data[2]] + 1));
+          i->item.data[6] = (unsigned char) (rand() % (barrier_dfpvar_table[i->item.data[2]] + 1));
         if (barrier_evpvar_table[i->item.data[2]])
-          i->item.data[8] = (unsigned char) (mt_lrand() % (barrier_evpvar_table[i->item.data[2]] + 1));
+          i->item.data[8] = (unsigned char) (rand() % (barrier_evpvar_table[i->item.data[2]] + 1));
       }
       break;
     }
@@ -9621,18 +9630,18 @@ void GenerateRandomAttributes (unsigned char sid, GAME_ITEM* i, LOBBY* l, BANANA
     i->item.data [2]  = 0x05;
     i->item.data [4]  = 0xF4;
     i->item.data [5]  = 0x01;
-    i->item.data2[3] = mt_lrand() % 0x11;
+    i->item.data2[3] = rand() % 0x11;
     break;
   case 0x03:
     if ( i->item.data[1] == 0x02 ) // Technique
     {
       if ( l->episode == 0x02 )
-        i->item.data[4] = tech_drops_ep2[sid][l->difficulty][area][mt_lrand() % 4096];
+        i->item.data[4] = tech_drops_ep2[sid][l->difficulty][area][rand() % 4096];
       else
-        i->item.data[4] = tech_drops_ep1[sid][l->difficulty][area][mt_lrand() % 4096];
+        i->item.data[4] = tech_drops_ep1[sid][l->difficulty][area][rand() % 4096];
       i->item.data[2] = (unsigned char) ptd->tech_levels[i->item.data[4]][area*2];
       if ( ptd->tech_levels[i->item.data[4]][(area*2)+1] > ptd->tech_levels[i->item.data[4]][area*2] )
-        i->item.data[2] += (unsigned char) mt_lrand() % ( ( ptd->tech_levels[i->item.data[4]][(area*2)+1] - ptd->tech_levels[i->item.data[4]][(area*2)] ) + 1 );
+        i->item.data[2] += (unsigned char) rand() % ( ( ptd->tech_levels[i->item.data[4]][(area*2)+1] - ptd->tech_levels[i->item.data[4]][(area*2)] ) + 1 );
     }
     if (stackable_table[i->item.data[1]])
       i->item.data[5] = 0x01;
@@ -9641,7 +9650,7 @@ void GenerateRandomAttributes (unsigned char sid, GAME_ITEM* i, LOBBY* l, BANANA
     // meseta
     meseta = ptd->box_meseta[area][0];
     if ( ptd->box_meseta[area][1] > ptd->box_meseta[area][0] )
-      meseta += mt_lrand() % ( ( ptd->box_meseta[area][1] - ptd->box_meseta[area][0] ) + 1 );
+      meseta += rand() % ( ( ptd->box_meseta[area][1] - ptd->box_meseta[area][0] ) + 1 );
     *(unsigned *) &i->item.data2[0] = meseta;
     break;
   default:
@@ -9746,7 +9755,7 @@ void GenerateCommonItem (int item_type, int is_enemy, unsigned char sid, GAME_IT
 
   if (is_enemy)
   {
-    if ( ( mt_lrand() % 100 ) > 40)
+    if ( ( rand() % 100 ) > 40)
       item_set = 3;
     else
     {
@@ -9772,12 +9781,12 @@ void GenerateCommonItem (int item_type, int is_enemy, unsigned char sid, GAME_IT
   }
   else
   {
-    if ( ( l->meseta_boost ) && ( ( mt_lrand() % 100 ) > 25 ) )
+    if ( ( l->meseta_boost ) && ( ( rand() % 100 ) > 25 ) )
       item_set = 4; // Boost amount of meseta dropped during rules #4 and #5
     else
     {
       if ( item_type == 0xFF )
-        item_set = common_table[mt_lrand() % 100000];
+        item_set = common_table[rand() % 100000];
       else
         item_set = item_type;
     }
@@ -9792,9 +9801,9 @@ void GenerateCommonItem (int item_type, int is_enemy, unsigned char sid, GAME_IT
     // Weapon
 
     if ( l->episode == 0x02 )
-      ch2 = weapon_drops_ep2[sid][l->difficulty][area][mt_lrand() % 4096];
+      ch2 = weapon_drops_ep2[sid][l->difficulty][area][rand() % 4096];
     else
-      ch2 = weapon_drops_ep1[sid][l->difficulty][area][mt_lrand() % 4096];
+      ch2 = weapon_drops_ep1[sid][l->difficulty][area][rand() % 4096];
 
     i->item.data[1] = ch2 & 0xFF;
     i->item.data[2] = ch2 >> 8;
@@ -9810,13 +9819,13 @@ void GenerateCommonItem (int item_type, int is_enemy, unsigned char sid, GAME_IT
         i->item.data[2] = 0x04;
     }
 
-    r = 100 - ( mt_lrand() % 100 );
+    r = 100 - ( rand() % 100 );
 
     if ( ( r > ptd->element_probability[area] ) && ( ptd->element_ranking[area] ) )
     {
       i->item.data[4] = 0xFF;
       while (i->item.data[4] == 0xFF) // give a special
-        i->item.data[4] = elemental_table[(12 * ( ptd->element_ranking[area] - 1 ) ) + ( mt_lrand() % 12 )];
+        i->item.data[4] = elemental_table[(12 * ( ptd->element_ranking[area] - 1 ) ) + ( rand() % 12 )];
     }
     else
       i->item.data[4] = 0;
@@ -9829,20 +9838,20 @@ void GenerateCommonItem (int item_type, int is_enemy, unsigned char sid, GAME_IT
     for (ch=0;ch<3;ch++)
     {
       if (l->episode == 0x02)
-        do_area = attachment_ep2[sid][l->difficulty][area][mt_lrand() % 4096];
+        do_area = attachment_ep2[sid][l->difficulty][area][rand() % 4096];
       else
-        do_area = attachment_ep1[sid][l->difficulty][area][mt_lrand() % 4096];
+        do_area = attachment_ep1[sid][l->difficulty][area][rand() % 4096];
       if ( ( do_area ) && ( !did_area[do_area] ) )
       {
         did_area[do_area] = 1;
         i->item.data[6+(num_percents*2)] = (unsigned char) do_area;
         if ( l->episode == 0x02 )
-          percent = percent_patterns_ep2[sid][l->difficulty][ptd->area_pattern[area]][mt_lrand() % 4096];
+          percent = percent_patterns_ep2[sid][l->difficulty][ptd->area_pattern[area]][rand() % 4096];
         else
-          percent = percent_patterns_ep1[sid][l->difficulty][ptd->area_pattern[area]][mt_lrand() % 4096];
+          percent = percent_patterns_ep1[sid][l->difficulty][ptd->area_pattern[area]][rand() % 4096];
         percent -= 2;
         percent *= 5;
-        (char) i->item.data[6+(num_percents*2)+1] = percent;
+        i->item.data[6+(num_percents*2)+1] = (char) percent;
         num_percents++;
       }
     }
@@ -9850,15 +9859,15 @@ void GenerateCommonItem (int item_type, int is_enemy, unsigned char sid, GAME_IT
     // Add a grind
 
     if ( l->episode == 0x02 )
-      ch = power_patterns_ep2[sid][l->difficulty][ptd->area_pattern[area]][mt_lrand() % 4096];
+      ch = power_patterns_ep2[sid][l->difficulty][ptd->area_pattern[area]][rand() % 4096];
     else
-      ch = power_patterns_ep1[sid][l->difficulty][ptd->area_pattern[area]][mt_lrand() % 4096];
+      ch = power_patterns_ep1[sid][l->difficulty][ptd->area_pattern[area]][rand() % 4096];
 
     i->item.data[3] = (unsigned char) ch;
 
     break;
   case 0x01:
-    r = mt_lrand() % 100;
+    r = rand() % 100;
     if (!is_enemy)
     {
       // Probabilities (Box): Armor 41%, Shields 41%, Units 18%
@@ -9879,39 +9888,39 @@ void GenerateCommonItem (int item_type, int is_enemy, unsigned char sid, GAME_IT
       // Armor
       i->item.data[0] = 0x01;
       i->item.data[1] = 0x01;
-      i->item.data[2] = (unsigned char) ( fl / 3L ) + ( 5 * l->difficulty ) + ( mt_lrand() % ( ( (unsigned char) fl / 2L ) + 2 ) );
+      i->item.data[2] = (unsigned char) ( fl / 3L ) + ( 5 * l->difficulty ) + ( rand() % ( ( (unsigned char) fl / 2L ) + 2 ) );
       if ( i->item.data[2] > 0x17 )
         i->item.data[2] = 0x17;
-      r = mt_lrand() % 11;
+      r = rand() % 11;
       if (r < 7)
       {
         if (armor_dfpvar_table[i->item.data[2]])
-          i->item.data[6] = (unsigned char) (mt_lrand() % (armor_dfpvar_table[i->item.data[2]] + 1));
+          i->item.data[6] = (unsigned char) (rand() % (armor_dfpvar_table[i->item.data[2]] + 1));
         if (armor_evpvar_table[i->item.data[2]])
-          i->item.data[8] = (unsigned char) (mt_lrand() % (armor_evpvar_table[i->item.data[2]] + 1));
+          i->item.data[8] = (unsigned char) (rand() % (armor_evpvar_table[i->item.data[2]] + 1));
       }
 
       // Slots
       if ( l->episode == 0x02 )
-        i->item.data[5] = slots_ep2[sid][l->difficulty][mt_lrand() % 4096];
+        i->item.data[5] = slots_ep2[sid][l->difficulty][rand() % 4096];
       else
-        i->item.data[5] = slots_ep1[sid][l->difficulty][mt_lrand() % 4096];
+        i->item.data[5] = slots_ep1[sid][l->difficulty][rand() % 4096];
 
       break;
     case 0x02:
       // Shield
       i->item.data[0] = 0x01;
       i->item.data[1] = 0x02;
-      i->item.data[2] = (unsigned char) ( fl / 3L ) + ( 4 * l->difficulty ) + ( mt_lrand() % ( ( (unsigned char) fl / 2L ) + 2 ) );
+      i->item.data[2] = (unsigned char) ( fl / 3L ) + ( 4 * l->difficulty ) + ( rand() % ( ( (unsigned char) fl / 2L ) + 2 ) );
       if ( i->item.data[2] > 0x14 )
         i->item.data[2] = 0x14;
-      r = mt_lrand() % 11;
+      r = rand() % 11;
       if (r < 2)
       {
         if (barrier_dfpvar_table[i->item.data[2]])
-          i->item.data[6] = (unsigned char) (mt_lrand() % (barrier_dfpvar_table[i->item.data[2]] + 1));
+          i->item.data[6] = (unsigned char) (rand() % (barrier_dfpvar_table[i->item.data[2]] + 1));
         if (barrier_evpvar_table[i->item.data[2]])
-          i->item.data[8] = (unsigned char) (mt_lrand() % (barrier_evpvar_table[i->item.data[2]] + 1));
+          i->item.data[8] = (unsigned char) (rand() % (barrier_evpvar_table[i->item.data[2]] + 1));
       }
       break;
     case 0x03:
@@ -9922,7 +9931,7 @@ void GenerateCommonItem (int item_type, int is_enemy, unsigned char sid, GAME_IT
       {
         i->item.data[2] = 0xFF;
         while (i->item.data[2] == 0xFF)
-          i->item.data[2] = unit_drop [mt_lrand() % ((ptd->unit_level[area] - 1) * 10)];
+          i->item.data[2] = unit_drop [rand() % ((ptd->unit_level[area] - 1) * 10)];
       }
       else
       {
@@ -9939,23 +9948,23 @@ void GenerateCommonItem (int item_type, int is_enemy, unsigned char sid, GAME_IT
     i->item.data [2]  = 0x05;
     i->item.data [4]  = 0xF4;
     i->item.data [5]  = 0x01;
-    i->item.data2[3] = mt_lrand() % 0x11;
+    i->item.data2[3] = rand() % 0x11;
     break;
   case 0x03:
     // Tool
     if ( l->episode == 0x02 )
-      *(unsigned *) &i->item.data[0] = tool_remap[tool_drops_ep2[sid][l->difficulty][area][mt_lrand() % 4096]];
+      *(unsigned *) &i->item.data[0] = tool_remap[tool_drops_ep2[sid][l->difficulty][area][rand() % 4096]];
     else
-      *(unsigned *) &i->item.data[0] = tool_remap[tool_drops_ep1[sid][l->difficulty][area][mt_lrand() % 4096]];
+      *(unsigned *) &i->item.data[0] = tool_remap[tool_drops_ep1[sid][l->difficulty][area][rand() % 4096]];
     if ( i->item.data[1] == 0x02 ) // Technique
     {
       if ( l->episode == 0x02 )
-        i->item.data[4] = tech_drops_ep2[sid][l->difficulty][area][mt_lrand() % 4096];
+        i->item.data[4] = tech_drops_ep2[sid][l->difficulty][area][rand() % 4096];
       else
-        i->item.data[4] = tech_drops_ep1[sid][l->difficulty][area][mt_lrand() % 4096];
+        i->item.data[4] = tech_drops_ep1[sid][l->difficulty][area][rand() % 4096];
       i->item.data[2] = (unsigned char) ptd->tech_levels[i->item.data[4]][area*2];
       if ( ptd->tech_levels[i->item.data[4]][(area*2)+1] > ptd->tech_levels[i->item.data[4]][area*2] )
-        i->item.data[2] += (unsigned char) mt_lrand() % ( ( ptd->tech_levels[i->item.data[4]][(area*2)+1] - ptd->tech_levels[i->item.data[4]][(area*2)] ) + 1 );
+        i->item.data[2] += (unsigned char) rand() % ( ( ptd->tech_levels[i->item.data[4]][(area*2)+1] - ptd->tech_levels[i->item.data[4]][(area*2)] ) + 1 );
     }
     if (stackable_table[i->item.data[1]])
       i->item.data[5] = 0x01;
@@ -9965,7 +9974,7 @@ void GenerateCommonItem (int item_type, int is_enemy, unsigned char sid, GAME_IT
     i->item.data[0] = 0x04;
     meseta  = ptd->box_meseta[area][0];
     if ( ptd->box_meseta[area][1] > ptd->box_meseta[area][0] )
-      meseta += mt_lrand() % ( ( ptd->box_meseta[area][1] - ptd->box_meseta[area][0] ) + 1 );
+      meseta += rand() % ( ( ptd->box_meseta[area][1] - ptd->box_meseta[area][0] ) + 1 );
     *(unsigned *) &i->item.data2[0] = meseta;
     break;
   default:
@@ -10121,7 +10130,7 @@ void Send62 (BANANA* client)
               {
 
                 DAR = 100 - ptd->enemy_dar[meseta];
-                if ( ( mt_lrand() % 100 ) >= DAR )
+                if ( ( rand() % 100 ) >= DAR )
                   DAR = 1;
                 else
                   DAR = 0;
@@ -10150,7 +10159,7 @@ void Send62 (BANANA* client)
               }
               rare_rate = ExpandDropRate ( rare_lookup & 0xFF );
               rare_item = rare_lookup >> 8;
-              rare_roll = mt_lrand();
+              rare_roll = rand();
               //debug ("rare_roll = %u", rare_roll );
               if  ( ( ( rare_lookup & 0xFF ) != 0 ) && ( ( rare_roll < rare_rate ) || ( l->redbox ) ) )
               {
@@ -10166,7 +10175,7 @@ void Send62 (BANANA* client)
               {
                 // Drop a common item
                 itemNum = free_game_item (l);
-                if ( ( ( mt_lrand() % 100 ) < 60 ) || ( ptd->enemy_drop < 0 ) )
+                if ( ( ( rand() % 100 ) < 60 ) || ( ptd->enemy_drop < 0 ) )
                 {
                   memset (&l->gameItem[itemNum].item.data[0], 0, 12 );
                   memset (&l->gameItem[itemNum].item.data2[0], 0, 4 );
@@ -10174,7 +10183,7 @@ void Send62 (BANANA* client)
                   rt_index = meseta;
                   meseta  = ptd->enemy_meseta[rt_index][0];
                   if ( ptd->enemy_meseta[rt_index][1] > ptd->enemy_meseta[rt_index][0] )
-                    meseta += mt_lrand() % ( ( ptd->enemy_meseta[rt_index][1] - ptd->enemy_meseta[rt_index][0] ) + 1 );
+                    meseta += rand() % ( ( ptd->enemy_meseta[rt_index][1] - ptd->enemy_meseta[rt_index][0] ) + 1 );
                   *(unsigned *) &l->gameItem[itemNum].item.data2[0] = meseta;
                   l->gameItem[itemNum].item.itemid = l->itemID++;
                 }
@@ -10379,7 +10388,7 @@ void Send62 (BANANA* client)
               {
                 rare_rate = ExpandDropRate ( *rt_table2 );
                 memcpy (&rare_item, &rt_table2[1], 3);
-                rare_roll = mt_lrand();
+                rare_roll = rand();
                 if ( ( rare_roll < rare_rate ) || ( l->redbox == 1 ) )
                 {
                   box_rare = 1;
@@ -10441,7 +10450,7 @@ void Send62 (BANANA* client)
       if ((l->floor[client->clientID] == 0)
         && (client->decryptbuf[0x0C] < 0x03))
       {
-        client->doneshop[client->decryptbuf[0x0C]] = shopidx[client->character.level] + ( 333 * ((unsigned)client->decryptbuf[0x0C]) ) + ( mt_lrand() % 333 ) ;
+        client->doneshop[client->decryptbuf[0x0C]] = shopidx[client->character.level] + ( 333 * ((unsigned)client->decryptbuf[0x0C]) ) + ( rand() % 333 ) ;
         shopp = &shops[client->doneshop[client->decryptbuf[0x0C]]];
         cipher_ptr = &client->server_cipher;
         encryptcopy (client, (unsigned char*) &shopp->packet_length, shopp->packet_length);
@@ -10519,26 +10528,26 @@ void Send62 (BANANA* client)
           if ( attrib < 0x29)
           {
             client->tekked.item.data[4] = tekker_attributes [( attrib * 3) + 1];
-            if ( ( mt_lrand() % 100 ) > 70 )
-              client->tekked.item.data[4] += mt_lrand() % ( ( tekker_attributes [(attrib * 3) + 2] - tekker_attributes [(attrib * 3) + 1] ) + 1 );
+            if ( ( rand() % 100 ) > 70 )
+              client->tekked.item.data[4] += rand() % ( ( tekker_attributes [(attrib * 3) + 2] - tekker_attributes [(attrib * 3) + 1] ) + 1 );
           }
           else
             client->tekked.item.data[4] = 0;
-          if ( ( mt_lrand() % 10 ) < 2 ) percent_mod = -10;
+          if ( ( rand() % 10 ) < 2 ) percent_mod = -10;
           else
-            if ( ( mt_lrand() % 10 ) < 2 ) percent_mod = -5;
+            if ( ( rand() % 10 ) < 2 ) percent_mod = -5;
             else
-              if ( ( mt_lrand() % 10 ) < 2 ) percent_mod = 5;
+              if ( ( rand() % 10 ) < 2 ) percent_mod = 5;
               else
-                if ( ( mt_lrand() % 10 ) < 2 ) percent_mod = 10;
+                if ( ( rand() % 10 ) < 2 ) percent_mod = 10;
                 else
                   percent_mod = 0;
           if ((!(i->item.data[6] & 128)) && (i->item.data[7] > 0))
-            (char)client->tekked.item.data[7] += percent_mod;
+            client->tekked.item.data[7] += (char)percent_mod;
           if ((!(i->item.data[8] & 128)) && (i->item.data[9] > 0))
-            (char)client->tekked.item.data[9] += percent_mod;
+            client->tekked.item.data[9] += (char)percent_mod;
           if ((!(i->item.data[10] & 128)) && (i->item.data[11] > 0))
-            (char)client->tekked.item.data[11] += percent_mod;
+            client->tekked.item.data[11] += (char)percent_mod;
           DeleteMesetaFromClient (100, 0, client);
           memset (&client->encryptbuf[0x00], 0, 0x20);
           client->encryptbuf[0x00] = 0x20;
@@ -10634,7 +10643,7 @@ void Send62 (BANANA* client)
         *(unsigned *) &client->encryptbuf[0x0C] = bank_size;
         bank_size += 4;
         *(unsigned short *) &client->encryptbuf[0x00] = (unsigned short) bank_size;
-        bank_use = mt_lrand();
+        bank_use = rand();
         *(unsigned *) &client->encryptbuf[0x10] = bank_use;
         bank_use = client->character.bankUse;
         *(unsigned *) &client->encryptbuf[0x14] = bank_use;
@@ -10928,16 +10937,16 @@ void Send62 (BANANA* client)
             switch ( l->difficulty )
             {
             case 0x00:
-              new_item = bp_dorphon_normal[mt_lrand() % (sizeof(bp_dorphon_normal)/4)];
+              new_item = bp_dorphon_normal[rand() % (sizeof(bp_dorphon_normal)/4)];
               break;
             case 0x01:
-              new_item = bp_dorphon_hard[mt_lrand() % (sizeof(bp_dorphon_hard)/4)];
+              new_item = bp_dorphon_hard[rand() % (sizeof(bp_dorphon_hard)/4)];
               break;
             case 0x02:
-              new_item = bp_dorphon_vhard[mt_lrand() % (sizeof(bp_dorphon_vhard)/4)];
+              new_item = bp_dorphon_vhard[rand() % (sizeof(bp_dorphon_vhard)/4)];
               break;
             case 0x03:
-              new_item = bp_dorphon_ultimate[mt_lrand() % (sizeof(bp_dorphon_ultimate)/4)];
+              new_item = bp_dorphon_ultimate[rand() % (sizeof(bp_dorphon_ultimate)/4)];
               break;
             }
             break;
@@ -10946,16 +10955,16 @@ void Send62 (BANANA* client)
             switch ( l->difficulty )
             {
             case 0x00:
-              new_item = bp_rappy_normal[mt_lrand() % (sizeof(bp_rappy_normal)/4)];
+              new_item = bp_rappy_normal[rand() % (sizeof(bp_rappy_normal)/4)];
               break;
             case 0x01:
-              new_item = bp_rappy_hard[mt_lrand() % (sizeof(bp_rappy_hard)/4)];
+              new_item = bp_rappy_hard[rand() % (sizeof(bp_rappy_hard)/4)];
               break;
             case 0x02:
-              new_item = bp_rappy_vhard[mt_lrand() % (sizeof(bp_rappy_vhard)/4)];
+              new_item = bp_rappy_vhard[rand() % (sizeof(bp_rappy_vhard)/4)];
               break;
             case 0x03:
-              new_item = bp_rappy_ultimate[mt_lrand() % (sizeof(bp_rappy_ultimate)/4)];
+              new_item = bp_rappy_ultimate[rand() % (sizeof(bp_rappy_ultimate)/4)];
               break;
             }
             break;
@@ -10964,16 +10973,16 @@ void Send62 (BANANA* client)
             switch ( l->difficulty )
             {
             case 0x00:
-              new_item = bp_zu_normal[mt_lrand() % (sizeof(bp_zu_normal)/4)];
+              new_item = bp_zu_normal[rand() % (sizeof(bp_zu_normal)/4)];
               break;
             case 0x01:
-              new_item = bp_zu_hard[mt_lrand() % (sizeof(bp_zu_hard)/4)];
+              new_item = bp_zu_hard[rand() % (sizeof(bp_zu_hard)/4)];
               break;
             case 0x02:
-              new_item = bp_zu_vhard[mt_lrand() % (sizeof(bp_zu_vhard)/4)];
+              new_item = bp_zu_vhard[rand() % (sizeof(bp_zu_vhard)/4)];
               break;
             case 0x03:
-              new_item = bp_zu_ultimate[mt_lrand() % (sizeof(bp_zu_ultimate)/4)];
+              new_item = bp_zu_ultimate[rand() % (sizeof(bp_zu_ultimate)/4)];
               break;
             }
             break;
@@ -10982,16 +10991,16 @@ void Send62 (BANANA* client)
             switch ( l->difficulty )
             {
             case 0x00:
-              new_item = bp2_normal[mt_lrand() % (sizeof(bp2_normal)/4)];
+              new_item = bp2_normal[rand() % (sizeof(bp2_normal)/4)];
               break;
             case 0x01:
-              new_item = bp2_hard[mt_lrand() % (sizeof(bp2_hard)/4)];
+              new_item = bp2_hard[rand() % (sizeof(bp2_hard)/4)];
               break;
             case 0x02:
-              new_item = bp2_vhard[mt_lrand() % (sizeof(bp2_vhard)/4)];
+              new_item = bp2_vhard[rand() % (sizeof(bp2_vhard)/4)];
               break;
             case 0x03:
-              new_item = bp2_ultimate[mt_lrand() % (sizeof(bp2_ultimate)/4)];
+              new_item = bp2_ultimate[rand() % (sizeof(bp2_ultimate)/4)];
               break;
             }
             break;
@@ -11015,7 +11024,7 @@ void Send62 (BANANA* client)
           if (new_item == 0x04)
           {
             new_item  = pt_tables_ep1[client->character.sectionID][l->difficulty].enemy_meseta[0x2E][0];
-            new_item += mt_lrand() % 100;
+            new_item += rand() % 100;
             *(unsigned *) &client->encryptbuf[0x28] = new_item;
             *(unsigned *) &l->gameItem[itemNum].item.data2[0] = new_item;
           }
@@ -11108,7 +11117,7 @@ void Send6D (BANANA* client)
               {
                 if ((char) client->decryptbuf[0xC4+ch] > max_tech_level[ch][client->character._class])
                 {
-                  (char) client->character.techniques[ch] = -1; // Unlearn broken technique.
+                  client->character.techniques[ch] = (char) -1; // Unlearn broken technique.
                   client->todc = 1;
                 }
               }
@@ -11209,17 +11218,18 @@ char* Unicode_to_ASCII (unsigned short* ucs)
   return (char*) &chatBuf[0];
 }
 
+//FIXME: Dummied out time stuff
 void WriteLog(char *fmt, ...)
 {
 #define MAX_GM_MESG_LEN 4096
 
   va_list args;
   char text[ MAX_GM_MESG_LEN ];
-  SYSTEMTIME rawtime;
+  //SYSTEMTIME rawtime;
 
   FILE *fp;
 
-  GetLocalTime (&rawtime);
+  //GetLocalTime (&rawtime);
   va_start (args, fmt);
   strcpy (text + vsprintf( text,fmt,args), "\r\n");
   va_end (args);
@@ -11230,26 +11240,27 @@ void WriteLog(char *fmt, ...)
     printf ("Unable to log to ship.log\n");
   }
 
-  fprintf (fp, "[%02u-%02u-%u, %02u:%02u] %s", rawtime.wMonth, rawtime.wDay, rawtime.wYear,
-    rawtime.wHour, rawtime.wMinute, text);
-  fclose (fp);
+  //fprintf (fp, "[%02u-%02u-%u, %02u:%02u] %s", rawtime.wMonth, rawtime.wDay, rawtime.wYear,
+  //  rawtime.wHour, rawtime.wMinute, text);
+  //fclose (fp);
 
-  printf ("[%02u-%02u-%u, %02u:%02u] %s", rawtime.wMonth, rawtime.wDay, rawtime.wYear,
-    rawtime.wHour, rawtime.wMinute, text);
+  //printf ("[%02u-%02u-%u, %02u:%02u] %s", rawtime.wMonth, rawtime.wDay, rawtime.wYear,
+  //  rawtime.wHour, rawtime.wMinute, text);
 }
 
 
+//FIXME: Dummied out time stuff
 void WriteGM(char *fmt, ...)
 {
 #define MAX_GM_MESG_LEN 4096
 
   va_list args;
   char text[ MAX_GM_MESG_LEN ];
-  SYSTEMTIME rawtime;
+  //SYSTEMTIME rawtime;
 
   FILE *fp;
 
-  GetLocalTime (&rawtime);
+  //GetLocalTime (&rawtime);
   va_start (args, fmt);
   strcpy (text + vsprintf( text,fmt,args), "\r\n");
   va_end (args);
@@ -11260,12 +11271,12 @@ void WriteGM(char *fmt, ...)
     printf ("Unable to log to gm.log\n");
   }
 
-  fprintf (fp, "[%02u-%02u-%u, %02u:%02u] %s", rawtime.wMonth, rawtime.wDay, rawtime.wYear,
-    rawtime.wHour, rawtime.wMinute, text);
-  fclose (fp);
+  //fprintf (fp, "[%02u-%02u-%u, %02u:%02u] %s", rawtime.wMonth, rawtime.wDay, rawtime.wYear,
+  //  rawtime.wHour, rawtime.wMinute, text);
+  //fclose (fp);
 
-  printf ("[%02u-%02u-%u, %02u:%02u] %s", rawtime.wMonth, rawtime.wDay, rawtime.wYear,
-    rawtime.wHour, rawtime.wMinute, text);
+  //printf ("[%02u-%02u-%u, %02u:%02u] %s", rawtime.wMonth, rawtime.wDay, rawtime.wYear,
+  //  rawtime.wHour, rawtime.wMinute, text);
 }
 
 
@@ -11512,7 +11523,7 @@ void Send06 (BANANA* client)
 
               itemNum = free_game_item (l);
 
-              _strupr ( myArgs[0] );
+              strupr ( myArgs[0] );
               l->gameItem[itemNum].item.data[0]  = hexToByte (&myArgs[0][0]);
               l->gameItem[itemNum].item.data[1]  = hexToByte (&myArgs[0][2]);
               l->gameItem[itemNum].item.data[2]  = hexToByte (&myArgs[0][4]);
@@ -11521,7 +11532,7 @@ void Send06 (BANANA* client)
 
               if ( strlen ( myArgs[1] ) >= 8 )
               {
-                _strupr ( myArgs[1] );
+                strupr ( myArgs[1] );
                 l->gameItem[itemNum].item.data[4]  = hexToByte (&myArgs[1][0]);
                 l->gameItem[itemNum].item.data[5]  = hexToByte (&myArgs[1][2]);
                 l->gameItem[itemNum].item.data[6]  = hexToByte (&myArgs[1][4]);
@@ -11537,7 +11548,7 @@ void Send06 (BANANA* client)
 
               if ( strlen ( myArgs[2] ) >= 8 )
               {
-                _strupr ( myArgs[2] );
+                strupr ( myArgs[2] );
                 l->gameItem[itemNum].item.data[8]  = hexToByte (&myArgs[2][0]);
                 l->gameItem[itemNum].item.data[9]  = hexToByte (&myArgs[2][2]);
                 l->gameItem[itemNum].item.data[10] = hexToByte (&myArgs[2][4]);
@@ -11553,7 +11564,7 @@ void Send06 (BANANA* client)
 
               if ( strlen ( myArgs[3] ) >= 8 )
               {
-                _strupr ( myArgs[3] );
+                strupr ( myArgs[3] );
                 l->gameItem[itemNum].item.data2[0]  = hexToByte (&myArgs[3][0]);
                 l->gameItem[itemNum].item.data2[1]  = hexToByte (&myArgs[3][2]);
                 l->gameItem[itemNum].item.data2[2]  = hexToByte (&myArgs[3][4]);
@@ -11624,7 +11635,7 @@ void Send06 (BANANA* client)
 
               WriteGM ("GM %u obtained an item", client->guildcard);
 
-              _strupr ( myArgs[0] );
+              strupr ( myArgs[0] );
               ii.item.data[0]  = hexToByte (&myArgs[0][0]);
               ii.item.data[1]  = hexToByte (&myArgs[0][2]);
               ii.item.data[2]  = hexToByte (&myArgs[0][4]);
@@ -11633,7 +11644,7 @@ void Send06 (BANANA* client)
 
               if ( strlen ( myArgs[1] ) >= 8 )
               {
-                _strupr ( myArgs[1] );
+                strupr ( myArgs[1] );
                 ii.item.data[4]  = hexToByte (&myArgs[1][0]);
                 ii.item.data[5]  = hexToByte (&myArgs[1][2]);
                 ii.item.data[6]  = hexToByte (&myArgs[1][4]);
@@ -11649,7 +11660,7 @@ void Send06 (BANANA* client)
 
               if ( strlen ( myArgs[2] ) >= 8 )
               {
-                _strupr ( myArgs[2] );
+                strupr ( myArgs[2] );
                 ii.item.data[8]  = hexToByte (&myArgs[2][0]);
                 ii.item.data[9]  = hexToByte (&myArgs[2][2]);
                 ii.item.data[10] = hexToByte (&myArgs[2][4]);
@@ -11665,7 +11676,7 @@ void Send06 (BANANA* client)
 
               if ( strlen ( myArgs[3] ) >= 8 )
               {
-                _strupr ( myArgs[3] );
+                strupr ( myArgs[3] );
                 ii.item.data2[0]  = hexToByte (&myArgs[3][0]);
                 ii.item.data2[1]  = hexToByte (&myArgs[3][2]);
                 ii.item.data2[2]  = hexToByte (&myArgs[3][4]);
@@ -12140,7 +12151,7 @@ void Send06 (BANANA* client)
     if (!client->debugged)
     {
       client->debugged = 1;
-      _itoa (client->character.guildCard, &character_file[0], 10);
+      sprintf (&character_file[0], "%d", client->character.guildCard);
       strcat (&character_file[0], Unicode_to_ASCII ((unsigned short*) &client->character.name[4]));
       strcat (&character_file[0], ".bbc");
       fp = fopen (&character_file[0], "wb");
@@ -12261,7 +12272,7 @@ void Command09(BANANA* client)
               PacketData[Packet11_Length++] = 0x00;
               PacketData[Packet11_Length++] = 0x4C;
               PacketData[Packet11_Length++] = 0x00;
-              _itoa (l->client[ch]->character.level + 1, &lb[0], 10);
+              sprintf(&lb[0], "%d", l->client[ch]->character.level + 1);
               wstrcpy_char(&PacketData[Packet11_Length], &lb[0]);
               Packet11_Length += wstrlen ((unsigned short*) &PacketData[Packet11_Length]);
               PacketData[Packet11_Length++] = 0x0A;
@@ -12336,12 +12347,12 @@ void Command09(BANANA* client)
           num_minutes  = ((unsigned) servertime - l->start_time ) / 60L;
           num_hours    = num_minutes / 60L;
           num_minutes %= 60;
-          _itoa (num_hours,&lb[0], 10);
+          sprintf(&lb[0], "%d", num_hours);
           wstrcpy_char (&PacketData[Packet11_Length], &lb[0]);
           Packet11_Length += wstrlen ((unsigned short*) &PacketData[Packet11_Length]);
           PacketData[Packet11_Length++] = 0x3A;
           PacketData[Packet11_Length++] = 0x00;
-          _itoa (num_minutes,&lb[0], 10);
+          sprintf(&lb[0], "%d", num_minutes);
           if (num_minutes < 10)
           {
             lb[1] = lb[0];
@@ -13322,7 +13333,7 @@ void PromoteTeamMember ( unsigned teamid, unsigned guildcard, unsigned char newl
   ship->encryptbuf[0x01] = 0x06;
   *(unsigned*) &ship->encryptbuf[0x02] = teamid;
   *(unsigned*) &ship->encryptbuf[0x06] = guildcard;
-  (unsigned char) ship->encryptbuf[0x0A] = newlevel;
+  ship->encryptbuf[0x0A] = (unsigned char) newlevel;
   compressShipPacket ( ship, &ship->encryptbuf[0x00], 0x0B );
 }
 
@@ -14274,14 +14285,14 @@ void LoadBattleParam (BATTLEPARAM* dest, const char* filename, unsigned num_reco
   {
     printf ("%s is missing.\n", filename);
     printf ("Press [ENTER] to quit...");
-    gets(&dp[0]);
+    fgets(&dp[0],1,stdin);
     exit (1);
   }
   if ( ( fread ( dest, 1, sizeof (BATTLEPARAM) * num_records, fp ) != sizeof (BATTLEPARAM) * num_records ) )
   {
     printf ("%s is corrupted.\n", filename);
     printf ("Press [ENTER] to quit...");
-    gets(&dp[0]);
+    fgets(&dp[0],1,stdin);
     exit (1);
   }
   fclose ( fp );
@@ -14292,7 +14303,7 @@ void LoadBattleParam (BATTLEPARAM* dest, const char* filename, unsigned num_reco
 
   if ( battle_checksum != expected_checksum )
   {
-    printf ("Checksum of file: %08x\n", battle_checksum );
+    printf ("Checksum of file: %08lx\n", battle_checksum );
     printf ("WARNING: Battle parameter file has been modified.\n");
   }
 }
@@ -14336,7 +14347,7 @@ void LoadQuests (const char* filename, unsigned category)
   {
     printf ("%s is missing.\n", filename);
     printf ("Press [ENTER] to quit...");
-    gets(&dp[0]);
+    fgets(&dp[0],1,stdin);
     exit (1);
   }
   while (fgets (&qfile[0], 255, fp) != NULL)
@@ -14354,14 +14365,14 @@ void LoadQuests (const char* filename, unsigned category)
     {
       printf ("%s is missing.\n", qfile3);
       printf ("Press [ENTER] to quit...");
-      gets(&dp[0]);
+      fgets(&dp[0],1,stdin);
       exit (1);
     }
     if (fgets (&qname[0], 64, fp) == NULL)
     {
       printf ("%s is corrupted.\n", filename);
       printf ("Press [ENTER] to quit...");
-      gets(&dp[0]);
+      fgets(&dp[0],1,stdin);
       exit (1);
     }
     for (ch=0;ch<64;ch++)
@@ -14382,7 +14393,7 @@ void LoadQuests (const char* filename, unsigned category)
     {
       printf ("%s is corrupted.\n", filename);
       printf ("Press [ENTER] to quit...");
-      gets(&dp[0]);
+      fgets(&dp[0],1,stdin);
       exit (1);
     }
     for (ch=0;ch<120;ch++)
@@ -14487,7 +14498,7 @@ void LoadQuests (const char* filename, unsigned category)
               {
                 printf ("PRS buffer too small...\n");
                 printf ("Press [ENTER] to quit...");
-                gets (&dp[0]);
+                fgets(&dp[0],1,stdin);
                 exit (1);
               }
               qps = *(unsigned short*) &ql->qdata[ch];
@@ -14500,7 +14511,7 @@ void LoadQuests (const char* filename, unsigned category)
           {
             printf ("Memory corrupted!\n", ed_size );
             printf ("Press [ENTER] to quit...");
-            gets (&dp[0]);
+            fgets(&dp[0],1,stdin);
             exit (1);
           }
           fclose (qd);
@@ -14549,7 +14560,7 @@ void LoadQuests (const char* filename, unsigned category)
                 {
                   printf ("PRS buffer too small...\n");
                   printf ("Press [ENTER] to quit...");
-                  gets (&dp[0]);
+                  fgets(&dp[0],1,stdin);
                   exit (1);
                 }
 
@@ -14563,7 +14574,7 @@ void LoadQuests (const char* filename, unsigned category)
             {
               printf ("Memory corrupted!\n", ed_size );
               printf ("Press [ENTER] to quit...");
-              gets (&dp[0]);
+              fgets(&dp[0],1,stdin);
               exit (1);
             }
             ed_ofs = 0;
@@ -14580,7 +14591,7 @@ void LoadQuests (const char* filename, unsigned category)
                 {
                   printf ("Area out of range in quest!\n");
                   printf ("Press [ENTER] to quit...");
-                  gets (&dp[0]);
+                  fgets(&dp[0],1,stdin);
                   exit(1);
                 }
                 num_records = ed[3] / 68L;
@@ -14608,7 +14619,7 @@ void LoadQuests (const char* filename, unsigned category)
                 {
                   printf ("Area out of range in quest!\n");
                   printf ("Press [ENTER] to quit...");
-                  gets (&dp[0]);
+                  fgets(&dp[0],1,stdin);
                   exit(1);
                 }
                 qm_ofs += 4;
@@ -14684,7 +14695,7 @@ void LoadQuests (const char* filename, unsigned category)
               dp[3] = q->objectdata[(ch*68)+0x34];
               *(unsigned *) &q->objectdata[(ch*68)+0x34] = *(unsigned *) &dp[0];
             }
-            printf ("Loaded quest %s (%s),\nObject count: %u, Enemy count: %u\n", qname, true_filename, num_objects, ( qm_ofs - 4 ) / 72L );
+            printf ("Loaded quest %s (%s),\nObject count: %u, Enemy count: %lu\n", qname, true_filename, num_objects, ( qm_ofs - 4 ) / 72L );
           }
           /*
           // Time to load the map data...
@@ -14728,7 +14739,7 @@ void LoadQuests (const char* filename, unsigned category)
           {
             printf ("Quest file %s is missing!  Could not load the quest.\n", qfile4);
             printf ("Press [ENTER] to quit...");
-            gets (&dp[0]);
+            fgets(&dp[0],1,stdin);
             exit(1);
           }
           else
@@ -14782,7 +14793,7 @@ void LoadCSV(const char* filename)
   {
     printf ("The parameter file %s appears to be missing.\n", filename);
     printf ("Press [ENTER] to quit...");
-    gets(&dp[0]);
+    fgets(&dp[0],1,stdin);
     exit (1);
   }
 
@@ -14826,7 +14837,7 @@ void LoadCSV(const char* filename)
     {
       printf ("CSV file has too many entries.\n");
       printf ("Press [ENTER] to quit...");
-      gets(&dp[0]);
+      fgets(&dp[0],1,stdin);
       exit (1);
     }
   }
@@ -14902,7 +14913,7 @@ void LoadTechParam()
   {
     printf ("Technique CSV file is corrupt.\n");
     printf ("Press [ENTER] to quit...");
-    gets(&dp[0]);
+    fgets(&dp[0],1,stdin);
     exit (1);
   }
   for (ch=0;ch<19;ch++) // For technique
@@ -14915,7 +14926,7 @@ void LoadTechParam()
       {
         printf ("Technique CSV file is corrupt.\n");
         printf ("Press [ENTER] to quit...");
-        gets(&dp[0]);
+        fgets(&dp[0],1,stdin);
         exit (1);
       }
     }
@@ -14931,40 +14942,11 @@ void LoadShopData2()
   {
     printf ("shop\\shop2.dat is missing.");
     printf ("Press [ENTER] to quit...");
-    gets (&dp[0]);
+    fgets(&dp[0],1,stdin);
     exit (1);
   }
   fread (&equip_prices[0], 1, sizeof (equip_prices), fp);
   fclose (fp);
-}
-
-LRESULT CALLBACK WndProc( HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam )
-{
-  if(message == MYWM_NOTIFYICON)
-  {
-    switch (lParam)
-    {
-    case WM_LBUTTONDBLCLK:
-      switch (wParam)
-      {
-      case 100:
-        if (program_hidden)
-        {
-          program_hidden = 0;
-          reveal_window;
-        }
-        else
-        {
-          program_hidden = 1;
-          ShowWindow (consoleHwnd, SW_HIDE);
-        }
-        return TRUE;
-        break;
-      }
-      break;
-    }
-  }
-  return DefWindowProc( hwnd, message, wParam, lParam );
 }
 
 /********************************************************
@@ -14989,7 +14971,6 @@ int main()
   int ship_sockfd = -1;
   int pkt_len, pkt_c, bytes_sent;
   int wserror;
-  WSADATA winsock_data;
   FILE* fp;
   unsigned char* connectionChunk;
   unsigned char* connectionPtr;
@@ -14997,23 +14978,13 @@ int main()
   unsigned char* blockChunk;
   //unsigned short this_packet;
   unsigned long logon_this_packet;
-  HINSTANCE hinst;
-    NOTIFYICONDATA nid = {0};
-  WNDCLASS wc = {0};
-  HWND hwndWindow;
-  MSG msg;
-
   ch = 0;
-
-  consoleHwnd = GetConsoleWindow();
-  hinst = GetModuleHandle(NULL);
 
   dp[0] = 0;
 
   strcat (&dp[0], "Tethealla Ship Server version ");
   strcat (&dp[0], SERVER_VERSION );
   strcat (&dp[0], " coded by Sodaboy");
-  SetConsoleTitle (&dp[0]);
 
   printf ("\nTethealla Ship Server version %s  Copyright (C) 2008  Terry Chatman Jr.\n", SERVER_VERSION);
   printf ("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
@@ -15029,8 +15000,6 @@ int main()
   }*/
   printf ("\n\n");
 
-  WSAStartup(MAKEWORD(1,1), &winsock_data);
-
   printf ("Loading configuration from ship.ini ... ");
 #ifdef LOG_60
   debugfile = fopen ("60packets.txt", "a");
@@ -15042,7 +15011,8 @@ int main()
     exit(1);
   }
 #endif
-  mt_bestseed();
+  srand ( (unsigned) time(NULL) );
+
   load_config_file();
   printf ("OK!\n\n");
 
@@ -15059,7 +15029,7 @@ int main()
   {
     printf ("Could not locate ship_key.bin!\n");
     printf ("Hit [ENTER] to quit...");
-    gets (&dp[0]);
+    fgets (&dp[0],1,stdin);
     exit (1);
   }
 
@@ -15127,7 +15097,7 @@ int main()
   {
     printf ("Can't proceed without ItemPT.gsl\n");
     printf ("Press [ENTER] to quit...");
-    gets(&dp[0]);
+    fgets (&dp[0],1,stdin);
     exit (1);
   }
   fseek (fp, 0x3000, SEEK_SET);
@@ -15536,7 +15506,7 @@ int main()
   {
     printf ("Can't proceed without PlyLevelTbl.bin!\n");
     printf ("Press [ENTER] to quit...");
-    gets(&dp[0]);
+    fgets (&dp[0],1,stdin);
     exit (1);
   }
   fread ( &startingData, 1, 12*14, fp );
@@ -15581,7 +15551,7 @@ int main()
   {
     printf ("Can't proceed without shop.dat!\n");
     printf ("Press [ENTER] to quit...");
-    gets(&dp[0]);
+    fgets (&dp[0],1,stdin);
     exit (1);
   }
 
@@ -15589,7 +15559,7 @@ int main()
   {
     printf ("Failed to read shop data...\n");
     printf ("Press [ENTER] to quit...");
-    gets(&dp[0]);
+    fgets (&dp[0],1,stdin);
     exit (1);
   }
 
@@ -15649,13 +15619,13 @@ int main()
   initialize_logon();
   reconnect_logon();
 
-  printf ("\nAllocating %u bytes of memory for blocks... ", sizeof (BLOCK) * serverBlocks );
+  printf ("\nAllocating %lu bytes of memory for blocks... ", sizeof (BLOCK) * serverBlocks );
   blockChunk = malloc ( sizeof (BLOCK) * serverBlocks );
   if (!blockChunk)
   {
     printf ("Out of memory!\n");
     printf ("Press [ENTER] to quit...");
-    gets(&dp[0]);
+    fgets(&dp[0],1,stdin);
     exit (1);
   }
   blockPtr = blockChunk;
@@ -15668,13 +15638,13 @@ int main()
 
   printf ("OK!\n");
 
-  printf ("\nAllocating %u bytes of memory for connections... ", sizeof (BANANA) * serverMaxConnections );
+  printf ("\nAllocating %lu bytes of memory for connections... ", sizeof (BANANA) * serverMaxConnections );
   connectionChunk = malloc ( sizeof (BANANA) * serverMaxConnections );
   if (!connectionChunk )
   {
     printf ("Out of memory!\n");
     printf ("Press [ENTER] to quit...");
-    gets(&dp[0]);
+    fgets (&dp[0],1,stdin);
     exit (1);
   }
   connectionPtr = connectionChunk;
@@ -15731,7 +15701,7 @@ int main()
     {
       printf ("Failed to open port %u for connections.\n", serverPort+ch );
       printf ("Press [ENTER] to quit...");
-      gets(&dp[0]);
+      fgets(&dp[0],1,stdin);
       exit (1);
     }
 
@@ -15743,66 +15713,15 @@ int main()
   {
     printf ("Failed to open ship port for connections.\n");
     printf ("Press [ENTER] to quit...");
-    gets(&dp[0]);
+    fgets(&dp[0],1,stdin);
     exit (1);
   }
 
   printf ("\nListening...\n");
-  wc.hbrBackground =(HBRUSH)GetStockObject(WHITE_BRUSH);
-  wc.hIcon = LoadIcon( hinst, IDI_APPLICATION );
-  wc.hCursor = LoadCursor( hinst, IDC_ARROW );
-  wc.hInstance = hinst;
-  wc.lpfnWndProc = WndProc;
-  wc.lpszClassName = "sodaboy";
-  wc.style = CS_HREDRAW | CS_VREDRAW;
-
-  if (! RegisterClass( &wc ) )
-  {
-    printf ("RegisterClass failure.\n");
-    exit (1);
-  }
-
-  hwndWindow = CreateWindow ("sodaboy","hidden window", WS_MINIMIZE, 1, 1, 1, 1,
-    NULL,
-    NULL,
-    hinst,
-    NULL );
-
-  if (!hwndWindow)
-  {
-    printf ("Failed to create window.");
-    exit (1);
-  }
-
-  ShowWindow ( hwndWindow, SW_HIDE );
-  UpdateWindow ( hwndWindow );
-  ShowWindow ( consoleHwnd, SW_HIDE );
-  UpdateWindow ( consoleHwnd );
-
-    nid.cbSize        = sizeof(nid);
-  nid.hWnd        = hwndWindow;
-  nid.uID         = 100;
-  nid.uCallbackMessage  = MYWM_NOTIFYICON;
-  nid.uFlags        = NIF_MESSAGE|NIF_ICON|NIF_TIP;
-    nid.hIcon       = LoadIcon(hinst, MAKEINTRESOURCE(IDI_ICON1));
-  nid.szTip[0] = 0;
-  strcat (&nid.szTip[0], "Tethealla Ship ");
-  strcat (&nid.szTip[0], SERVER_VERSION);
-  strcat (&nid.szTip[0], " - Double click to show/hide");
-    Shell_NotifyIcon(NIM_ADD, &nid);
 
   for (;;)
   {
     int nfds = 0;
-
-    /* Process the system tray icon */
-
-    if ( PeekMessage( &msg, hwndWindow, 0, 0, 1 ) )
-    {
-      TranslateMessage(&msg);
-      DispatchMessage(&msg);
-    }
-
 
     /* Ping pong?! */
 
@@ -16137,7 +16056,6 @@ int main()
 
           if (bytes_sent == SOCKET_ERROR)
           {
-            wserror = WSAGetLastError();
             printf ("Could not send data to logon server...\n");
             printf ("Socket Error %u.\n", wserror );
             initialize_logon();
@@ -16156,7 +16074,6 @@ int main()
           // Read shit.
           if ( ( pkt_len = recv (logon->sockfd, &tmprcv[0], PACKET_BUFFER_SIZE - 1, 0) ) <= 0 )
           {
-            wserror = WSAGetLastError();
             printf ("Could not read data from logon server...\n");
             printf ("Socket Error %u.\n", wserror );
             initialize_logon();
@@ -16218,7 +16135,7 @@ void tcp_listen (int sockfd)
   {
     debug_perror ("Could not listen for connection");
     debug_perror ("Press [ENTER] to quit...");
-    gets(&dp[0]);
+    fgets(&dp[0],1,stdin);
     exit(1);
   }
 }
@@ -16279,7 +16196,7 @@ int tcp_sock_open(struct in_addr ip, int port)
   if( fd < 0 ){
     debug_perror ("Could not create socket");
     debug_perror ("Press [ENTER] to quit...");
-    gets(&dp[0]);
+    fgets(&dp[0],1,stdin);
     exit(1);
   }
 
@@ -16295,7 +16212,7 @@ int tcp_sock_open(struct in_addr ip, int port)
   if (bind(fd, (struct sockaddr *)&sa, sizeof(struct sockaddr)) < 0){
     debug_perror("Could not bind to port");
     debug_perror("Press [ENTER] to quit...");
-    gets(&dp[0]);
+    fgets(&dp[0],1,stdin);
     exit(1);
   }
 
@@ -16412,8 +16329,8 @@ void encryptcopy (BANANA* client, const unsigned char* src, unsigned size)
   unsigned char* dest;
 
   // Bad pointer check...
-  if ( ((unsigned) client < (unsigned)connections[0]) ||
-     ((unsigned) client > (unsigned)connections[serverMaxConnections-1]) )
+  if ( (client < connections[0]) ||
+     ( client > connections[serverMaxConnections-1]) )
     return;
   if (TCP_BUFFER_SIZE - client->snddata < ( (int) size + 7 ) )
     client->todc = 1;
@@ -16688,20 +16605,20 @@ unsigned RleEncode(unsigned char *src, unsigned char *dest, unsigned src_size)
 {
   unsigned char currChar, prevChar;             /* current and previous characters */
   unsigned short count;                /* number of characters in a run */
-  unsigned src_end, dest_start;
+  unsigned char *src_end, *dest_start;
 
-  dest_start = (unsigned)dest;
-  src_end = (unsigned)src + src_size;
+  dest_start = dest;
+  src_end = src + src_size;
 
   prevChar  = 0xFF - *src;
 
-  while ((unsigned) src < src_end)
+  while (src < src_end)
   {
     currChar = *(dest++) = *(src++);
 
     if ( currChar == prevChar )
     {
-      if ( (unsigned) src == src_end )
+      if ( src == src_end )
       {
         *(dest++) = 0;
         *(dest++) = 0;
@@ -16709,13 +16626,13 @@ unsigned RleEncode(unsigned char *src, unsigned char *dest, unsigned src_size)
       else
       {
         count = 0;
-        while (((unsigned)src < src_end) && (count < 0xFFF0))
+        while ((src < src_end) && (count < 0xFFF0))
         {
           if (*src == prevChar)
           {
             count++;
             src++;
-            if ( (unsigned) src == src_end )
+            if ( src == src_end )
             {
               *(unsigned short*) dest = count;
               dest += 2;
@@ -16734,16 +16651,16 @@ unsigned RleEncode(unsigned char *src, unsigned char *dest, unsigned src_size)
     else
       prevChar = currChar;
   }
-  return (unsigned)dest - dest_start;
+  return dest - dest_start;
 }
 
 void RleDecode(unsigned char *src, unsigned char *dest, unsigned src_size)
 {
     unsigned char currChar, prevChar;             /* current and previous characters */
     unsigned short count;                /* number of characters in a run */
-  unsigned src_end;
+  unsigned char *src_end;
 
-  src_end = (unsigned) src + src_size;
+  src_end = src + src_size;
 
     /* decode */
 
@@ -16751,7 +16668,7 @@ void RleDecode(unsigned char *src, unsigned char *dest, unsigned src_size)
 
     /* read input until there's nothing left */
 
-    while ((unsigned) src < src_end)
+    while (src < src_end)
     {
     currChar = *(src++);
 
