@@ -24,7 +24,9 @@
 //#define NO_SQL
 #define NO_CONNECT_TEST
 
+#include  <stdarg.h>
 #include  <stdio.h>
+#include  <stdlib.h>
 #include  <ctype.h>
 #include  <string.h>
 #include  <time.h>
