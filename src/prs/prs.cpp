@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <memory.h>
 
 typedef unsigned long u32;

@@ -1,9 +1,9 @@
-#include  <windows.h>
 #include  <stdio.h>
+#include  <stdlib.h>
 #include  <string.h>
 #include  <time.h>
 #include  <math.h>
-#include  "prs.cpp"
+#include  "src/prs/prs.cpp"
 
 //#define WORD_WRAP_LEN 26
 
@@ -32,14 +32,14 @@ void main(int argc)
   {
     printf ("Converting unitxt_j.prs into unitxt_unicode.txt\n");
     printf ("Press [ENTER] to begin or CTRL+C to abort...");
-    gets   (&line_buffer[0]);
+    fgets   (&line_buffer[0], 4096, stdin);
     printf ("\n");
     fp = fopen ("unitxt_j.prs", "rb");
     if (!fp)
     {
       printf ("Could not locate unitxt_j.prs for reading...\n");
       printf ("(Hit Enter)");
-      gets (&line_buffer[0]);
+      fgets (&line_buffer[0], 4096, stdin);
       exit (1);
     }
     fseek (fp, 0, SEEK_END);
@@ -105,7 +105,7 @@ void main(int argc)
       do_wrap = 0;
       final_buffer[0] = 0;
       strcat (&final_buffer[0], "#ENTRY");
-      _itoa (line_count, &final_buffer[strlen(&final_buffer[0])], 10);
+      sprintf (&final_buffer[strlen(&final_buffer[0])], "%d", line_count);
       strcat (&final_buffer[0], "\r\n");
       ch4 = 0;
       for (ch3=0;ch3<strlen(&final_buffer[0]);ch3++)
@@ -143,14 +143,14 @@ void main(int argc)
   {
     printf ("Making a new newunitxt.prs file from unitxt_unicode.txt\n");
     printf ("Press [ENTER] to begin or CTRL+C to abort...");
-    gets   (&line_buffer[0]);
+    fgets   (&line_buffer[0], 4096, stdin);
     printf ("\n");
     fp = fopen ("unitxt_unicode.txt", "rb");
     if (!fp)
     {
       printf ("Could not locate unitxt_unicode.txt for reading...\n");
       printf ("(Hit Enter)");
-      gets (&line_buffer[0]);
+      fgets (&line_buffer[0], 4096, stdin);
       exit (1);
     }
     line_count = 0; // Total amount of lines
@@ -237,9 +237,9 @@ void main(int argc)
     fwrite (&unitxt_buffer[0], 1, prs_size, fp);
     fclose (fp);
     printf ("\nnewunitxt.prs wrote (%u bytes)! (Hit Enter)", prs_size);
-    gets (&line_buffer[0]);
+    fgets (&line_buffer[0], 4096, stdin);
     printf ("\n\nHint: Using ANY command line parameter makes this program convert\n");
     printf ("unitxt_j_prs into unitxt.txt (Hit Enter)");
-    gets (&line_buffer[0]);
+    fgets (&line_buffer[0], 4096, stdin);
   }
 }
