@@ -39,7 +39,6 @@
 #endif
 #include  <src/md5/include/md5.h>
 
-#include  "resource.h"
 #include  "pso_crypt.h"
 #include  "bbtable.h"
 #include  "src/prs/prs.cpp"
