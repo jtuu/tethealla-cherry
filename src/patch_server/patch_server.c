@@ -1100,4 +1100,711 @@ int main( int argc, char * argv[] )
   patch_packet[patch_size++] = 0x04;
   patch_packet[patch_size++] = 0x00;
   patch_packet[patch_size++] = 0x0A;
-  patch_packet[patch_size++] = 0x00;਍  瀀愀琀挀栀开瀀愀挀欀攀琀嬀瀀愀琀挀栀开猀椀稀攀⬀⬀崀 㴀 　砀　㐀㬀ഀ਀  瀀愀琀挀栀开瀀愀挀欀攀琀嬀瀀愀琀挀栀开猀椀稀攀⬀⬀崀 㴀 　砀　　㬀ഀ਀  瀀愀琀挀栀开瀀愀挀欀攀琀嬀瀀愀琀挀栀开猀椀稀攀⬀⬀崀 㴀 　砀　䐀㬀ഀ਀  瀀愀琀挀栀开瀀愀挀欀攀琀嬀瀀愀琀挀栀开猀椀稀攀⬀⬀崀 㴀 　砀　　㬀ഀ਀  瀀爀椀渀琀昀 ⠀∀尀渀䐀漀渀攀℀尀渀尀渀∀⤀㬀ഀ਀ഀ਀  椀昀 ⠀℀猀攀爀瘀攀爀一甀洀倀愀琀挀栀攀猀⤀ഀ਀  笀ഀ਀    瀀爀椀渀琀昀 ⠀∀吀栀攀爀攀 愀爀攀 渀漀 瀀愀琀挀栀攀猀 琀漀 猀攀渀搀⸀尀渀夀漀甀 渀攀攀搀 愀琀 氀攀愀猀琀 漀渀攀 瀀愀琀挀栀 昀椀氀攀 琀漀 猀攀渀搀 漀爀 挀栀攀挀欀⸀尀渀∀⤀㬀ഀ਀    瀀爀椀渀琀昀 ⠀∀䠀椀琀 嬀䔀一吀䔀刀崀∀⤀㬀ഀ਀    攀砀椀琀 ⠀㄀⤀㬀ഀ਀  紀ഀ਀ഀ਀  瀀爀椀渀琀昀 ⠀∀䰀漀愀搀椀渀最 眀攀氀挀漀洀攀⸀琀砀琀 ⸀⸀⸀∀⤀㬀ഀ਀  昀瀀 㴀 昀漀瀀攀渀 ⠀∀眀攀氀挀漀洀攀⸀琀砀琀∀Ⰰ∀爀戀∀⤀㬀ഀ਀  椀昀 ⠀℀昀瀀⤀ഀ਀  笀ഀ਀    瀀爀椀渀琀昀 ⠀∀尀渀眀攀氀挀漀洀攀⸀琀砀琀 猀攀攀洀猀 琀漀 戀攀 洀椀猀猀椀渀最⸀尀渀倀氀攀愀猀攀 戀攀 猀甀爀攀 椀琀✀猀 椀渀 琀栀攀 猀愀洀攀 昀漀氀搀攀爀 愀猀 瀀愀琀挀栀开猀攀爀瘀攀爀⸀攀砀攀尀渀∀⤀㬀ഀ਀    瀀爀椀渀琀昀 ⠀∀䠀椀琀 嬀䔀一吀䔀刀崀∀⤀㬀ഀ਀    最攀琀猀 ⠀☀圀攀氀挀漀洀攀开䴀攀猀猀愀最攀嬀　崀⤀㬀ഀ਀    攀砀椀琀 ⠀㄀⤀㬀ഀ਀  紀ഀ਀  昀猀攀攀欀 ⠀ 昀瀀Ⰰ 　Ⰰ 匀䔀䔀䬀开䔀一䐀 ⤀㬀ഀ਀  挀栀 㴀 昀琀攀氀氀 ⠀ 昀瀀 ⤀㬀ഀ਀  昀猀攀攀欀 ⠀ 昀瀀Ⰰ 　Ⰰ 匀䔀䔀䬀开匀䔀吀 ⤀㬀ഀ਀  椀昀 ⠀ 挀栀 㸀 㐀　㤀㘀 ⤀ഀ਀     挀栀 㴀 㐀　㤀㘀㬀ഀ਀  昀爀攀愀搀 ⠀☀倀愀挀欀攀琀䐀愀琀愀嬀　崀Ⰰ ㄀Ⰰ 挀栀Ⰰ 昀瀀 ⤀㬀ഀ਀  昀挀氀漀猀攀 ⠀ 昀瀀 ⤀㬀ഀ਀ഀ਀  眀  㴀 ⠀甀渀猀椀最渀攀搀 猀栀漀爀琀⨀⤀ ☀倀愀挀欀攀琀䐀愀琀愀嬀　崀㬀ഀ਀  眀㈀ 㴀 ⠀甀渀猀椀最渀攀搀 猀栀漀爀琀⨀⤀ ☀圀攀氀挀漀洀攀开䴀攀猀猀愀最攀嬀　崀㬀ഀ਀  圀攀氀挀漀洀攀开䴀攀猀猀愀最攀开匀椀稀攀 㴀 　㬀ഀ਀  昀漀爀 ⠀ 挀栀㈀ 㴀 　㬀 挀栀㈀ 㰀 挀栀㬀 挀栀㈀ ⬀㴀 ㈀ ⤀ഀ਀  笀ഀ਀    椀昀 ⠀⨀眀 㴀㴀 　砀　　㈀㐀⤀ഀ਀      ⨀眀 㴀  　砀　　　㤀㬀 ⼀⼀ 䌀栀愀渀最攀 ␀ 琀漀 　砀　㤀ഀ਀    椀昀 ⠀⨀眀 ℀㴀 　砀　　　䐀⤀ഀ਀    笀ഀ਀      ⨀⠀眀㈀⬀⬀⤀ 㴀 ⨀眀㬀ഀ਀      圀攀氀挀漀洀攀开䴀攀猀猀愀最攀开匀椀稀攀 ⬀㴀 ㈀㬀ഀ਀    紀ഀ਀    眀⬀⬀㬀ഀ਀  紀ഀ਀ഀ਀  ⨀眀㈀ 㴀 　砀　　　　㬀ഀ਀ഀ਀  瀀爀椀渀琀昀 ⠀∀  ⠀─甀 戀礀琀攀猀⤀ 伀䬀℀尀渀尀渀∀Ⰰ 圀攀氀挀漀洀攀开䴀攀猀猀愀最攀开匀椀稀攀⤀㬀ഀ਀ഀ਀  ⼀⨀ 伀瀀攀渀 琀栀攀 倀匀伀 䈀䈀 倀愀琀挀栀 匀攀爀瘀攀爀 倀漀爀琀⸀⸀⸀ ⨀⼀ഀ਀ഀ਀  瀀爀椀渀琀昀 ⠀∀伀瀀攀渀椀渀最 猀攀爀瘀攀爀 瀀愀琀挀栀 瀀漀爀琀 ─甀 昀漀爀 挀漀渀渀攀挀琀椀漀渀猀⸀尀渀∀Ⰰ 猀攀爀瘀攀爀倀漀爀琀 ⴀ ㄀　　　⤀㬀ഀ਀ഀ਀⌀椀昀搀攀昀 唀匀䔀䄀䐀䐀刀开䄀一夀ഀ਀  瀀愀琀挀栀开椀渀⸀猀开愀搀搀爀 㴀 䤀一䄀䐀䐀刀开䄀一夀㬀ഀ਀⌀攀氀猀攀ഀ਀  椀昀 ⠀漀瘀攀爀爀椀搀攀开漀渀⤀ഀ਀    洀攀洀挀瀀礀 ⠀☀瀀愀琀挀栀开椀渀⸀猀开愀搀搀爀Ⰰ ☀漀瘀攀爀爀椀搀攀䤀倀嬀　崀Ⰰ 㐀 ⤀㬀ഀ਀  攀氀猀攀ഀ਀    洀攀洀挀瀀礀 ⠀☀瀀愀琀挀栀开椀渀⸀猀开愀搀搀爀Ⰰ ☀猀攀爀瘀攀爀䤀倀嬀　崀Ⰰ 㐀 ⤀㬀ഀ਀⌀攀渀搀椀昀ഀ਀ഀ਀  瀀愀琀挀栀开猀漀挀欀昀搀 㴀 琀挀瀀开猀漀挀欀开漀瀀攀渀⠀ 瀀愀琀挀栀开椀渀Ⰰ 猀攀爀瘀攀爀倀漀爀琀 ⴀ ㄀　　　 ⤀㬀ഀ਀ഀ਀  琀挀瀀开氀椀猀琀攀渀 ⠀瀀愀琀挀栀开猀漀挀欀昀搀⤀㬀ഀ਀ഀ਀⌀椀昀搀攀昀 唀匀䔀䄀䐀䐀刀开䄀一夀ഀ਀  搀愀琀愀开椀渀⸀猀开愀搀搀爀 㴀 䤀一䄀䐀䐀刀开䄀一夀㬀ഀ਀⌀攀氀猀攀ഀ਀  椀昀 ⠀漀瘀攀爀爀椀搀攀开漀渀⤀ഀ਀    洀攀洀挀瀀礀 ⠀☀搀愀琀愀开椀渀⸀猀开愀搀搀爀Ⰰ ☀漀瘀攀爀爀椀搀攀䤀倀嬀　崀Ⰰ 㐀 ⤀㬀ഀ਀  攀氀猀攀ഀ਀    洀攀洀挀瀀礀 ⠀☀搀愀琀愀开椀渀⸀猀开愀搀搀爀Ⰰ ☀猀攀爀瘀攀爀䤀倀嬀　崀Ⰰ 㐀 ⤀㬀ഀ਀⌀攀渀搀椀昀ഀ਀ഀ਀  瀀爀椀渀琀昀 ⠀∀伀瀀攀渀椀渀最 猀攀爀瘀攀爀 搀愀琀愀 瀀漀爀琀 ─甀 昀漀爀 挀漀渀渀攀挀琀椀漀渀猀⸀尀渀∀Ⰰ 猀攀爀瘀攀爀倀漀爀琀 ⴀ 㤀㤀㤀⤀㬀ഀ਀ഀ਀  搀愀琀愀开猀漀挀欀昀搀 㴀 琀挀瀀开猀漀挀欀开漀瀀攀渀⠀ 搀愀琀愀开椀渀Ⰰ 猀攀爀瘀攀爀倀漀爀琀 ⴀ 㤀㤀㤀 ⤀㬀ഀ਀ഀ਀  琀挀瀀开氀椀猀琀攀渀 ⠀搀愀琀愀开猀漀挀欀昀搀⤀㬀ഀ਀ഀ਀  椀昀 ⠀⠀瀀愀琀挀栀开猀漀挀欀昀搀㰀　⤀ 簀簀 ⠀搀愀琀愀开猀漀挀欀昀搀㰀　⤀⤀ഀ਀  笀ഀ਀    瀀爀椀渀琀昀 ⠀∀䘀愀椀氀攀搀 琀漀 漀瀀攀渀 瀀漀爀琀 昀漀爀 挀漀渀渀攀挀琀椀漀渀猀⸀尀渀∀⤀㬀ഀ਀    攀砀椀琀 ⠀㄀⤀㬀ഀ਀  紀ഀ਀ഀ਀  瀀爀椀渀琀昀 ⠀∀尀渀䰀椀猀琀攀渀椀渀最⸀⸀⸀尀渀∀⤀㬀ഀ਀ഀ਀  眀挀⸀栀戀爀䈀愀挀欀最爀漀甀渀搀 㴀⠀䠀䈀刀唀匀䠀⤀䜀攀琀匀琀漀挀欀伀戀樀攀挀琀⠀圀䠀䤀吀䔀开䈀刀唀匀䠀⤀㬀ഀ਀  眀挀⸀栀䤀挀漀渀 㴀 䰀漀愀搀䤀挀漀渀⠀ 栀椀渀猀琀Ⰰ 䤀䐀䤀开䄀倀倀䰀䤀䌀䄀吀䤀伀一 ⤀㬀ഀ਀  眀挀⸀栀䌀甀爀猀漀爀 㴀 䰀漀愀搀䌀甀爀猀漀爀⠀ 栀椀渀猀琀Ⰰ 䤀䐀䌀开䄀刀刀伀圀 ⤀㬀ഀ਀  眀挀⸀栀䤀渀猀琀愀渀挀攀 㴀 栀椀渀猀琀㬀ഀ਀  眀挀⸀氀瀀昀渀圀渀搀倀爀漀挀 㴀 圀渀搀倀爀漀挀㬀ഀ਀  眀挀⸀氀瀀猀稀䌀氀愀猀猀一愀洀攀 㴀 ∀猀漀搀愀戀漀礀∀㬀ഀ਀  眀挀⸀猀琀礀氀攀 㴀 䌀匀开䠀刀䔀䐀刀䄀圀 簀 䌀匀开嘀刀䔀䐀刀䄀圀㬀ഀ਀ഀ਀  椀昀 ⠀℀ 刀攀最椀猀琀攀爀䌀氀愀猀猀⠀ ☀眀挀 ⤀ ⤀ഀ਀  笀ഀ਀    瀀爀椀渀琀昀 ⠀∀刀攀最椀猀琀攀爀䌀氀愀猀猀 昀愀椀氀甀爀攀⸀尀渀∀⤀㬀ഀ਀    攀砀椀琀 ⠀㄀⤀㬀ഀ਀  紀ഀ਀ഀ਀  栀眀渀搀圀椀渀搀漀眀 㴀 䌀爀攀愀琀攀圀椀渀搀漀眀 ⠀∀猀漀搀愀戀漀礀∀Ⰰ∀栀椀搀搀攀渀 眀椀渀搀漀眀∀Ⰰ 圀匀开䴀䤀一䤀䴀䤀娀䔀Ⰰ ㄀Ⰰ ㄀Ⰰ ㄀Ⰰ ㄀Ⰰഀ਀    一唀䰀䰀Ⰰഀ਀    一唀䰀䰀Ⰰഀ਀    栀椀渀猀琀Ⰰഀ਀    一唀䰀䰀 ⤀㬀ഀ਀ഀ਀  椀昀 ⠀℀栀眀渀搀圀椀渀搀漀眀⤀ഀ਀  笀ഀ਀    瀀爀椀渀琀昀 ⠀∀䘀愀椀氀攀搀 琀漀 挀爀攀愀琀攀 眀椀渀搀漀眀⸀∀⤀㬀ഀ਀    攀砀椀琀 ⠀㄀⤀㬀ഀ਀  紀ഀ਀ഀ਀  匀栀漀眀圀椀渀搀漀眀 ⠀ 栀眀渀搀圀椀渀搀漀眀Ⰰ 匀圀开䠀䤀䐀䔀 ⤀㬀ഀ਀  唀瀀搀愀琀攀圀椀渀搀漀眀 ⠀ 栀眀渀搀圀椀渀搀漀眀 ⤀㬀ഀ਀  匀栀漀眀圀椀渀搀漀眀 ⠀ 挀漀渀猀漀氀攀䠀眀渀搀Ⰰ 匀圀开䠀䤀䐀䔀 ⤀㬀ഀ਀  唀瀀搀愀琀攀圀椀渀搀漀眀 ⠀ 挀漀渀猀漀氀攀䠀眀渀搀 ⤀㬀ഀ਀ഀ਀    渀椀搀⸀挀戀匀椀稀攀        㴀 猀椀稀攀漀昀⠀渀椀搀⤀㬀ഀ਀  渀椀搀⸀栀圀渀搀        㴀 栀眀渀搀圀椀渀搀漀眀㬀ഀ਀  渀椀搀⸀甀䤀䐀         㴀 ㄀　　㬀ഀ਀  渀椀搀⸀甀䌀愀氀氀戀愀挀欀䴀攀猀猀愀最攀  㴀 䴀夀圀䴀开一伀吀䤀䘀夀䤀䌀伀一㬀ഀ਀  渀椀搀⸀甀䘀氀愀最猀        㴀 一䤀䘀开䴀䔀匀匀䄀䜀䔀簀一䤀䘀开䤀䌀伀一簀一䤀䘀开吀䤀倀㬀ഀ਀    渀椀搀⸀栀䤀挀漀渀       㴀 䰀漀愀搀䤀挀漀渀⠀栀椀渀猀琀Ⰰ 䴀䄀䬀䔀䤀一吀刀䔀匀伀唀刀䌀䔀⠀䤀䐀䤀开䤀䌀伀一㄀⤀⤀㬀ഀ਀  渀椀搀⸀猀稀吀椀瀀嬀　崀 㴀 　㬀ഀ਀  猀琀爀挀愀琀 ⠀☀渀椀搀⸀猀稀吀椀瀀嬀　崀Ⰰ ∀吀攀琀栀攀愀氀氀愀 倀愀琀挀栀 ∀⤀㬀ഀ਀  猀琀爀挀愀琀 ⠀☀渀椀搀⸀猀稀吀椀瀀嬀　崀Ⰰ 匀䔀刀嘀䔀刀开嘀䔀刀匀䤀伀一⤀㬀ഀ਀  猀琀爀挀愀琀 ⠀☀渀椀搀⸀猀稀吀椀瀀嬀　崀Ⰰ ∀ ⴀ 䐀漀甀戀氀攀 挀氀椀挀欀 琀漀 猀栀漀眀⼀栀椀搀攀∀⤀㬀ഀ਀    匀栀攀氀氀开一漀琀椀昀礀䤀挀漀渀⠀一䤀䴀开䄀䐀䐀Ⰰ ☀渀椀搀⤀㬀ഀ਀ഀ਀ഀ਀  昀漀爀 ⠀㬀㬀⤀ഀ਀  笀ഀ਀    椀渀琀 渀昀搀猀 㴀 　㬀ഀ਀ഀ਀    ⼀⨀ 倀爀漀挀攀猀猀 琀栀攀 猀礀猀琀攀洀 琀爀愀礀 椀挀漀渀 ⨀⼀ഀ਀ഀ਀    椀昀 ⠀ 倀攀攀欀䴀攀猀猀愀最攀⠀ ☀洀猀最Ⰰ 栀眀渀搀圀椀渀搀漀眀Ⰰ 　Ⰰ 　Ⰰ ㄀ ⤀ ⤀ഀ਀    笀ഀ਀      吀爀愀渀猀氀愀琀攀䴀攀猀猀愀最攀⠀☀洀猀最⤀㬀ഀ਀      䐀椀猀瀀愀琀挀栀䴀攀猀猀愀最攀⠀☀洀猀最⤀㬀ഀ਀    紀ഀ਀ഀ਀    ⼀⨀ 倀椀渀最 瀀漀渀最㼀℀ ⨀⼀ഀ਀ഀ਀    猀攀爀瘀攀爀琀椀洀攀 㴀 琀椀洀攀⠀一唀䰀䰀⤀㬀ഀ਀ഀ਀    椀昀 ⠀⠀洀愀砀戀礀琀攀猀⤀ ☀☀ ⠀猀攀渀搀琀椀洀攀 ℀㴀 ⠀甀渀猀椀最渀攀搀⤀ 猀攀爀瘀攀爀琀椀洀攀⤀⤀ഀ਀    笀ഀ਀      猀攀渀搀琀椀洀攀  㴀 ⠀甀渀猀椀最渀攀搀⤀ 猀攀爀瘀攀爀琀椀洀攀㬀ഀ਀      搀愀琀愀开爀攀洀愀椀渀椀渀最 㴀 洀愀砀戀礀琀攀猀㬀ഀ਀    紀ഀ਀ഀ਀    ⼀⨀ 䌀氀攀愀爀 猀漀挀欀攀琀 愀挀琀椀瘀椀琀礀 昀氀愀最猀⸀ ⨀⼀ഀ਀ഀ਀    䘀䐀开娀䔀刀伀 ⠀☀刀攀愀搀䘀䐀猀⤀㬀ഀ਀    䘀䐀开娀䔀刀伀 ⠀☀圀爀椀琀攀䘀䐀猀⤀㬀ഀ਀    䘀䐀开娀䔀刀伀 ⠀☀䔀砀挀攀瀀琀䘀䐀猀⤀㬀ഀ਀ഀ਀    渀甀洀开猀攀渀搀猀 㴀 　㬀ഀ਀ഀ਀    昀漀爀 ⠀挀栀㴀　㬀挀栀㰀猀攀爀瘀攀爀一甀洀䌀漀渀渀攀挀琀椀漀渀猀㬀挀栀⬀⬀⤀ഀ਀    笀ഀ਀      挀漀渀渀攀挀琀一甀洀 㴀 猀攀爀瘀攀爀䌀漀渀渀攀挀琀椀漀渀䰀椀猀琀嬀挀栀崀㬀ഀ਀      眀漀爀欀䌀漀渀渀攀挀琀 㴀 挀漀渀渀攀挀琀椀漀渀猀嬀挀漀渀渀攀挀琀一甀洀崀㬀ഀ਀ഀ਀      椀昀 ⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀氀礀匀漀挀欀昀搀 㸀㴀 　⤀ഀ਀      笀ഀ਀        椀昀 ⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀挀欀攀琀搀愀琀愀⤀ഀ਀        笀ഀ਀          洀攀洀挀瀀礀 ⠀☀琀栀椀猀开瀀愀挀欀攀琀Ⰰ ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀挀欀攀琀嬀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀挀欀攀琀爀攀愀搀崀Ⰰ ㈀⤀㬀ഀ਀          洀攀洀挀瀀礀 ⠀☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀搀攀挀爀礀瀀琀戀甀昀嬀　崀Ⰰ ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀挀欀攀琀嬀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀挀欀攀琀爀攀愀搀崀Ⰰ 琀栀椀猀开瀀愀挀欀攀琀⤀㬀ഀ਀ഀ਀          ⼀⼀搀攀戀甀最 ⠀∀刀攀挀攀椀瘀攀搀 昀爀漀洀 挀氀椀攀渀琀㨀─甀∀Ⰰ 琀栀椀猀开瀀愀挀欀攀琀⤀㬀ഀ਀          ⼀⼀搀椀猀瀀氀愀礀开瀀愀挀欀攀琀 ⠀☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀搀攀挀爀礀瀀琀戀甀昀嬀　崀Ⰰ 琀栀椀猀开瀀愀挀欀攀琀⤀㬀ഀ਀ഀ਀          椀昀 ⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀琀挀栀⤀ഀ਀            䐀愀琀愀倀爀漀挀攀猀猀倀愀挀欀攀琀 ⠀眀漀爀欀䌀漀渀渀攀挀琀⤀㬀ഀ਀          攀氀猀攀ഀ਀            倀愀琀挀栀倀爀漀挀攀猀猀倀愀挀欀攀琀 ⠀眀漀爀欀䌀漀渀渀攀挀琀⤀㬀ഀ਀ഀ਀          眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀挀欀攀琀爀攀愀搀 ⬀㴀 琀栀椀猀开瀀愀挀欀攀琀㬀ഀ਀          椀昀 ⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀挀欀攀琀爀攀愀搀 㴀㴀 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀挀欀攀琀搀愀琀愀⤀ഀ਀            眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀挀欀攀琀爀攀愀搀 㴀 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀挀欀攀琀搀愀琀愀 㴀 　㬀ഀ਀        紀ഀ਀ഀ਀        椀昀 ⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀氀愀猀琀吀椀挀欀 ℀㴀 ⠀甀渀猀椀最渀攀搀⤀ 猀攀爀瘀攀爀琀椀洀攀⤀ഀ਀        笀ഀ਀          椀昀 ⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀氀愀猀琀吀椀挀欀 㸀 ⠀甀渀猀椀最渀攀搀⤀ 猀攀爀瘀攀爀琀椀洀攀⤀ഀ਀            挀栀㈀ 㴀 ㄀㬀ഀ਀          攀氀猀攀ഀ਀            挀栀㈀ 㴀 ㄀ ⬀ ⠀⠀甀渀猀椀最渀攀搀⤀ 猀攀爀瘀攀爀琀椀洀攀 ⴀ 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀氀愀猀琀吀椀挀欀⤀㬀ഀ਀            眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀氀愀猀琀吀椀挀欀 㴀 ⠀甀渀猀椀最渀攀搀⤀ 猀攀爀瘀攀爀琀椀洀攀㬀ഀ਀            眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀挀欀攀琀猀匀攀挀 ⼀㴀 挀栀㈀㬀ഀ਀            眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀琀漀䈀礀琀攀猀匀攀挀 ⼀㴀 挀栀㈀㬀ഀ਀            眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀昀爀漀洀䈀礀琀攀猀匀攀挀 ⼀㴀 挀栀㈀㬀ഀ਀        紀ഀ਀ഀ਀        䘀䐀开匀䔀吀 ⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀氀礀匀漀挀欀昀搀Ⰰ ☀刀攀愀搀䘀䐀猀⤀㬀ഀ਀        渀昀搀猀 㴀 洀愀砀 ⠀渀昀搀猀Ⰰ 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀氀礀匀漀挀欀昀搀⤀㬀ഀ਀        䘀䐀开匀䔀吀 ⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀氀礀匀漀挀欀昀搀Ⰰ ☀䔀砀挀攀瀀琀䘀䐀猀⤀㬀ഀ਀        渀昀搀猀 㴀 洀愀砀 ⠀渀昀搀猀Ⰰ 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀氀礀匀漀挀欀昀搀⤀㬀ഀ਀ഀ਀        椀昀 ⠀⠀℀洀愀砀戀礀琀攀猀⤀ 簀簀 ⠀搀愀琀愀开爀攀洀愀椀渀椀渀最⤀⤀ഀ਀        笀ഀ਀          椀昀 ⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀猀渀搀搀愀琀愀 ⴀ 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀猀渀搀眀爀椀琀琀攀渀⤀ഀ਀          笀ഀ਀            䘀䐀开匀䔀吀 ⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀氀礀匀漀挀欀昀搀Ⰰ ☀圀爀椀琀攀䘀䐀猀⤀㬀ഀ਀            渀昀搀猀 㴀 洀愀砀 ⠀渀昀搀猀Ⰰ 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀氀礀匀漀挀欀昀搀⤀㬀ഀ਀          紀ഀ਀          攀氀猀攀ഀ਀          笀ഀ਀            ⼀⼀ 匀攀渀搀 爀攀洀愀椀渀椀渀最 瀀愀琀挀栀 搀愀琀愀 栀攀爀攀⸀⸀⸀ഀ਀            ⼀⼀ 椀昀 猀攀渀搀椀渀最开昀椀氀攀猀 愀渀搀 猀琀甀昀昀 氀攀昀琀 琀漀 最漀ഀ਀            椀昀 ⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀猀攀渀搀椀渀最开昀椀氀攀猀⤀ഀ਀            笀ഀ਀              渀甀洀开猀攀渀搀猀⬀⬀㬀ഀ਀              瀀搀 㴀 ☀猀开搀愀琀愀嬀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀猀开搀愀琀愀嬀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀挀甀爀爀攀渀琀开昀椀氀攀崀崀㬀ഀ਀              昀瀀 㴀 昀漀瀀攀渀 ⠀☀瀀搀ⴀ㸀昀甀氀氀开昀椀氀攀开渀愀洀攀嬀　崀Ⰰ ∀爀戀∀⤀㬀ഀ਀              昀猀攀攀欀 ⠀昀瀀Ⰰ 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀挀昀椀氀攀开椀渀搀攀砀Ⰰ 匀䔀䔀䬀开匀䔀吀⤀㬀ഀ਀              琀漀开猀攀渀搀 㴀 瀀搀ⴀ㸀昀椀氀攀开猀椀稀攀 ⴀ 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀挀昀椀氀攀开椀渀搀攀砀㬀ഀ਀              椀昀 ⠀琀漀开猀攀渀搀 㸀 ㈀㐀㔀㜀㘀⤀ഀ਀                琀漀开猀攀渀搀 㴀 ㈀㐀㔀㜀㘀㬀ഀ਀              昀爀攀愀搀 ⠀☀倀愀挀欀攀琀䐀愀琀愀嬀　砀㄀　崀Ⰰ ㄀Ⰰ 琀漀开猀攀渀搀Ⰰ 昀瀀⤀㬀ഀ਀              昀挀氀漀猀攀 ⠀昀瀀⤀㬀ഀ਀              眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀挀昀椀氀攀开椀渀搀攀砀 ⬀㴀 琀漀开猀攀渀搀㬀ഀ਀              挀栀攀挀欀猀甀洀 㴀 䌀愀氀挀甀氀愀琀攀䌀栀攀挀欀猀甀洀 ⠀ ☀倀愀挀欀攀琀䐀愀琀愀嬀　砀㄀　崀Ⰰ 琀漀开猀攀渀搀⤀㬀ഀ਀              洀攀洀猀攀琀 ⠀☀倀愀挀欀攀琀䐀愀琀愀嬀　砀　　崀Ⰰ 　Ⰰ 　砀㄀　⤀㬀ഀ਀              倀愀挀欀攀琀䐀愀琀愀嬀　砀　㈀崀 㴀 　砀　㜀㬀ഀ਀              洀攀洀挀瀀礀 ⠀☀倀愀挀欀攀琀䐀愀琀愀嬀　砀　㐀崀Ⰰ ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀挀栀甀渀欀Ⰰ 㐀⤀㬀ഀ਀              洀攀洀挀瀀礀 ⠀☀倀愀挀欀攀琀䐀愀琀愀嬀　砀　㠀崀Ⰰ ☀挀栀攀挀欀猀甀洀Ⰰ 㐀⤀㬀ഀ਀              洀攀洀挀瀀礀 ⠀☀倀愀挀欀攀琀䐀愀琀愀嬀　砀　䌀崀Ⰰ ☀琀漀开猀攀渀搀Ⰰ  㐀⤀㬀ഀ਀              琀漀开猀攀渀搀 ⬀㴀 　砀㄀　㬀ഀ਀              眀栀椀氀攀 ⠀琀漀开猀攀渀搀 ─ 㐀⤀ഀ਀                倀愀挀欀攀琀䐀愀琀愀嬀琀漀开猀攀渀搀⬀⬀崀 㴀 　砀　　㬀ഀ਀              洀攀洀挀瀀礀 ⠀☀倀愀挀欀攀琀䐀愀琀愀嬀　砀　　崀Ⰰ ☀琀漀开猀攀渀搀Ⰰ ㈀⤀㬀ഀ਀              挀椀瀀栀攀爀开瀀琀爀 㴀 ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀猀攀爀瘀攀爀开挀椀瀀栀攀爀㬀ഀ਀              攀渀挀爀礀瀀琀挀漀瀀礀 ⠀眀漀爀欀䌀漀渀渀攀挀琀Ⰰ ☀倀愀挀欀攀琀䐀愀琀愀嬀　砀　　崀Ⰰ 琀漀开猀攀渀搀⤀㬀ഀ਀              眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀挀栀甀渀欀⬀⬀㬀ഀ਀              椀昀 ⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀挀昀椀氀攀开椀渀搀攀砀 㴀㴀 瀀搀ⴀ㸀昀椀氀攀开猀椀稀攀⤀ഀ਀              笀ഀ਀                ⼀⼀ 䘀椀氀攀✀猀 搀漀渀攀⸀⸀⸀ഀ਀                洀攀洀猀攀琀 ⠀☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀渀挀爀礀瀀琀戀甀昀嬀　砀　　崀Ⰰ 　Ⰰ 㠀⤀㬀ഀ਀                眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀渀挀爀礀瀀琀戀甀昀嬀　砀　　崀 㴀 　砀　㠀㬀ഀ਀                眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀渀挀爀礀瀀琀戀甀昀嬀　砀　㈀崀 㴀 　砀　㠀㬀ഀ਀                挀椀瀀栀攀爀开瀀琀爀 㴀 ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀猀攀爀瘀攀爀开挀椀瀀栀攀爀㬀ഀ਀                攀渀挀爀礀瀀琀挀漀瀀礀 ⠀眀漀爀欀䌀漀渀渀攀挀琀Ⰰ ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀渀挀爀礀瀀琀戀甀昀嬀　砀　　崀Ⰰ 㠀⤀㬀ഀ਀                眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀挀栀甀渀欀 㴀 　㬀ഀ਀                眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀挀昀椀氀攀开椀渀搀攀砀 㴀 　㬀ഀ਀                ⼀⼀ 䄀爀攀 眀攀 挀漀洀瀀氀攀琀攀氀礀 搀漀渀攀㼀ഀ਀                眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀挀甀爀爀攀渀琀开昀椀氀攀⬀⬀㬀ഀ਀                椀昀 ⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀挀甀爀爀攀渀琀开昀椀氀攀 㴀㴀 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀昀椀氀攀猀开琀漀开猀攀渀搀⤀ഀ਀                笀ഀ਀                  ⼀⼀ 䠀攀氀氀 礀攀愀栀 眀攀 愀爀攀℀ഀ਀                  眀栀椀氀攀 ⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀琀挀栀开猀琀攀瀀猀⤀ഀ਀                  笀ഀ਀                    眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀渀挀爀礀瀀琀戀甀昀嬀　砀　　崀 㴀 　砀　㐀㬀ഀ਀                    眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀渀挀爀礀瀀琀戀甀昀嬀　砀　㄀崀 㴀 　砀　　㬀ഀ਀                    眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀渀挀爀礀瀀琀戀甀昀嬀　砀　㈀崀 㴀 　砀　䄀㬀ഀ਀                    眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀渀挀爀礀瀀琀戀甀昀嬀　砀　㌀崀 㴀 　砀　　㬀ഀ਀                    挀椀瀀栀攀爀开瀀琀爀 㴀 ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀猀攀爀瘀攀爀开挀椀瀀栀攀爀㬀ഀ਀                    攀渀挀爀礀瀀琀挀漀瀀礀 ⠀眀漀爀欀䌀漀渀渀攀挀琀Ⰰ ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀渀挀爀礀瀀琀戀甀昀嬀　砀　　崀Ⰰ 㐀⤀㬀ഀ਀                    眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀琀挀栀开猀琀攀瀀猀ⴀⴀ㬀ഀ਀                  紀ഀ਀                  眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀猀攀渀搀椀渀最开昀椀氀攀猀 㴀 　㬀ഀ਀                  眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀渀挀爀礀瀀琀戀甀昀嬀　砀　　崀 㴀 　砀　㐀㬀ഀ਀                  眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀渀挀爀礀瀀琀戀甀昀嬀　砀　㄀崀 㴀 　砀　　㬀ഀ਀                  眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀渀挀爀礀瀀琀戀甀昀嬀　砀　㈀崀 㴀 　砀　䄀㬀ഀ਀                  眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀渀挀爀礀瀀琀戀甀昀嬀　砀　㌀崀 㴀 　砀　　㬀ഀ਀                  挀椀瀀栀攀爀开瀀琀爀 㴀 ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀猀攀爀瘀攀爀开挀椀瀀栀攀爀㬀ഀ਀                  攀渀挀爀礀瀀琀挀漀瀀礀 ⠀眀漀爀欀䌀漀渀渀攀挀琀Ⰰ ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀渀挀爀礀瀀琀戀甀昀嬀　砀　　崀Ⰰ 㐀⤀㬀ഀ਀                  眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀渀挀爀礀瀀琀戀甀昀嬀　砀　　崀 㴀 　砀　㐀㬀ഀ਀                  眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀渀挀爀礀瀀琀戀甀昀嬀　砀　㄀崀 㴀 　砀　　㬀ഀ਀                  眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀渀挀爀礀瀀琀戀甀昀嬀　砀　㈀崀 㴀 　砀㄀㈀㬀ഀ਀                  眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀渀挀爀礀瀀琀戀甀昀嬀　砀　㌀崀 㴀 　砀　　㬀ഀ਀                  挀椀瀀栀攀爀开瀀琀爀 㴀 ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀猀攀爀瘀攀爀开挀椀瀀栀攀爀㬀ഀ਀                  攀渀挀爀礀瀀琀挀漀瀀礀 ⠀眀漀爀欀䌀漀渀渀攀挀琀Ⰰ ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀渀挀爀礀瀀琀戀甀昀嬀　砀　　崀Ⰰ 㐀⤀㬀ഀ਀                紀ഀ਀                攀氀猀攀ഀ਀                  挀栀愀渀最攀开挀氀椀攀渀琀开昀漀氀搀攀爀 ⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀猀开搀愀琀愀嬀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀挀甀爀爀攀渀琀开昀椀氀攀崀Ⰰ 眀漀爀欀䌀漀渀渀攀挀琀⤀㬀ഀ਀              紀ഀ਀            紀ഀ਀          紀ഀ਀        紀ഀ਀      紀ഀ਀    紀ഀ਀ഀ਀    䘀䐀开匀䔀吀 ⠀瀀愀琀挀栀开猀漀挀欀昀搀Ⰰ ☀刀攀愀搀䘀䐀猀⤀㬀ഀ਀    渀昀搀猀 㴀 洀愀砀 ⠀渀昀搀猀Ⰰ 瀀愀琀挀栀开猀漀挀欀昀搀⤀㬀ഀ਀    䘀䐀开匀䔀吀 ⠀搀愀琀愀开猀漀挀欀昀搀Ⰰ ☀刀攀愀搀䘀䐀猀⤀㬀ഀ਀    渀昀搀猀 㴀 洀愀砀 ⠀渀昀搀猀Ⰰ 搀愀琀愀开猀漀挀欀昀搀⤀㬀ഀ਀ഀ਀    ⼀⨀ 䌀栀攀挀欀 猀漀挀欀攀琀猀 昀漀爀 愀挀琀椀瘀椀琀礀⸀ ⨀⼀ഀ਀ഀ਀    椀昀 ⠀ 猀攀氀攀挀琀 ⠀ 渀昀搀猀 ⬀ ㄀Ⰰ ☀刀攀愀搀䘀䐀猀Ⰰ ☀圀爀椀琀攀䘀䐀猀Ⰰ ☀䔀砀挀攀瀀琀䘀䐀猀Ⰰ ☀猀攀氀攀挀琀开琀椀洀攀漀甀琀 ⤀ 㸀 　 ⤀ഀ਀    笀ഀ਀      椀昀 ⠀䘀䐀开䤀匀匀䔀吀 ⠀瀀愀琀挀栀开猀漀挀欀昀搀Ⰰ ☀刀攀愀搀䘀䐀猀⤀⤀ഀ਀      笀ഀ਀        ⼀⼀ 匀漀洀攀漀渀攀✀猀 愀琀琀攀洀瀀琀椀渀最 琀漀 挀漀渀渀攀挀琀 琀漀 琀栀攀 瀀愀琀挀栀 猀攀爀瘀攀爀⸀ഀ਀        挀栀 㴀 昀爀攀攀开挀漀渀渀攀挀琀椀漀渀⠀⤀㬀ഀ਀        椀昀 ⠀挀栀 ℀㴀 　砀䘀䘀䘀䘀⤀ഀ਀        笀ഀ਀          氀椀猀琀攀渀开氀攀渀最琀栀 㴀 猀椀稀攀漀昀 ⠀氀椀猀琀攀渀开椀渀⤀㬀ഀ਀          眀漀爀欀䌀漀渀渀攀挀琀 㴀 挀漀渀渀攀挀琀椀漀渀猀嬀挀栀崀㬀ഀ਀          椀昀 ⠀ ⠀ 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀氀礀匀漀挀欀昀搀 㴀 琀挀瀀开愀挀挀攀瀀琀 ⠀ 瀀愀琀挀栀开猀漀挀欀昀搀Ⰰ ⠀猀琀爀甀挀琀 猀漀挀欀愀搀搀爀⨀⤀ ☀氀椀猀琀攀渀开椀渀Ⰰ ☀氀椀猀琀攀渀开氀攀渀最琀栀 ⤀ ⤀ 㸀㴀 　 ⤀ഀ਀          笀ഀ਀            眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀挀漀渀渀攀挀琀椀漀渀开椀渀搀攀砀 㴀 挀栀㬀ഀ਀            猀攀爀瘀攀爀䌀漀渀渀攀挀琀椀漀渀䰀椀猀琀嬀猀攀爀瘀攀爀一甀洀䌀漀渀渀攀挀琀椀漀渀猀⬀⬀崀 㴀 挀栀㬀ഀ਀            洀攀洀挀瀀礀 ⠀ ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀䤀倀开䄀搀搀爀攀猀猀嬀　崀Ⰰ 椀渀攀琀开渀琀漀愀 ⠀氀椀猀琀攀渀开椀渀⸀猀椀渀开愀搀搀爀⤀Ⰰ ㄀㘀 ⤀㬀ഀ਀            瀀爀椀渀琀昀 ⠀∀䄀挀挀攀瀀琀攀搀 倀䄀吀䌀䠀 挀漀渀渀攀挀琀椀漀渀 昀爀漀洀 ─猀㨀─甀尀渀∀Ⰰ 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀䤀倀开䄀搀搀爀攀猀猀Ⰰ 氀椀猀琀攀渀开椀渀⸀猀椀渀开瀀漀爀琀 ⤀㬀ഀ਀            眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀琀挀栀 㴀 　㬀ഀ਀            猀琀愀爀琀开攀渀挀爀礀瀀琀椀漀渀 ⠀眀漀爀欀䌀漀渀渀攀挀琀⤀㬀ഀ਀          紀ഀ਀        紀ഀ਀      紀ഀ਀ഀ਀ഀ਀      椀昀 ⠀䘀䐀开䤀匀匀䔀吀 ⠀搀愀琀愀开猀漀挀欀昀搀Ⰰ ☀刀攀愀搀䘀䐀猀⤀⤀ഀ਀      笀ഀ਀        ⼀⼀ 匀漀洀攀漀渀攀✀猀 愀琀琀攀洀瀀琀椀渀最 琀漀 挀漀渀渀攀挀琀 琀漀 琀栀攀 瀀愀琀挀栀 猀攀爀瘀攀爀⸀ഀ਀        挀栀 㴀 昀爀攀攀开挀漀渀渀攀挀琀椀漀渀⠀⤀㬀ഀ਀        椀昀 ⠀挀栀 ℀㴀 　砀䘀䘀䘀䘀⤀ഀ਀        笀ഀ਀          氀椀猀琀攀渀开氀攀渀最琀栀 㴀 猀椀稀攀漀昀 ⠀氀椀猀琀攀渀开椀渀⤀㬀ഀ਀          眀漀爀欀䌀漀渀渀攀挀琀 㴀 挀漀渀渀攀挀琀椀漀渀猀嬀挀栀崀㬀ഀ਀          椀昀 ⠀ ⠀ 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀氀礀匀漀挀欀昀搀 㴀 琀挀瀀开愀挀挀攀瀀琀 ⠀ 搀愀琀愀开猀漀挀欀昀搀Ⰰ ⠀猀琀爀甀挀琀 猀漀挀欀愀搀搀爀⨀⤀ ☀氀椀猀琀攀渀开椀渀Ⰰ ☀氀椀猀琀攀渀开氀攀渀最琀栀 ⤀ ⤀ 㸀㴀 　 ⤀ഀ਀          笀ഀ਀            眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀挀漀渀渀攀挀琀椀漀渀开椀渀搀攀砀 㴀 挀栀㬀ഀ਀            猀攀爀瘀攀爀䌀漀渀渀攀挀琀椀漀渀䰀椀猀琀嬀猀攀爀瘀攀爀一甀洀䌀漀渀渀攀挀琀椀漀渀猀⬀⬀崀 㴀 挀栀㬀ഀ਀            洀攀洀挀瀀礀 ⠀ ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀䤀倀开䄀搀搀爀攀猀猀嬀　崀Ⰰ 椀渀攀琀开渀琀漀愀 ⠀氀椀猀琀攀渀开椀渀⸀猀椀渀开愀搀搀爀⤀Ⰰ ㄀㘀 ⤀㬀ഀ਀            瀀爀椀渀琀昀 ⠀∀䄀挀挀攀瀀琀攀搀 䐀䄀吀䄀 挀漀渀渀攀挀琀椀漀渀 昀爀漀洀 ─猀㨀─甀尀渀∀Ⰰ 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀䤀倀开䄀搀搀爀攀猀猀Ⰰ 氀椀猀琀攀渀开椀渀⸀猀椀渀开瀀漀爀琀 ⤀㬀ഀ਀            眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀琀挀栀 㴀 ㄀㬀ഀ਀            猀琀愀爀琀开攀渀挀爀礀瀀琀椀漀渀 ⠀眀漀爀欀䌀漀渀渀攀挀琀⤀㬀ഀ਀          紀ഀ਀        紀ഀ਀      紀ഀ਀ഀ਀ഀ਀      ⼀⼀ 倀爀漀挀攀猀猀 挀氀椀攀渀琀 挀漀渀渀攀挀琀椀漀渀猀ഀ਀ഀ਀      昀漀爀 ⠀挀栀㴀　㬀挀栀㰀猀攀爀瘀攀爀一甀洀䌀漀渀渀攀挀琀椀漀渀猀㬀挀栀⬀⬀⤀ഀ਀      笀ഀ਀        挀漀渀渀攀挀琀一甀洀 㴀 猀攀爀瘀攀爀䌀漀渀渀攀挀琀椀漀渀䰀椀猀琀嬀挀栀崀㬀ഀ਀        眀漀爀欀䌀漀渀渀攀挀琀 㴀 挀漀渀渀攀挀琀椀漀渀猀嬀挀漀渀渀攀挀琀一甀洀崀㬀ഀ਀ഀ਀        椀昀 ⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀氀礀匀漀挀欀昀搀 㸀㴀 　⤀ഀ਀        笀ഀ਀          椀昀 ⠀䘀䐀开䤀匀匀䔀吀⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀氀礀匀漀挀欀昀搀Ⰰ ☀䔀砀挀攀瀀琀䘀䐀猀⤀⤀ ⼀⼀ 䔀砀挀攀瀀琀椀漀渀㼀ഀ਀            椀渀椀琀椀愀氀椀稀攀开挀漀渀渀攀挀琀椀漀渀 ⠀眀漀爀欀䌀漀渀渀攀挀琀⤀㬀ഀ਀ഀ਀          椀昀 ⠀䘀䐀开䤀匀匀䔀吀⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀氀礀匀漀挀欀昀搀Ⰰ ☀刀攀愀搀䘀䐀猀⤀⤀ഀ਀          笀ഀ਀            ⼀⼀ 刀攀愀搀 猀栀椀琀⸀ഀ਀            椀昀 ⠀ ⠀ 瀀欀琀开氀攀渀 㴀 爀攀挀瘀 ⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀氀礀匀漀挀欀昀搀Ⰰ ☀琀洀瀀爀挀瘀嬀　崀Ⰰ 吀䌀倀开䈀唀䘀䘀䔀刀开匀䤀娀䔀 ⴀ ㄀Ⰰ 　⤀ ⤀ 㰀㴀 　 ⤀ഀ਀            笀ഀ਀              ⼀⨀ഀ਀              眀猀攀爀爀漀爀 㴀 圀匀䄀䜀攀琀䰀愀猀琀䔀爀爀漀爀⠀⤀㬀ഀ਀              瀀爀椀渀琀昀 ⠀∀䌀漀甀氀搀 渀漀琀 爀攀愀搀 搀愀琀愀 昀爀漀洀 挀氀椀攀渀琀⸀⸀⸀尀渀∀⤀㬀ഀ਀              瀀爀椀渀琀昀 ⠀∀匀漀挀欀攀琀 䔀爀爀漀爀 ─甀⸀尀渀∀Ⰰ 眀猀攀爀爀漀爀 ⤀㬀ഀ਀              ⨀⼀ഀ਀              椀渀椀琀椀愀氀椀稀攀开挀漀渀渀攀挀琀椀漀渀 ⠀眀漀爀欀䌀漀渀渀攀挀琀⤀㬀ഀ਀            紀ഀ਀            攀氀猀攀ഀ਀            笀ഀ਀              眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀昀爀漀洀䈀礀琀攀猀匀攀挀 ⬀㴀 ⠀甀渀猀椀最渀攀搀⤀ 瀀欀琀开氀攀渀㬀ഀ਀              ⼀⼀ 圀漀爀欀 眀椀琀栀 椀琀⸀ഀ਀              昀漀爀 ⠀瀀欀琀开挀㴀　㬀瀀欀琀开挀㰀瀀欀琀开氀攀渀㬀瀀欀琀开挀⬀⬀⤀ഀ਀              笀ഀ਀                眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀爀挀瘀戀甀昀嬀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀爀挀瘀爀攀愀搀⬀⬀崀 㴀 琀洀瀀爀挀瘀嬀瀀欀琀开挀崀㬀ഀ਀ഀ਀                椀昀 ⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀爀挀瘀爀攀愀搀 㴀㴀 㐀⤀ഀ਀                笀ഀ਀                  ⼀⨀ 䐀攀挀爀礀瀀琀 琀栀攀 瀀愀挀欀攀琀 栀攀愀搀攀爀 愀昀琀攀爀 爀攀挀攀椀瘀椀渀最 㠀 戀礀琀攀猀⸀ ⨀⼀ഀ਀ഀ਀                  挀椀瀀栀攀爀开瀀琀爀 㴀 ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀挀氀椀攀渀琀开挀椀瀀栀攀爀㬀ഀ਀ഀ਀                  搀攀挀爀礀瀀琀挀漀瀀礀 ⠀ ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀攀攀欀戀甀昀嬀　崀Ⰰ ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀爀挀瘀戀甀昀嬀　崀Ⰰ 㐀 ⤀㬀ഀ਀ഀ਀                  ⼀⨀ 䴀愀欀攀 猀甀爀攀 眀攀✀爀攀 攀砀瀀攀挀琀椀渀最 愀 洀甀氀琀椀瀀氀攀 漀昀 㠀 戀礀琀攀猀⸀ ⨀⼀ഀ਀ഀ਀                  洀攀洀挀瀀礀 ⠀ ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀砀瀀攀挀琀Ⰰ ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀攀攀欀戀甀昀嬀　崀Ⰰ ㈀ ⤀㬀ഀ਀ഀ਀                  椀昀 ⠀ 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀砀瀀攀挀琀 ─ 㐀 ⤀ഀ਀                    眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀砀瀀攀挀琀 ⬀㴀 ⠀ 㐀 ⴀ ⠀ 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀砀瀀攀挀琀 ─ 㐀 ⤀ ⤀㬀ഀ਀ഀ਀                  椀昀 ⠀ 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀砀瀀攀挀琀 㸀 吀䌀倀开䈀唀䘀䘀䔀刀开匀䤀娀䔀 ⤀ഀ਀                  笀ഀ਀                    椀渀椀琀椀愀氀椀稀攀开挀漀渀渀攀挀琀椀漀渀 ⠀ 眀漀爀欀䌀漀渀渀攀挀琀 ⤀㬀ഀ਀                    戀爀攀愀欀㬀ഀ਀                  紀ഀ਀                紀ഀ਀ഀ਀                椀昀 ⠀ ⠀ 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀爀挀瘀爀攀愀搀 㴀㴀 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀砀瀀攀挀琀 ⤀ ☀☀ ⠀ 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀砀瀀攀挀琀 ℀㴀 　 ⤀ ⤀ഀ਀                笀ഀ਀                  椀昀 ⠀ 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀挀欀攀琀搀愀琀愀 ⬀ 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀砀瀀攀挀琀 㸀 吀䌀倀开䈀唀䘀䘀䔀刀开匀䤀娀䔀 ⤀ഀ਀                  笀ഀ਀                    椀渀椀琀椀愀氀椀稀攀开挀漀渀渀攀挀琀椀漀渀 ⠀ 眀漀爀欀䌀漀渀渀攀挀琀 ⤀㬀ഀ਀                    戀爀攀愀欀㬀ഀ਀                  紀ഀ਀                  攀氀猀攀ഀ਀                  笀ഀ਀                    ⼀⨀ 䐀攀挀爀礀瀀琀 琀栀攀 爀攀猀琀 漀昀 琀栀攀 搀愀琀愀 椀昀 渀攀攀搀攀搀⸀ ⨀⼀ഀ਀ഀ਀                    挀椀瀀栀攀爀开瀀琀爀 㴀 ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀挀氀椀攀渀琀开挀椀瀀栀攀爀㬀ഀ਀ഀ਀                    洀攀洀挀瀀礀 ⠀ ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀挀欀攀琀嬀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀挀欀攀琀搀愀琀愀崀Ⰰ ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀攀攀欀戀甀昀嬀　崀Ⰰ 㐀 ⤀㬀ഀ਀ഀ਀                    椀昀 ⠀ 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀爀挀瘀爀攀愀搀 㸀 㐀 ⤀ഀ਀                      搀攀挀爀礀瀀琀挀漀瀀礀 ⠀ ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀挀欀攀琀嬀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀挀欀攀琀搀愀琀愀 ⬀ 㐀崀Ⰰ ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀爀挀瘀戀甀昀嬀㐀崀Ⰰ 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀攀砀瀀攀挀琀 ⴀ 㐀 ⤀㬀ഀ਀ഀ਀                    洀攀洀挀瀀礀 ⠀ ☀琀栀椀猀开瀀愀挀欀攀琀Ⰰ ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀攀攀欀戀甀昀嬀　崀Ⰰ ㈀ ⤀㬀ഀ਀                    眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀挀欀攀琀搀愀琀愀 ⬀㴀 琀栀椀猀开瀀愀挀欀攀琀㬀ഀ਀ഀ਀                    眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀愀挀欀攀琀猀匀攀挀 ⬀⬀㬀ഀ਀ഀ਀                    眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀爀挀瘀爀攀愀搀 㴀 　㬀ഀ਀                  紀ഀ਀                紀ഀ਀              紀ഀ਀            紀ഀ਀          紀ഀ਀ഀ਀          椀昀 ⠀䘀䐀开䤀匀匀䔀吀⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀氀礀匀漀挀欀昀搀Ⰰ ☀圀爀椀琀攀䘀䐀猀⤀⤀ഀ਀          笀ഀ਀            ⼀⼀ 圀爀椀琀攀 猀栀椀琀ഀ਀ഀ਀            搀愀琀愀开猀攀渀搀 㴀 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀猀渀搀搀愀琀愀 ⴀ 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀猀渀搀眀爀椀琀琀攀渀㬀ഀ਀ഀ਀            椀昀 ⠀⠀洀愀砀戀礀琀攀猀⤀ ☀☀ ⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀猀攀渀搀椀渀最开昀椀氀攀猀⤀⤀ ⼀⼀ 圀攀 琀栀爀漀琀琀氀椀渀最㼀ഀ਀            笀ഀ਀              椀昀 ⠀ 渀甀洀开猀攀渀搀猀 ⤀ഀ਀                搀愀琀愀开猀攀渀搀 ⼀㴀 渀甀洀开猀攀渀搀猀㬀ഀ਀ഀ਀              椀昀 ⠀ 搀愀琀愀开猀攀渀搀 㸀 搀愀琀愀开爀攀洀愀椀渀椀渀最 ⤀ഀ਀                 搀愀琀愀开猀攀渀搀 㴀 搀愀琀愀开爀攀洀愀椀渀椀渀最㬀ഀ਀ഀ਀              椀昀 ⠀ 搀愀琀愀开猀攀渀搀 ⤀ഀ਀                搀愀琀愀开爀攀洀愀椀渀椀渀最 ⴀ㴀 搀愀琀愀开猀攀渀搀㬀ഀ਀            紀ഀ਀ഀ਀            椀昀 ⠀ 搀愀琀愀开猀攀渀搀 ⤀ഀ਀            笀ഀ਀              戀礀琀攀猀开猀攀渀琀 㴀 猀攀渀搀 ⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀瀀氀礀匀漀挀欀昀搀Ⰰ ☀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀猀渀搀戀甀昀嬀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀猀渀搀眀爀椀琀琀攀渀崀Ⰰഀ਀                搀愀琀愀开猀攀渀搀Ⰰ 　⤀㬀ഀ਀              椀昀 ⠀戀礀琀攀猀开猀攀渀琀 㴀㴀 匀伀䌀䬀䔀吀开䔀刀刀伀刀⤀ഀ਀              笀ഀ਀                ⼀⨀ഀ਀                眀猀攀爀爀漀爀 㴀 圀匀䄀䜀攀琀䰀愀猀琀䔀爀爀漀爀⠀⤀㬀ഀ਀                瀀爀椀渀琀昀 ⠀∀䌀漀甀氀搀 渀漀琀 猀攀渀搀 搀愀琀愀 琀漀 挀氀椀攀渀琀⸀⸀⸀尀渀∀⤀㬀ഀ਀                瀀爀椀渀琀昀 ⠀∀匀漀挀欀攀琀 䔀爀爀漀爀 ─甀⸀尀渀∀Ⰰ 眀猀攀爀爀漀爀 ⤀㬀ഀ਀                ⨀⼀ഀ਀                椀渀椀琀椀愀氀椀稀攀开挀漀渀渀攀挀琀椀漀渀 ⠀眀漀爀欀䌀漀渀渀攀挀琀⤀㬀ഀ਀              紀ഀ਀              攀氀猀攀ഀ਀              笀ഀ਀                眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀猀渀搀眀爀椀琀琀攀渀 ⬀㴀 戀礀琀攀猀开猀攀渀琀㬀ഀ਀                眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀琀漀䈀礀琀攀猀匀攀挀 ⬀㴀 ⠀甀渀猀椀最渀攀搀⤀ 戀礀琀攀猀开猀攀渀琀㬀ഀ਀              紀ഀ਀ഀ਀              椀昀 ⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀猀渀搀眀爀椀琀琀攀渀 㴀㴀 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀猀渀搀搀愀琀愀⤀ഀ਀                眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀猀渀搀眀爀椀琀琀攀渀 㴀 眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀猀渀搀搀愀琀愀 㴀 　㬀ഀ਀ഀ਀            紀ഀ਀          紀ഀ਀ഀ਀          椀昀 ⠀眀漀爀欀䌀漀渀渀攀挀琀ⴀ㸀琀漀搀挀⤀ഀ਀            椀渀椀琀椀愀氀椀稀攀开挀漀渀渀攀挀琀椀漀渀 ⠀眀漀爀欀䌀漀渀渀攀挀琀⤀㬀ഀ਀        紀ഀ਀      紀ഀ਀    紀ഀ਀  紀ഀ਀  爀攀琀甀爀渀 　㬀ഀ਀紀ഀ਀ഀ਀ഀ਀瘀漀椀搀 猀攀渀搀开琀漀开猀攀爀瘀攀爀⠀椀渀琀 猀漀挀欀Ⰰ 挀栀愀爀⨀ 瀀愀挀欀攀琀⤀ഀ਀笀ഀ਀ 椀渀琀 瀀欀琀氀攀渀㬀ഀ਀ഀ਀ 瀀欀琀氀攀渀 㴀 猀琀爀氀攀渀 ⠀瀀愀挀欀攀琀⤀㬀ഀ਀ഀ਀  椀昀 ⠀猀攀渀搀⠀猀漀挀欀Ⰰ 瀀愀挀欀攀琀Ⰰ 瀀欀琀氀攀渀Ⰰ 　⤀ ℀㴀 瀀欀琀氀攀渀⤀ഀ਀  笀ഀ਀    瀀爀椀渀琀昀 ⠀∀猀攀渀搀开琀漀开猀攀爀瘀攀爀⠀⤀㨀 昀愀椀氀甀爀攀∀⤀㬀ഀ਀    攀砀椀琀⠀㄀⤀㬀ഀ਀  紀ഀ਀ഀ਀紀ഀ਀ഀ਀椀渀琀 爀攀挀攀椀瘀攀开昀爀漀洀开猀攀爀瘀攀爀⠀椀渀琀 猀漀挀欀Ⰰ 挀栀愀爀⨀ 瀀愀挀欀攀琀⤀ഀ਀笀ഀ਀ 椀渀琀 瀀欀琀氀攀渀㬀ഀ਀ഀ਀  椀昀 ⠀⠀瀀欀琀氀攀渀 㴀 爀攀挀瘀⠀猀漀挀欀Ⰰ 瀀愀挀欀攀琀Ⰰ 吀䌀倀开䈀唀䘀䘀䔀刀开匀䤀娀䔀 ⴀ ㄀Ⰰ 　⤀⤀ 㰀㴀 　⤀ഀ਀  笀ഀ਀    瀀爀椀渀琀昀 ⠀∀爀攀挀攀椀瘀攀开昀爀漀洀开猀攀爀瘀攀爀⠀⤀㨀 昀愀椀氀甀爀攀∀⤀㬀ഀ਀    攀砀椀琀⠀㄀⤀㬀ഀ਀  紀ഀ਀  瀀愀挀欀攀琀嬀瀀欀琀氀攀渀崀 㴀 　㬀ഀ਀  爀攀琀甀爀渀 瀀欀琀氀攀渀㬀ഀ਀紀ഀ਀ഀ਀瘀漀椀搀 琀挀瀀开氀椀猀琀攀渀 ⠀椀渀琀 猀漀挀欀昀搀⤀ഀ਀笀ഀ਀  椀昀 ⠀氀椀猀琀攀渀⠀猀漀挀欀昀搀Ⰰ ㄀　⤀ 㰀 　⤀ഀ਀  笀ഀ਀    搀攀戀甀最开瀀攀爀爀漀爀 ⠀∀䌀漀甀氀搀 渀漀琀 氀椀猀琀攀渀 昀漀爀 挀漀渀渀攀挀琀椀漀渀∀⤀㬀ഀ਀    攀砀椀琀⠀㄀⤀㬀ഀ਀  紀ഀ਀紀ഀ਀ഀ਀椀渀琀 琀挀瀀开愀挀挀攀瀀琀 ⠀椀渀琀 猀漀挀欀昀搀Ⰰ 猀琀爀甀挀琀 猀漀挀欀愀搀搀爀 ⨀挀氀椀攀渀琀开愀搀搀爀Ⰰ 椀渀琀 ⨀愀搀搀爀开氀攀渀 ⤀ഀ਀笀ഀ਀  椀渀琀 昀搀㬀ഀ਀ഀ਀  椀昀 ⠀⠀昀搀 㴀 愀挀挀攀瀀琀 ⠀猀漀挀欀昀搀Ⰰ 挀氀椀攀渀琀开愀搀搀爀Ⰰ 愀搀搀爀开氀攀渀⤀⤀ 㰀 　⤀ഀ਀    搀攀戀甀最开瀀攀爀爀漀爀 ⠀∀䌀漀甀氀搀 渀漀琀 愀挀挀攀瀀琀 挀漀渀渀攀挀琀椀漀渀∀⤀㬀ഀ਀ഀ਀  爀攀琀甀爀渀 ⠀昀搀⤀㬀ഀ਀紀ഀ਀ഀ਀椀渀琀 琀挀瀀开猀漀挀欀开挀漀渀渀攀挀琀⠀挀栀愀爀⨀ 搀攀猀琀开愀搀搀爀Ⰰ 椀渀琀 瀀漀爀琀⤀ഀ਀笀ഀ਀  椀渀琀 昀搀㬀ഀ਀  猀琀爀甀挀琀 猀漀挀欀愀搀搀爀开椀渀 猀愀㬀ഀ਀ഀ਀  ⼀⨀ 䌀氀攀愀爀 椀琀 漀甀琀 ⨀⼀ഀ਀  洀攀洀猀攀琀⠀⠀瘀漀椀搀 ⨀⤀☀猀愀Ⰰ 　Ⰰ 猀椀稀攀漀昀⠀猀愀⤀⤀㬀ഀ਀ഀ਀  昀搀 㴀 猀漀挀欀攀琀⠀䄀䘀开䤀一䔀吀Ⰰ 匀伀䌀䬀开匀吀刀䔀䄀䴀Ⰰ 䤀倀倀刀伀吀伀开吀䌀倀⤀㬀ഀ਀ഀ਀  ⼀⨀ 䔀爀爀漀爀 ⨀⼀ഀ਀  椀昀⠀ 昀搀 㰀 　 ⤀ഀ਀    搀攀戀甀最开瀀攀爀爀漀爀⠀∀䌀漀甀氀搀 渀漀琀 挀爀攀愀琀攀 猀漀挀欀攀琀∀⤀㬀ഀ਀  攀氀猀攀ഀ਀  笀ഀ਀ഀ਀    洀攀洀猀攀琀 ⠀☀猀愀Ⰰ 　Ⰰ 猀椀稀攀漀昀⠀猀愀⤀⤀㬀ഀ਀    猀愀⸀猀椀渀开昀愀洀椀氀礀 㴀 䄀䘀开䤀一䔀吀㬀ഀ਀    猀愀⸀猀椀渀开愀搀搀爀⸀猀开愀搀搀爀 㴀 椀渀攀琀开愀搀搀爀 ⠀搀攀猀琀开愀搀搀爀⤀㬀ഀ਀    猀愀⸀猀椀渀开瀀漀爀琀 㴀 栀琀漀渀猀⠀⠀甀渀猀椀最渀攀搀 猀栀漀爀琀⤀ 瀀漀爀琀⤀㬀ഀ਀ഀ਀    椀昀 ⠀挀漀渀渀攀挀琀⠀昀搀Ⰰ ⠀猀琀爀甀挀琀 猀漀挀欀愀搀搀爀⨀⤀ ☀猀愀Ⰰ 猀椀稀攀漀昀⠀猀愀⤀⤀ 㰀 　⤀ഀ਀      搀攀戀甀最开瀀攀爀爀漀爀⠀∀䌀漀甀氀搀 渀漀琀 洀愀欀攀 吀䌀倀 挀漀渀渀攀挀琀椀漀渀∀⤀㬀ഀ਀    攀氀猀攀ഀ਀      搀攀戀甀最 ⠀∀琀挀瀀开猀漀挀欀开挀漀渀渀攀挀琀 ─猀㨀─甀∀Ⰰ 椀渀攀琀开渀琀漀愀 ⠀猀愀⸀猀椀渀开愀搀搀爀⤀Ⰰ 猀愀⸀猀椀渀开瀀漀爀琀 ⤀㬀ഀ਀  紀ഀ਀  爀攀琀甀爀渀⠀昀搀⤀㬀ഀ਀紀ഀ਀ഀ਀⼀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⼀ഀ਀椀渀琀 琀挀瀀开猀漀挀欀开漀瀀攀渀⠀猀琀爀甀挀琀 椀渀开愀搀搀爀 椀瀀Ⰰ 椀渀琀 瀀漀爀琀⤀ഀ਀笀ഀ਀  椀渀琀 昀搀Ⰰ 琀甀爀渀开漀渀开漀瀀琀椀漀渀开昀氀愀最 㴀 ㄀Ⰰ 爀挀匀漀挀欀漀瀀琀㬀ഀ਀ഀ਀  猀琀爀甀挀琀 猀漀挀欀愀搀搀爀开椀渀 猀愀㬀ഀ਀ഀ਀  ⼀⨀ 䌀氀攀愀爀 椀琀 漀甀琀 ⨀⼀ഀ਀  洀攀洀猀攀琀⠀⠀瘀漀椀搀 ⨀⤀☀猀愀Ⰰ 　Ⰰ 猀椀稀攀漀昀⠀猀愀⤀⤀㬀ഀ਀ഀ਀  昀搀 㴀 猀漀挀欀攀琀⠀倀䘀开䤀一䔀吀Ⰰ 匀伀䌀䬀开匀吀刀䔀䄀䴀Ⰰ 䤀倀倀刀伀吀伀开吀䌀倀⤀㬀ഀ਀ഀ਀  ⼀⨀ 䔀爀爀漀爀 ⨀⼀ഀ਀  椀昀⠀ 昀搀 㰀 　 ⤀笀ഀ਀    搀攀戀甀最开瀀攀爀爀漀爀⠀∀䌀漀甀氀搀 渀漀琀 挀爀攀愀琀攀 猀漀挀欀攀琀∀⤀㬀ഀ਀    攀砀椀琀⠀㄀⤀㬀ഀ਀  紀ഀ਀ഀ਀  猀愀⸀猀椀渀开昀愀洀椀氀礀 㴀 䄀䘀开䤀一䔀吀㬀ഀ਀  洀攀洀挀瀀礀⠀⠀瘀漀椀搀 ⨀⤀☀猀愀⸀猀椀渀开愀搀搀爀Ⰰ ⠀瘀漀椀搀 ⨀⤀☀椀瀀Ⰰ 猀椀稀攀漀昀⠀猀琀爀甀挀琀 椀渀开愀搀搀爀⤀⤀㬀ഀ਀  猀愀⸀猀椀渀开瀀漀爀琀 㴀 栀琀漀渀猀⠀⠀甀渀猀椀最渀攀搀 猀栀漀爀琀⤀ 瀀漀爀琀⤀㬀ഀ਀ഀ਀  ⼀⨀ 刀攀甀猀攀 瀀漀爀琀 ⠀䤀䌀匀㼀⤀ ⨀⼀ഀ਀ഀ਀  爀挀匀漀挀欀漀瀀琀 㴀 猀攀琀猀漀挀欀漀瀀琀⠀昀搀Ⰰ 匀伀䰀开匀伀䌀䬀䔀吀Ⰰ 匀伀开刀䔀唀匀䔀䄀䐀䐀刀Ⰰ ⠀挀栀愀爀 ⨀⤀ ☀琀甀爀渀开漀渀开漀瀀琀椀漀渀开昀氀愀最Ⰰ 猀椀稀攀漀昀⠀琀甀爀渀开漀渀开漀瀀琀椀漀渀开昀氀愀最⤀⤀㬀ഀ਀ഀ਀  ⼀⨀ 戀椀渀搀⠀⤀ 琀栀攀 猀漀挀欀攀琀 琀漀 琀栀攀 椀渀琀攀爀昀愀挀攀 ⨀⼀ഀ਀  椀昀 ⠀戀椀渀搀⠀昀搀Ⰰ ⠀猀琀爀甀挀琀 猀漀挀欀愀搀搀爀 ⨀⤀☀猀愀Ⰰ 猀椀稀攀漀昀⠀猀琀爀甀挀琀 猀漀挀欀愀搀搀爀⤀⤀ 㰀 　⤀笀ഀ਀    搀攀戀甀最开瀀攀爀爀漀爀⠀∀䌀漀甀氀搀 渀漀琀 戀椀渀搀 琀漀 瀀漀爀琀∀⤀㬀ഀ਀    攀砀椀琀⠀㄀⤀㬀ഀ਀  紀ഀ਀ഀ਀  爀攀琀甀爀渀⠀昀搀⤀㬀ഀ਀紀ഀ਀ഀ਀⼀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀ഀ਀⨀ 猀愀洀攀 愀猀 搀攀戀甀最开瀀攀爀爀漀爀 戀甀琀 眀爀椀琀攀猀 琀漀 搀攀戀甀最 漀甀琀瀀甀琀⸀ഀ਀⨀ഀ਀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⼀ഀ਀瘀漀椀搀 搀攀戀甀最开瀀攀爀爀漀爀⠀ 挀栀愀爀 ⨀ 洀猀最 ⤀ 笀ഀ਀  搀攀戀甀最⠀ ∀─猀 㨀 ─猀尀渀∀ Ⰰ 洀猀最 Ⰰ 猀琀爀攀爀爀漀爀⠀攀爀爀渀漀⤀ ⤀㬀ഀ਀紀ഀ਀⼀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⨀⼀ഀ਀瘀漀椀搀 搀攀戀甀最⠀挀栀愀爀 ⨀昀洀琀Ⰰ ⸀⸀⸀⤀ഀ਀笀ഀ਀⌀搀攀昀椀渀攀 䴀䄀堀开䴀䔀匀䜀开䰀䔀一 ㄀　㈀㐀ഀ਀ഀ਀  瘀愀开氀椀猀琀 愀爀最猀㬀ഀ਀  挀栀愀爀 琀攀砀琀嬀 䴀䄀堀开䴀䔀匀䜀开䰀䔀一 崀㬀ഀ਀ഀ਀  瘀愀开猀琀愀爀琀 ⠀愀爀最猀Ⰰ 昀洀琀⤀㬀ഀ਀  猀琀爀挀瀀礀 ⠀琀攀砀琀 ⬀ 瘀猀瀀爀椀渀琀昀⠀ 琀攀砀琀Ⰰ昀洀琀Ⰰ愀爀最猀⤀Ⰰ ∀尀爀尀渀∀⤀㬀ഀ਀  瘀愀开攀渀搀 ⠀愀爀最猀⤀㬀ഀ਀ഀ਀  昀瀀爀椀渀琀昀⠀ 猀琀搀攀爀爀Ⰰ ∀─猀∀Ⰰ 琀攀砀琀⤀㬀ഀ਀紀ഀ਀ഀ਀ഀ਀瘀漀椀搀 䌀刀夀倀吀开倀䌀开䴀椀砀䬀攀礀猀⠀䌀刀夀倀吀开匀䔀吀唀倀⨀ 瀀挀⤀ഀ਀笀ഀ਀    甀渀猀椀最渀攀搀 氀漀渀最 攀猀椀Ⰰ攀搀椀Ⰰ攀愀砀Ⰰ攀戀瀀Ⰰ攀搀砀㬀ഀ਀    攀搀椀 㴀 ㄀㬀ഀ਀    攀搀砀 㴀 　砀㄀㠀㬀ഀ਀    攀愀砀 㴀 攀搀椀㬀ഀ਀    眀栀椀氀攀 ⠀攀搀砀 㸀 　⤀ഀ਀    笀ഀ਀        攀猀椀 㴀 瀀挀ⴀ㸀欀攀礀猀嬀攀愀砀 ⬀ 　砀㄀䘀崀㬀ഀ਀        攀戀瀀 㴀 瀀挀ⴀ㸀欀攀礀猀嬀攀愀砀崀㬀ഀ਀        攀戀瀀 㴀 攀戀瀀 ⴀ 攀猀椀㬀ഀ਀        瀀挀ⴀ㸀欀攀礀猀嬀攀愀砀崀 㴀 攀戀瀀㬀ഀ਀        攀愀砀⬀⬀㬀ഀ਀        攀搀砀ⴀⴀ㬀ഀ਀    紀ഀ਀    攀搀椀 㴀 　砀㄀㤀㬀ഀ਀    攀搀砀 㴀 　砀㄀䘀㬀ഀ਀    攀愀砀 㴀 攀搀椀㬀ഀ਀    眀栀椀氀攀 ⠀攀搀砀 㸀 　⤀ഀ਀    笀ഀ਀        攀猀椀 㴀 瀀挀ⴀ㸀欀攀礀猀嬀攀愀砀 ⴀ 　砀㄀㠀崀㬀ഀ਀        攀戀瀀 㴀 瀀挀ⴀ㸀欀攀礀猀嬀攀愀砀崀㬀ഀ਀        攀戀瀀 㴀 攀戀瀀 ⴀ 攀猀椀㬀ഀ਀        瀀挀ⴀ㸀欀攀礀猀嬀攀愀砀崀 㴀 攀戀瀀㬀ഀ਀        攀愀砀⬀⬀㬀ഀ਀        攀搀砀ⴀⴀ㬀ഀ਀    紀ഀ਀紀ഀ਀ഀ਀瘀漀椀搀 䌀刀夀倀吀开倀䌀开䌀爀攀愀琀攀䬀攀礀猀⠀䌀刀夀倀吀开匀䔀吀唀倀⨀ 瀀挀Ⰰ甀渀猀椀最渀攀搀 氀漀渀最 瘀愀氀⤀ഀ਀笀ഀ਀    甀渀猀椀最渀攀搀 氀漀渀最 攀猀椀Ⰰ攀戀砀Ⰰ攀搀椀Ⰰ攀愀砀Ⰰ攀搀砀Ⰰ瘀愀爀㄀㬀ഀ਀    攀猀椀 㴀 ㄀㬀ഀ਀    攀戀砀 㴀 瘀愀氀㬀ഀ਀    攀搀椀 㴀 　砀㄀㔀㬀ഀ਀    瀀挀ⴀ㸀欀攀礀猀嬀㔀㘀崀 㴀 攀戀砀㬀ഀ਀    瀀挀ⴀ㸀欀攀礀猀嬀㔀㔀崀 㴀 攀戀砀㬀ഀ਀    眀栀椀氀攀 ⠀攀搀椀 㰀㴀 　砀㐀㘀䔀⤀ഀ਀    笀ഀ਀        攀愀砀 㴀 攀搀椀㬀ഀ਀        瘀愀爀㄀ 㴀 攀愀砀 ⼀ 㔀㔀㬀ഀ਀        攀搀砀 㴀 攀愀砀 ⴀ ⠀瘀愀爀㄀ ⨀ 㔀㔀⤀㬀ഀ਀        攀戀砀 㴀 攀戀砀 ⴀ 攀猀椀㬀ഀ਀        攀搀椀 㴀 攀搀椀 ⬀ 　砀㄀㔀㬀ഀ਀        瀀挀ⴀ㸀欀攀礀猀嬀攀搀砀崀 㴀 攀猀椀㬀ഀ਀        攀猀椀 㴀 攀戀砀㬀ഀ਀        攀戀砀 㴀 瀀挀ⴀ㸀欀攀礀猀嬀攀搀砀崀㬀ഀ਀    紀ഀ਀    䌀刀夀倀吀开倀䌀开䴀椀砀䬀攀礀猀⠀瀀挀⤀㬀ഀ਀    䌀刀夀倀吀开倀䌀开䴀椀砀䬀攀礀猀⠀瀀挀⤀㬀ഀ਀    䌀刀夀倀吀开倀䌀开䴀椀砀䬀攀礀猀⠀瀀挀⤀㬀ഀ਀    䌀刀夀倀吀开倀䌀开䴀椀砀䬀攀礀猀⠀瀀挀⤀㬀ഀ਀    瀀挀ⴀ㸀瀀挀开瀀漀猀渀 㴀 㔀㘀㬀ഀ਀紀ഀ਀ഀ਀甀渀猀椀最渀攀搀 氀漀渀最 䌀刀夀倀吀开倀䌀开䜀攀琀一攀砀琀䬀攀礀⠀䌀刀夀倀吀开匀䔀吀唀倀⨀ 瀀挀⤀ഀ਀笀ഀ਀    甀渀猀椀最渀攀搀 氀漀渀最 爀攀㬀ഀ਀    椀昀 ⠀瀀挀ⴀ㸀瀀挀开瀀漀猀渀 㴀㴀 㔀㘀⤀ഀ਀    笀ഀ਀        䌀刀夀倀吀开倀䌀开䴀椀砀䬀攀礀猀⠀瀀挀⤀㬀ഀ਀        瀀挀ⴀ㸀瀀挀开瀀漀猀渀 㴀 ㄀㬀ഀ਀    紀ഀ਀    爀攀 㴀 瀀挀ⴀ㸀欀攀礀猀嬀瀀挀ⴀ㸀瀀挀开瀀漀猀渀崀㬀ഀ਀    瀀挀ⴀ㸀瀀挀开瀀漀猀渀⬀⬀㬀ഀ਀    爀攀琀甀爀渀 爀攀㬀ഀ਀紀ഀ਀ഀ਀瘀漀椀搀 䌀刀夀倀吀开倀䌀开䌀爀礀瀀琀䐀愀琀愀⠀䌀刀夀倀吀开匀䔀吀唀倀⨀ 瀀挀Ⰰ瘀漀椀搀⨀ 搀愀琀愀Ⰰ甀渀猀椀最渀攀搀 氀漀渀最 猀椀稀攀⤀ഀ਀笀ഀ਀    甀渀猀椀最渀攀搀 氀漀渀最 砀㬀ഀ਀    昀漀爀 ⠀砀 㴀 　㬀 砀 㰀 猀椀稀攀㬀 砀 ⬀㴀 㐀⤀ ⨀⠀甀渀猀椀最渀攀搀 氀漀渀最⨀⤀⠀⠀甀渀猀椀最渀攀搀 氀漀渀最⤀搀愀琀愀 ⬀ 砀⤀ 帀㴀 䌀刀夀倀吀开倀䌀开䜀攀琀一攀砀琀䬀攀礀⠀瀀挀⤀㬀ഀ਀紀ഀ਀ഀ਀瘀漀椀搀 搀攀挀爀礀瀀琀挀漀瀀礀 ⠀ 瘀漀椀搀⨀ 搀攀猀琀Ⰰ 瘀漀椀搀⨀ 猀漀甀爀挀攀Ⰰ 甀渀猀椀最渀攀搀 猀椀稀攀 ⤀ഀ਀笀ഀ਀  䌀刀夀倀吀开倀䌀开䌀爀礀瀀琀䐀愀琀愀⠀挀椀瀀栀攀爀开瀀琀爀Ⰰ猀漀甀爀挀攀Ⰰ猀椀稀攀⤀㬀ഀ਀  洀攀洀挀瀀礀 ⠀搀攀猀琀Ⰰ猀漀甀爀挀攀Ⰰ猀椀稀攀⤀㬀ഀ਀紀ഀ਀ഀ਀瘀漀椀搀 攀渀挀爀礀瀀琀挀漀瀀礀 ⠀ 䈀䄀一䄀一䄀⨀ 挀氀椀攀渀琀Ⰰ 瘀漀椀搀⨀ 猀漀甀爀挀攀Ⰰ 甀渀猀椀最渀攀搀 猀椀稀攀 ⤀ഀ਀笀ഀ਀  甀渀猀椀最渀攀搀 挀栀愀爀⨀ 搀攀猀琀㬀ഀ਀ഀ਀  椀昀 ⠀吀䌀倀开䈀唀䘀䘀䔀刀开匀䤀娀䔀 ⴀ 挀氀椀攀渀琀ⴀ㸀猀渀搀搀愀琀愀 㰀 ⠀ ⠀椀渀琀⤀ 猀椀稀攀 ⬀ 㜀 ⤀ ⤀ഀ਀    挀氀椀攀渀琀ⴀ㸀琀漀搀挀 㴀 ㄀㬀ഀ਀  攀氀猀攀ഀ਀  笀ഀ਀    搀攀猀琀 㴀 ☀挀氀椀攀渀琀ⴀ㸀猀渀搀戀甀昀嬀挀氀椀攀渀琀ⴀ㸀猀渀搀搀愀琀愀崀㬀ഀ਀    洀攀洀挀瀀礀 ⠀搀攀猀琀Ⰰ猀漀甀爀挀攀Ⰰ猀椀稀攀⤀㬀ഀ਀    眀栀椀氀攀 ⠀猀椀稀攀 ─ 㐀⤀ഀ਀      搀攀猀琀嬀猀椀稀攀⬀⬀崀 㴀 　砀　　㬀ഀ਀    挀氀椀攀渀琀ⴀ㸀猀渀搀搀愀琀愀 ⬀㴀 ⠀椀渀琀⤀ 猀椀稀攀㬀ഀ਀ഀ਀    䌀刀夀倀吀开倀䌀开䌀爀礀瀀琀䐀愀琀愀⠀挀椀瀀栀攀爀开瀀琀爀Ⰰ搀攀猀琀Ⰰ猀椀稀攀⤀㬀ഀ਀  紀ഀ਀紀ഀ਀\00
+  patch_packet[patch_size++] = 0x00;
+  patch_packet[patch_size++] = 0x04;
+  patch_packet[patch_size++] = 0x00;
+  patch_packet[patch_size++] = 0x0D;
+  patch_packet[patch_size++] = 0x00;
+  printf ("\nDone!\n\n");
+
+  if (!serverNumPatches)
+  {
+    printf ("There are no patches to send.\nYou need at least one patch file to send or check.\n");
+    printf ("Hit [ENTER]");
+    exit (1);
+  }
+
+  printf ("Loading welcome.txt ...");
+  fp = fopen ("welcome.txt","rb");
+  if (!fp)
+  {
+    printf ("\nwelcome.txt seems to be missing.\nPlease be sure it's in the same folder as patch_server.exe\n");
+    printf ("Hit [ENTER]");
+    gets (&Welcome_Message[0]);
+    exit (1);
+  }
+  fseek ( fp, 0, SEEK_END );
+  ch = ftell ( fp );
+  fseek ( fp, 0, SEEK_SET );
+  if ( ch > 4096 )
+     ch = 4096;
+  fread (&PacketData[0], 1, ch, fp );
+  fclose ( fp );
+
+  w  = (unsigned short*) &PacketData[0];
+  w2 = (unsigned short*) &Welcome_Message[0];
+  Welcome_Message_Size = 0;
+  for ( ch2 = 0; ch2 < ch; ch2 += 2 )
+  {
+    if (*w == 0x0024)
+      *w =  0x0009; // Change $ to 0x09
+    if (*w != 0x000D)
+    {
+      *(w2++) = *w;
+      Welcome_Message_Size += 2;
+    }
+    w++;
+  }
+
+  *w2 = 0x0000;
+
+  printf ("  (%u bytes) OK!\n\n", Welcome_Message_Size);
+
+  /* Open the PSO BB Patch Server Port... */
+
+  printf ("Opening server patch port %u for connections.\n", serverPort - 1000);
+
+#ifdef USEADDR_ANY
+  patch_in.s_addr = INADDR_ANY;
+#else
+  if (override_on)
+    memcpy (&patch_in.s_addr, &overrideIP[0], 4 );
+  else
+    memcpy (&patch_in.s_addr, &serverIP[0], 4 );
+#endif
+
+  patch_sockfd = tcp_sock_open( patch_in, serverPort - 1000 );
+
+  tcp_listen (patch_sockfd);
+
+#ifdef USEADDR_ANY
+  data_in.s_addr = INADDR_ANY;
+#else
+  if (override_on)
+    memcpy (&data_in.s_addr, &overrideIP[0], 4 );
+  else
+    memcpy (&data_in.s_addr, &serverIP[0], 4 );
+#endif
+
+  printf ("Opening server data port %u for connections.\n", serverPort - 999);
+
+  data_sockfd = tcp_sock_open( data_in, serverPort - 999 );
+
+  tcp_listen (data_sockfd);
+
+  if ((patch_sockfd<0) || (data_sockfd<0))
+  {
+    printf ("Failed to open port for connections.\n");
+    exit (1);
+  }
+
+  printf ("\nListening...\n");
+
+  wc.hbrBackground =(HBRUSH)GetStockObject(WHITE_BRUSH);
+  wc.hIcon = LoadIcon( hinst, IDI_APPLICATION );
+  wc.hCursor = LoadCursor( hinst, IDC_ARROW );
+  wc.hInstance = hinst;
+  wc.lpfnWndProc = WndProc;
+  wc.lpszClassName = "sodaboy";
+  wc.style = CS_HREDRAW | CS_VREDRAW;
+
+  if (! RegisterClass( &wc ) )
+  {
+    printf ("RegisterClass failure.\n");
+    exit (1);
+  }
+
+  hwndWindow = CreateWindow ("sodaboy","hidden window", WS_MINIMIZE, 1, 1, 1, 1,
+    NULL,
+    NULL,
+    hinst,
+    NULL );
+
+  if (!hwndWindow)
+  {
+    printf ("Failed to create window.");
+    exit (1);
+  }
+
+  ShowWindow ( hwndWindow, SW_HIDE );
+  UpdateWindow ( hwndWindow );
+  ShowWindow ( consoleHwnd, SW_HIDE );
+  UpdateWindow ( consoleHwnd );
+
+    nid.cbSize        = sizeof(nid);
+  nid.hWnd        = hwndWindow;
+  nid.uID         = 100;
+  nid.uCallbackMessage  = MYWM_NOTIFYICON;
+  nid.uFlags        = NIF_MESSAGE|NIF_ICON|NIF_TIP;
+    nid.hIcon       = LoadIcon(hinst, MAKEINTRESOURCE(IDI_ICON1));
+  nid.szTip[0] = 0;
+  strcat (&nid.szTip[0], "Tethealla Patch ");
+  strcat (&nid.szTip[0], SERVER_VERSION);
+  strcat (&nid.szTip[0], " - Double click to show/hide");
+    Shell_NotifyIcon(NIM_ADD, &nid);
+
+
+  for (;;)
+  {
+    int nfds = 0;
+
+    /* Process the system tray icon */
+
+    if ( PeekMessage( &msg, hwndWindow, 0, 0, 1 ) )
+    {
+      TranslateMessage(&msg);
+      DispatchMessage(&msg);
+    }
+
+    /* Ping pong?! */
+
+    servertime = time(NULL);
+
+    if ((maxbytes) && (sendtime != (unsigned) servertime))
+    {
+      sendtime  = (unsigned) servertime;
+      data_remaining = maxbytes;
+    }
+
+    /* Clear socket activity flags. */
+
+    FD_ZERO (&ReadFDs);
+    FD_ZERO (&WriteFDs);
+    FD_ZERO (&ExceptFDs);
+
+    num_sends = 0;
+
+    for (ch=0;ch<serverNumConnections;ch++)
+    {
+      connectNum = serverConnectionList[ch];
+      workConnect = connections[connectNum];
+
+      if (workConnect->plySockfd >= 0)
+      {
+        if (workConnect->packetdata)
+        {
+          memcpy (&this_packet, &workConnect->packet[workConnect->packetread], 2);
+          memcpy (&workConnect->decryptbuf[0], &workConnect->packet[workConnect->packetread], this_packet);
+
+          //debug ("Received from client:%u", this_packet);
+          //display_packet (&workConnect->decryptbuf[0], this_packet);
+
+          if (workConnect->patch)
+            DataProcessPacket (workConnect);
+          else
+            PatchProcessPacket (workConnect);
+
+          workConnect->packetread += this_packet;
+          if (workConnect->packetread == workConnect->packetdata)
+            workConnect->packetread = workConnect->packetdata = 0;
+        }
+
+        if (workConnect->lastTick != (unsigned) servertime)
+        {
+          if (workConnect->lastTick > (unsigned) servertime)
+            ch2 = 1;
+          else
+            ch2 = 1 + ((unsigned) servertime - workConnect->lastTick);
+            workConnect->lastTick = (unsigned) servertime;
+            workConnect->packetsSec /= ch2;
+            workConnect->toBytesSec /= ch2;
+            workConnect->fromBytesSec /= ch2;
+        }
+
+        FD_SET (workConnect->plySockfd, &ReadFDs);
+        nfds = max (nfds, workConnect->plySockfd);
+        FD_SET (workConnect->plySockfd, &ExceptFDs);
+        nfds = max (nfds, workConnect->plySockfd);
+
+        if ((!maxbytes) || (data_remaining))
+        {
+          if (workConnect->snddata - workConnect->sndwritten)
+          {
+            FD_SET (workConnect->plySockfd, &WriteFDs);
+            nfds = max (nfds, workConnect->plySockfd);
+          }
+          else
+          {
+            // Send remaining patch data here...
+            // if sending_files and stuff left to go
+            if (workConnect->sending_files)
+            {
+              num_sends++;
+              pd = &s_data[workConnect->s_data[workConnect->current_file]];
+              fp = fopen (&pd->full_file_name[0], "rb");
+              fseek (fp, workConnect->cfile_index, SEEK_SET);
+              to_send = pd->file_size - workConnect->cfile_index;
+              if (to_send > 24576)
+                to_send = 24576;
+              fread (&PacketData[0x10], 1, to_send, fp);
+              fclose (fp);
+              workConnect->cfile_index += to_send;
+              checksum = CalculateChecksum ( &PacketData[0x10], to_send);
+              memset (&PacketData[0x00], 0, 0x10);
+              PacketData[0x02] = 0x07;
+              memcpy (&PacketData[0x04], &workConnect->chunk, 4);
+              memcpy (&PacketData[0x08], &checksum, 4);
+              memcpy (&PacketData[0x0C], &to_send,  4);
+              to_send += 0x10;
+              while (to_send % 4)
+                PacketData[to_send++] = 0x00;
+              memcpy (&PacketData[0x00], &to_send, 2);
+              cipher_ptr = &workConnect->server_cipher;
+              encryptcopy (workConnect, &PacketData[0x00], to_send);
+              workConnect->chunk++;
+              if (workConnect->cfile_index == pd->file_size)
+              {
+                // File's done...
+                memset (&workConnect->encryptbuf[0x00], 0, 8);
+                workConnect->encryptbuf[0x00] = 0x08;
+                workConnect->encryptbuf[0x02] = 0x08;
+                cipher_ptr = &workConnect->server_cipher;
+                encryptcopy (workConnect, &workConnect->encryptbuf[0x00], 8);
+                workConnect->chunk = 0;
+                workConnect->cfile_index = 0;
+                // Are we completely done?
+                workConnect->current_file++;
+                if (workConnect->current_file == workConnect->files_to_send)
+                {
+                  // Hell yeah we are!
+                  while (workConnect->patch_steps)
+                  {
+                    workConnect->encryptbuf[0x00] = 0x04;
+                    workConnect->encryptbuf[0x01] = 0x00;
+                    workConnect->encryptbuf[0x02] = 0x0A;
+                    workConnect->encryptbuf[0x03] = 0x00;
+                    cipher_ptr = &workConnect->server_cipher;
+                    encryptcopy (workConnect, &workConnect->encryptbuf[0x00], 4);
+                    workConnect->patch_steps--;
+                  }
+                  workConnect->sending_files = 0;
+                  workConnect->encryptbuf[0x00] = 0x04;
+                  workConnect->encryptbuf[0x01] = 0x00;
+                  workConnect->encryptbuf[0x02] = 0x0A;
+                  workConnect->encryptbuf[0x03] = 0x00;
+                  cipher_ptr = &workConnect->server_cipher;
+                  encryptcopy (workConnect, &workConnect->encryptbuf[0x00], 4);
+                  workConnect->encryptbuf[0x00] = 0x04;
+                  workConnect->encryptbuf[0x01] = 0x00;
+                  workConnect->encryptbuf[0x02] = 0x12;
+                  workConnect->encryptbuf[0x03] = 0x00;
+                  cipher_ptr = &workConnect->server_cipher;
+                  encryptcopy (workConnect, &workConnect->encryptbuf[0x00], 4);
+                }
+                else
+                  change_client_folder (workConnect->s_data[workConnect->current_file], workConnect);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    FD_SET (patch_sockfd, &ReadFDs);
+    nfds = max (nfds, patch_sockfd);
+    FD_SET (data_sockfd, &ReadFDs);
+    nfds = max (nfds, data_sockfd);
+
+    /* Check sockets for activity. */
+
+    if ( select ( nfds + 1, &ReadFDs, &WriteFDs, &ExceptFDs, &select_timeout ) > 0 )
+    {
+      if (FD_ISSET (patch_sockfd, &ReadFDs))
+      {
+        // Someone's attempting to connect to the patch server.
+        ch = free_connection();
+        if (ch != 0xFFFF)
+        {
+          listen_length = sizeof (listen_in);
+          workConnect = connections[ch];
+          if ( ( workConnect->plySockfd = tcp_accept ( patch_sockfd, (struct sockaddr*) &listen_in, &listen_length ) ) >= 0 )
+          {
+            workConnect->connection_index = ch;
+            serverConnectionList[serverNumConnections++] = ch;
+            memcpy ( &workConnect->IP_Address[0], inet_ntoa (listen_in.sin_addr), 16 );
+            printf ("Accepted PATCH connection from %s:%u\n", workConnect->IP_Address, listen_in.sin_port );
+            workConnect->patch = 0;
+            start_encryption (workConnect);
+          }
+        }
+      }
+
+
+      if (FD_ISSET (data_sockfd, &ReadFDs))
+      {
+        // Someone's attempting to connect to the patch server.
+        ch = free_connection();
+        if (ch != 0xFFFF)
+        {
+          listen_length = sizeof (listen_in);
+          workConnect = connections[ch];
+          if ( ( workConnect->plySockfd = tcp_accept ( data_sockfd, (struct sockaddr*) &listen_in, &listen_length ) ) >= 0 )
+          {
+            workConnect->connection_index = ch;
+            serverConnectionList[serverNumConnections++] = ch;
+            memcpy ( &workConnect->IP_Address[0], inet_ntoa (listen_in.sin_addr), 16 );
+            printf ("Accepted DATA connection from %s:%u\n", workConnect->IP_Address, listen_in.sin_port );
+            workConnect->patch = 1;
+            start_encryption (workConnect);
+          }
+        }
+      }
+
+
+      // Process client connections
+
+      for (ch=0;ch<serverNumConnections;ch++)
+      {
+        connectNum = serverConnectionList[ch];
+        workConnect = connections[connectNum];
+
+        if (workConnect->plySockfd >= 0)
+        {
+          if (FD_ISSET(workConnect->plySockfd, &ExceptFDs)) // Exception?
+            initialize_connection (workConnect);
+
+          if (FD_ISSET(workConnect->plySockfd, &ReadFDs))
+          {
+            // Read shit.
+            if ( ( pkt_len = recv (workConnect->plySockfd, &tmprcv[0], TCP_BUFFER_SIZE - 1, 0) ) <= 0 )
+            {
+              /*
+              wserror = WSAGetLastError();
+              printf ("Could not read data from client...\n");
+              printf ("Socket Error %u.\n", wserror );
+              */
+              initialize_connection (workConnect);
+            }
+            else
+            {
+              workConnect->fromBytesSec += (unsigned) pkt_len;
+              // Work with it.
+              for (pkt_c=0;pkt_c<pkt_len;pkt_c++)
+              {
+                workConnect->rcvbuf[workConnect->rcvread++] = tmprcv[pkt_c];
+
+                if (workConnect->rcvread == 4)
+                {
+                  /* Decrypt the packet header after receiving 8 bytes. */
+
+                  cipher_ptr = &workConnect->client_cipher;
+
+                  decryptcopy ( &workConnect->peekbuf[0], &workConnect->rcvbuf[0], 4 );
+
+                  /* Make sure we're expecting a multiple of 8 bytes. */
+
+                  memcpy ( &workConnect->expect, &workConnect->peekbuf[0], 2 );
+
+                  if ( workConnect->expect % 4 )
+                    workConnect->expect += ( 4 - ( workConnect->expect % 4 ) );
+
+                  if ( workConnect->expect > TCP_BUFFER_SIZE )
+                  {
+                    initialize_connection ( workConnect );
+                    break;
+                  }
+                }
+
+                if ( ( workConnect->rcvread == workConnect->expect ) && ( workConnect->expect != 0 ) )
+                {
+                  if ( workConnect->packetdata + workConnect->expect > TCP_BUFFER_SIZE )
+                  {
+                    initialize_connection ( workConnect );
+                    break;
+                  }
+                  else
+                  {
+                    /* Decrypt the rest of the data if needed. */
+
+                    cipher_ptr = &workConnect->client_cipher;
+
+                    memcpy ( &workConnect->packet[workConnect->packetdata], &workConnect->peekbuf[0], 4 );
+
+                    if ( workConnect->rcvread > 4 )
+                      decryptcopy ( &workConnect->packet[workConnect->packetdata + 4], &workConnect->rcvbuf[4], workConnect->expect - 4 );
+
+                    memcpy ( &this_packet, &workConnect->peekbuf[0], 2 );
+                    workConnect->packetdata += this_packet;
+
+                    workConnect->packetsSec ++;
+
+                    workConnect->rcvread = 0;
+                  }
+                }
+              }
+            }
+          }
+
+          if (FD_ISSET(workConnect->plySockfd, &WriteFDs))
+          {
+            // Write shit
+
+            data_send = workConnect->snddata - workConnect->sndwritten;
+
+            if ((maxbytes) && (workConnect->sending_files)) // We throttling?
+            {
+              if ( num_sends )
+                data_send /= num_sends;
+
+              if ( data_send > data_remaining )
+                 data_send = data_remaining;
+
+              if ( data_send )
+                data_remaining -= data_send;
+            }
+
+            if ( data_send )
+            {
+              bytes_sent = send (workConnect->plySockfd, &workConnect->sndbuf[workConnect->sndwritten],
+                data_send, 0);
+              if (bytes_sent == SOCKET_ERROR)
+              {
+                /*
+                wserror = WSAGetLastError();
+                printf ("Could not send data to client...\n");
+                printf ("Socket Error %u.\n", wserror );
+                */
+                initialize_connection (workConnect);
+              }
+              else
+              {
+                workConnect->sndwritten += bytes_sent;
+                workConnect->toBytesSec += (unsigned) bytes_sent;
+              }
+
+              if (workConnect->sndwritten == workConnect->snddata)
+                workConnect->sndwritten = workConnect->snddata = 0;
+
+            }
+          }
+
+          if (workConnect->todc)
+            initialize_connection (workConnect);
+        }
+      }
+    }
+  }
+  return 0;
+}
+
+
+void send_to_server(int sock, char* packet)
+{
+ int pktlen;
+
+ pktlen = strlen (packet);
+
+  if (send(sock, packet, pktlen, 0) != pktlen)
+  {
+    printf ("send_to_server(): failure");
+    exit(1);
+  }
+
+}
+
+int receive_from_server(int sock, char* packet)
+{
+ int pktlen;
+
+  if ((pktlen = recv(sock, packet, TCP_BUFFER_SIZE - 1, 0)) <= 0)
+  {
+    printf ("receive_from_server(): failure");
+    exit(1);
+  }
+  packet[pktlen] = 0;
+  return pktlen;
+}
+
+void tcp_listen (int sockfd)
+{
+  if (listen(sockfd, 10) < 0)
+  {
+    debug_perror ("Could not listen for connection");
+    exit(1);
+  }
+}
+
+int tcp_accept (int sockfd, struct sockaddr *client_addr, int *addr_len )
+{
+  int fd;
+
+  if ((fd = accept (sockfd, client_addr, addr_len)) < 0)
+    debug_perror ("Could not accept connection");
+
+  return (fd);
+}
+
+int tcp_sock_connect(char* dest_addr, int port)
+{
+  int fd;
+  struct sockaddr_in sa;
+
+  /* Clear it out */
+  memset((void *)&sa, 0, sizeof(sa));
+
+  fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+  /* Error */
+  if( fd < 0 )
+    debug_perror("Could not create socket");
+  else
+  {
+
+    memset (&sa, 0, sizeof(sa));
+    sa.sin_family = AF_INET;
+    sa.sin_addr.s_addr = inet_addr (dest_addr);
+    sa.sin_port = htons((unsigned short) port);
+
+    if (connect(fd, (struct sockaddr*) &sa, sizeof(sa)) < 0)
+      debug_perror("Could not make TCP connection");
+    else
+      debug ("tcp_sock_connect %s:%u", inet_ntoa (sa.sin_addr), sa.sin_port );
+  }
+  return(fd);
+}
+
+/*****************************************************************************/
+int tcp_sock_open(struct in_addr ip, int port)
+{
+  int fd, turn_on_option_flag = 1, rcSockopt;
+
+  struct sockaddr_in sa;
+
+  /* Clear it out */
+  memset((void *)&sa, 0, sizeof(sa));
+
+  fd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+  /* Error */
+  if( fd < 0 ){
+    debug_perror("Could not create socket");
+    exit(1);
+  }
+
+  sa.sin_family = AF_INET;
+  memcpy((void *)&sa.sin_addr, (void *)&ip, sizeof(struct in_addr));
+  sa.sin_port = htons((unsigned short) port);
+
+  /* Reuse port (ICS?) */
+
+  rcSockopt = setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char *) &turn_on_option_flag, sizeof(turn_on_option_flag));
+
+  /* bind() the socket to the interface */
+  if (bind(fd, (struct sockaddr *)&sa, sizeof(struct sockaddr)) < 0){
+    debug_perror("Could not bind to port");
+    exit(1);
+  }
+
+  return(fd);
+}
+
+/*****************************************************************************
+* same as debug_perror but writes to debug output.
+*
+*****************************************************************************/
+void debug_perror( char * msg ) {
+  debug( "%s : %s\n" , msg , strerror(errno) );
+}
+/*****************************************************************************/
+void debug(char *fmt, ...)
+{
+#define MAX_MESG_LEN 1024
+
+  va_list args;
+  char text[ MAX_MESG_LEN ];
+
+  va_start (args, fmt);
+  strcpy (text + vsprintf( text,fmt,args), "\r\n");
+  va_end (args);
+
+  fprintf( stderr, "%s", text);
+}
+
+
+void CRYPT_PC_MixKeys(CRYPT_SETUP* pc)
+{
+    unsigned long esi,edi,eax,ebp,edx;
+    edi = 1;
+    edx = 0x18;
+    eax = edi;
+    while (edx > 0)
+    {
+        esi = pc->keys[eax + 0x1F];
+        ebp = pc->keys[eax];
+        ebp = ebp - esi;
+        pc->keys[eax] = ebp;
+        eax++;
+        edx--;
+    }
+    edi = 0x19;
+    edx = 0x1F;
+    eax = edi;
+    while (edx > 0)
+    {
+        esi = pc->keys[eax - 0x18];
+        ebp = pc->keys[eax];
+        ebp = ebp - esi;
+        pc->keys[eax] = ebp;
+        eax++;
+        edx--;
+    }
+}
+
+void CRYPT_PC_CreateKeys(CRYPT_SETUP* pc,unsigned long val)
+{
+    unsigned long esi,ebx,edi,eax,edx,var1;
+    esi = 1;
+    ebx = val;
+    edi = 0x15;
+    pc->keys[56] = ebx;
+    pc->keys[55] = ebx;
+    while (edi <= 0x46E)
+    {
+        eax = edi;
+        var1 = eax / 55;
+        edx = eax - (var1 * 55);
+        ebx = ebx - esi;
+        edi = edi + 0x15;
+        pc->keys[edx] = esi;
+        esi = ebx;
+        ebx = pc->keys[edx];
+    }
+    CRYPT_PC_MixKeys(pc);
+    CRYPT_PC_MixKeys(pc);
+    CRYPT_PC_MixKeys(pc);
+    CRYPT_PC_MixKeys(pc);
+    pc->pc_posn = 56;
+}
+
+unsigned long CRYPT_PC_GetNextKey(CRYPT_SETUP* pc)
+{
+    unsigned long re;
+    if (pc->pc_posn == 56)
+    {
+        CRYPT_PC_MixKeys(pc);
+        pc->pc_posn = 1;
+    }
+    re = pc->keys[pc->pc_posn];
+    pc->pc_posn++;
+    return re;
+}
+
+void CRYPT_PC_CryptData(CRYPT_SETUP* pc,void* data,unsigned long size)
+{
+    unsigned long x;
+    for (x = 0; x < size; x += 4) *(unsigned long*)((unsigned long)data + x) ^= CRYPT_PC_GetNextKey(pc);
+}
+
+void decryptcopy ( void* dest, void* source, unsigned size )
+{
+  CRYPT_PC_CryptData(cipher_ptr,source,size);
+  memcpy (dest,source,size);
+}
+
+void encryptcopy ( BANANA* client, void* source, unsigned size )
+{
+  unsigned char* dest;
+
+  if (TCP_BUFFER_SIZE - client->snddata < ( (int) size + 7 ) )
+    client->todc = 1;
+  else
+  {
+    dest = &client->sndbuf[client->snddata];
+    memcpy (dest,source,size);
+    while (size % 4)
+      dest[size++] = 0x00;
+    client->snddata += (int) size;
+
+    CRYPT_PC_CryptData(cipher_ptr,dest,size);
+  }
+}
