@@ -267,7 +267,7 @@ MYSQL_RES * myResult;
 
 #endif
 
-#define NO_ALIGN __attribute__ ((aligned (1)))
+#define NO_ALIGN __attribute__ ((packed))
 
 /* Mag data structure */
 
