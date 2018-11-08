@@ -1,4 +1,4 @@
-#define NO_ALIGN __attribute__ ((aligned (32)))
+#define NO_ALIGN __attribute__ ((packed))
 
 typedef struct st_ptdata
 {
