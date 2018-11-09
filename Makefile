@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-I. -L/usr/lib/mysql -lmysqlclient -march=native
+CFLAGS=-I. -L/usr/lib/mysql -lmysqlclient -march=native -m32
 
 %.o: %.c
 	$(CC) -c -o $@ $< $(CFLAGS)
@@ -8,6 +8,7 @@ clean:
 	rm -f src/*/*.o
 md5: src/md5/md5.o
 prs: src/prs/prs.o
+	$(CC) -c -o src/prs/prs.o src/prs/prs.cpp $(CFLAGS)
 account_add: md5
 	$(CC) -o bin/account_add src/md5/md5.o src/account_add/account_add.c $(CFLAGS)
 char_export:
