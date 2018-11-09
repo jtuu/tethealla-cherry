@@ -148,11 +148,6 @@ int qflag (unsigned char* flag_data, unsigned flag, unsigned difficulty);
 
 /* variables */
 
-struct timeval select_timeout = {
-  0,
-  5000
-};
-
 FILE* debugfile;
 
 // Random drop rates
@@ -15846,6 +15841,11 @@ int main()
     nfds = max (nfds, ship_sockfd);
 
     /* Check sockets for activity. */
+
+    struct timeval select_timeout = {
+      0,
+      5000
+    };
 
     if ( select ( nfds + 1, &ReadFDs, &WriteFDs, &ExceptFDs, &select_timeout ) > 0 )
     {

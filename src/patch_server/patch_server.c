@@ -55,11 +55,6 @@ void CRYPT_PC_CryptData(CRYPT_SETUP*,void*,unsigned long);
 //#define DEBUG_OUTPUT
 #define TCP_BUFFER_SIZE 65530
 
-struct timeval select_timeout = {
-  0,
-  5000
-};
-
 /* added stuff */
 
 #define SOCKET_ERROR  -1
@@ -1318,6 +1313,11 @@ int main( int argc, char * argv[] )
     nfds = max (nfds, data_sockfd);
 
     /* Check sockets for activity. */
+
+    struct timeval select_timeout = {
+      0,
+      5000
+    };
 
     if ( select ( nfds + 1, &ReadFDs, &WriteFDs, &ExceptFDs, &select_timeout ) > 0 )
     {

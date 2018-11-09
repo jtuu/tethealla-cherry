@@ -89,11 +89,6 @@ const char *PSO_CLIENT_VER_STRING = "TethVer12510";
 #define CLASS_RAMARL 0x0B
 #define CLASS_MAX 0x0C
 
-struct timeval select_timeout = {
-  0,
-  5000
-};
-
 /* added stuff */
 
 #define SOCKET_ERROR  -1
@@ -5989,6 +5984,11 @@ main( int argc, char * argv[] )
     nfds = max (nfds, ship_sockfd);
 
     /* Check sockets for activity. */
+
+    struct timeval select_timeout = {
+      0,
+      5000
+    };
 
     if ( select ( nfds + 1, &ReadFDs, &WriteFDs, &ExceptFDs, &select_timeout ) > 0 )
     {
