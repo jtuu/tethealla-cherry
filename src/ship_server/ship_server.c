@@ -15648,6 +15648,7 @@ int main()
     connections[ch]->guildcard = 0;
     connections[ch]->character_backup = NULL;
     connections[ch]->mode = 0;
+    connections[ch]->plySockfd = -1;
     initialize_connection (connections[ch]);
     connectionPtr += sizeof (BANANA);
   }
