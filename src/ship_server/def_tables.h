@@ -1,6 +1,6 @@
 // For remapping Episode IV monsters to Episode I counterparts...
 
-unsigned ep2_rtremap[] =
+uint32_t ep2_rtremap[] =
 {
   0x00, 0x00, // Pioneer 2
   0x01, 0x01, // VR Temple Alpha
@@ -16,7 +16,7 @@ unsigned ep2_rtremap[] =
   0x0B, 0x0A, // Seabed Lower
 };
 
-unsigned ep4_rtremap[] =
+uint32_t ep4_rtremap[] =
 {
   0x00, 0x00, // None to None
   0x01, 0x01, // Remap Astark to Hildebear
@@ -45,7 +45,7 @@ unsigned ep4_rtremap[] =
 
 // Units dropped per difficulty (24 definitions per level)
 
-unsigned char elemental_table[] =
+uint8_t elemental_table[] =
 {
   0x01, 0x05, 0x0F, 0x13, 0x17, 0x1B, 0x1F, 0x23, 0xFF, 0xFF, 0xFF, 0xFF,
   0x02, 0x06, 0x10, 0x14, 0x18, 0x1C, 0x20, 0x24, 0x09, 0x0C, 0xFF, 0xFF,
@@ -53,7 +53,7 @@ unsigned char elemental_table[] =
   0x04, 0x08, 0x12, 0x16, 0x1A, 0x1E, 0x22, 0x26, 0x0B, 0x0C, 0x0E, 0x28
 };
 
-unsigned tool_remap [28] =
+uint32_t tool_remap [28] =
 {
   0x000003,
   0x010003,
@@ -85,7 +85,7 @@ unsigned tool_remap [28] =
   0x000003
 };
 
-unsigned char unit_drop [7*10] =
+uint8_t unit_drop [7*10] =
 {
   0x00, 0x04, 0x08, 0x0C, 0x10, 0x14, 0x18, 0x21, 0x24, 0x27,
   0x01, 0x05, 0x09, 0x0D, 0x19, 0x22, 0x25, 0x28, 0x2A, 0x2D,
@@ -99,7 +99,7 @@ unsigned char unit_drop [7*10] =
 
 // Gallon's shop "Hopkins' Dad's" item list + Photon Drops required for each
 
-unsigned gallons_shop_hopkins[] = {
+uint32_t gallons_shop_hopkins[] = {
   0x000003, 1,
   0x000103, 1,
   0x000F03, 1,
@@ -123,7 +123,7 @@ unsigned gallons_shop_hopkins[] = {
 
 // Gallon's shop "Hopkins' Dad's" amount of PDs required for S-Rank attribute
 
-unsigned char gallon_srank_pds[] =
+uint8_t gallon_srank_pds[] =
 {
   0x01, 60,
   0x02, 60,
@@ -146,7 +146,7 @@ unsigned char gallon_srank_pds[] =
 
 // Dangerous Deal with Black Paper reward lists
 
-unsigned bp_rappy_normal[] =
+uint32_t bp_rappy_normal[] =
 {
   0x8B0201, 0x280201, 0x340101, 0x030301,
   0x0B0301, 0x071803, 0x5500, 0x290301,
@@ -155,7 +155,7 @@ unsigned bp_rappy_normal[] =
   0x04, 0x04, 0x04, 0x04,
 };
 
-unsigned bp_rappy_hard[] =
+uint32_t bp_rappy_hard[] =
 {
   0x8C0201, 0x150201, 0x8A0201, 0x400101,
   0x440301, 0x460301, 0x450301, 0x470301,
@@ -164,7 +164,7 @@ unsigned bp_rappy_hard[] =
   0x04, 0x04, 0x04, 0x04,
 };
 
-unsigned bp_rappy_vhard[] =
+uint32_t bp_rappy_vhard[] =
 {
   0xCB00, 0x3A00, 0x028C00, 0x2B0201,
   0x5000, 0x060B00, 0x060A00, 0x040A00,
@@ -174,7 +174,7 @@ unsigned bp_rappy_vhard[] =
   0x04, 0x04, 0x04, 0x04,
 };
 
-unsigned bp_rappy_ultimate[] =
+uint32_t bp_rappy_ultimate[] =
 {
   0x5100, 0x520301, 0x200301, 0x3E0301,
   0x290201, 0x071803, 0x040B00, 0x060A00,
@@ -184,7 +184,7 @@ unsigned bp_rappy_ultimate[] =
   0x04, 0x04, 0x04, 0x04,
 };
 
-unsigned bp_zu_normal[] =
+uint32_t bp_zu_normal[] =
 {
   0x320101, 0x012F00, 0xB300, 0x5E00,
   0x020E00, 0x2E00, 0x9500, 0x9A00,
@@ -193,7 +193,7 @@ unsigned bp_zu_normal[] =
   0x04, 0x04, 0x04, 0x04,
 };
 
-unsigned bp_zu_hard[] =
+uint32_t bp_zu_hard[] =
 {
   0xC000, 0xD200, 0x8D00, 0x2E0101,
   0x8B00, 0x070900, 0x4E00, 0x6D00,
@@ -202,7 +202,7 @@ unsigned bp_zu_hard[] =
   0x04, 0x04, 0x04, 0x04,
 };
 
-unsigned bp_zu_vhard[] =
+uint32_t bp_zu_vhard[] =
 {
   0xAA00, 0x410101, 0x510101, 0x230201,
   0x3F00, 0x4100, 0x070500, 0x060500,
@@ -211,7 +211,7 @@ unsigned bp_zu_vhard[] =
   0x04, 0x04, 0x04, 0x04,
 };
 
-unsigned bp_zu_ultimate[] =
+uint32_t bp_zu_ultimate[] =
 {
   0xAF00, 0x4300, 0x510301, 0xCD00,
   0x9900, 0x6C00, 0x4500, 0x6B00,
@@ -221,7 +221,7 @@ unsigned bp_zu_ultimate[] =
   0x04, 0x04, 0x04, 0x04,
 };
 
-unsigned bp_dorphon_normal[] =
+uint32_t bp_dorphon_normal[] =
 {
   0x9000, 0x019000, 0x029000, 0x039000,
   0x049000, 0x059000, 0x069000, 0x079000,
@@ -231,7 +231,7 @@ unsigned bp_dorphon_normal[] =
   0x04, 0x04, 0x04, 0x04,
 };
 
-unsigned bp_dorphon_hard[] =
+uint32_t bp_dorphon_hard[] =
 {
   0xB900, 0x3400, 0x010900, 0x029000,
   0x079000, 0x2C00, 0x2D00, 0x350201,
@@ -240,7 +240,7 @@ unsigned bp_dorphon_hard[] =
   0x04, 0x04, 0x04, 0x04,
 };
 
-unsigned bp_dorphon_vhard[] =
+uint32_t bp_dorphon_vhard[] =
 {
   0xB600, 0x018A00, 0x011000, 0x021000,
   0x031000, 0x041000, 0x051000, 0x061000,
@@ -249,7 +249,7 @@ unsigned bp_dorphon_vhard[] =
   0x04, 0x04, 0x04, 0x04,
 };
 
-unsigned bp_dorphon_ultimate[] =
+uint32_t bp_dorphon_ultimate[] =
 {
   0xB700, 0x011000, 0x021000, 0x031000,
   0x041000, 0x051000, 0x061000, 0x2900,
@@ -261,7 +261,7 @@ unsigned bp_dorphon_ultimate[] =
 
 // Dangerous Deal with Black Paper 2 reward lists
 
-unsigned bp2_normal[] =
+uint32_t bp2_normal[] =
 {
   0x00BA00, 0x030D00, 0x014300, 0x080700,
   0x014200, 0x00c900, 0x001003, 0x950201,
@@ -270,7 +270,7 @@ unsigned bp2_normal[] =
 
 
 
-unsigned bp2_hard[] =
+uint32_t bp2_hard[] =
 {
   0x00BB00, 0x030D00, 0x00B700, 0x014200,
   0x080700, 0x00c900, 0x360101, 0x8A0201,
@@ -278,7 +278,7 @@ unsigned bp2_hard[] =
   0x001003, 0x0A1803
 };
 
-unsigned bp2_vhard[] =
+uint32_t bp2_vhard[] =
 {
   0x00BA00, 0x00B400, 0x030D00, 0x00B600,
   0x00B300, 0x080700, 0x014300, 0x00c900,
@@ -288,7 +288,7 @@ unsigned bp2_vhard[] =
 };
 
 
-unsigned bp2_ultimate[] =
+uint32_t bp2_ultimate[] =
 {
   0x00BA00, 0x00B400, 0x030D00, 0x00B600,
   0x00B300, 0x080700, 0x014300, 0x00c900,
@@ -299,7 +299,7 @@ unsigned bp2_ultimate[] =
 
 // Tekking Attribute arrays
 
-unsigned char tekker_attributes[] =
+uint8_t tekker_attributes[] =
 {
   0x00, 0x00, 0x00,
   0x01, 0x01, 0x02,
@@ -347,7 +347,7 @@ unsigned char tekker_attributes[] =
 
 // Experience required to each level
 
-unsigned tnlxp[200] =
+uint32_t tnlxp[200] =
 {
   50,
   150,
@@ -555,7 +555,7 @@ unsigned tnlxp[200] =
 // Flags set in the A2 packet when viewing the "Main Story" quest category
 // for Episode 1 One-Person
 
-unsigned short ep1_unlocks[] =
+uint16_t ep1_unlocks[] =
 {
   0x13c2, 0x11a4,
   0x1536, 0xb53,
@@ -703,7 +703,7 @@ enum MagTypes {
 
 // Mag Feeding Tables (updated by Lee from schtserv.com)
 
-   short Feed_Table0[11*6] =
+   int16_t Feed_Table0[11*6] =
    {
       3, 3, 5, 40, 5, 0,
       3, 3, 10, 45, 5, 0,
@@ -718,7 +718,7 @@ enum MagTypes {
       6, 5, 25, 25, 25, 25
    };
 
-   short Feed_Table1[11*6] =
+   int16_t Feed_Table1[11*6] =
    {
       0, 0, 5, 10, 0, -1,
       2, 1, 6, 15, 3, -3,
@@ -733,7 +733,7 @@ enum MagTypes {
       4, 3, 14, 9, 18, 11
    };
 
-   short Feed_Table2[11*6] =
+   int16_t Feed_Table2[11*6] =
    {
       0, -1, 1, 9, 0, -5,
       3, 0, 1, 13, 0, -10,
@@ -748,7 +748,7 @@ enum MagTypes {
       4, 2, 7, 8, 6, 9
    };
 
-   short Feed_Table3[11*6] =
+   int16_t Feed_Table3[11*6] =
    {
       0, -1, 0, 3, 0, 0,
       2, 0, 5, 7, 0, -5,
@@ -763,7 +763,7 @@ enum MagTypes {
       3, 2, 7, 7, 7, 7
    };
 
-   short Feed_Table4[11*6] =
+   int16_t Feed_Table4[11*6] =
    {
       2, -1, -5, 9, -5, 0,
       2, 0, 0, 11, 0, -10,
@@ -778,7 +778,7 @@ enum MagTypes {
       3, 2, 4, 6, 8, 5
    };
 
-   short Feed_Table5[11*6] =
+   int16_t Feed_Table5[11*6] =
    {
       2, -1, -4, 13, -5, -5,
       0, 1, 0, 16, 0, -15,
@@ -793,7 +793,7 @@ enum MagTypes {
       3, 2, 2, 8, 3, 6
    };
 
-   short Feed_Table6[11*6] =
+   int16_t Feed_Table6[11*6] =
    {
       -1, 1, -3, 9, -3, -4,
       2, 0, 0, 11, 0, -10,
@@ -808,7 +808,7 @@ enum MagTypes {
       3, 2, 0, 11, 0, 11
    };
 
-   short Feed_Table7[11*6] =
+   int16_t Feed_Table7[11*6] =
    {
       -1, 0, -4, 21, -15, -5, // Fixed the 2 incorrect bytes in table 7 (was cell table)
       0, 1, -1, 27, -10, -16,
@@ -825,17 +825,17 @@ enum MagTypes {
 
 // Items Obtained from Jack-O-Lantern
 
-unsigned jacko_drops[8] = { 0x0C03, 0x010C03, 0x0B0E03, 0x030C03, 0x260E03, 0x050C03, 0x020C03, 0x040C03 };
+uint32_t jacko_drops[8] = { 0x0C03, 0x010C03, 0x0B0E03, 0x030C03, 0x260E03, 0x050C03, 0x020C03, 0x040C03 };
 
 
 // Items Obtained from Easter Egg
 
-unsigned easter_drops[9] = { 0x3700, 0x3100, 0x6100, 0x4A00, 0x4700, 0x5500, 0xA400, 0x5F00, 0x030F00 };
+uint32_t easter_drops[9] = { 0x3700, 0x3100, 0x6100, 0x4A00, 0x4700, 0x5500, 0xA400, 0x5F00, 0x030F00 };
 
 
 // Shop Sellback Price per Attribute
 
-int attrib [] =
+int32_t attrib [] =
 {
   0,
   125,
@@ -882,7 +882,7 @@ int attrib [] =
 
 // Shop Sellback Price per Common Armor
 
-int armor_prices[] =
+int32_t armor_prices[] =
 {
   24, 33, 41, 50, 59,
   65, 100, 135, 170, 205,
@@ -913,7 +913,7 @@ int armor_prices[] =
 
 // Shop Sellback Price per Common Unit
 
-int unit_prices [0x40] =
+int32_t unit_prices [0x40] =
 {
   250,
   375,
@@ -984,7 +984,7 @@ int unit_prices [0x40] =
 
 // Shop Sellback Price per Technique
 
-int tech_prices[] =
+int32_t tech_prices[] =
 {
   1250,
   3750,
@@ -1010,7 +1010,7 @@ int tech_prices[] =
 
 // Shop Sellback Price per Tool
 
-int tool_prices[] =
+int32_t tool_prices[] =
 {
   0x000003, 6,
   0x010003, 37,
@@ -1043,7 +1043,7 @@ int tool_prices[] =
 
 // Item list for Good Luck quest...
 
-unsigned good_luck[] =
+uint32_t good_luck[] =
 {
   0x00004C00,
   0x00004500,

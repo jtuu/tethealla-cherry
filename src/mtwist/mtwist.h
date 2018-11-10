@@ -15,7 +15,7 @@
  *  MT_NO_INLINE  should be defined if the compiler doesn't support
  *      the "inline" keyword.
  *  MT_NO_LONGLONG  should be defined if the compiler doesn't support a
- *      "long long" type for 64-bit integers
+ *      "int64_t" type for 64-bit integers
  *  MT_MACHINE_BITS must be either 32 or 64, reflecting the natural
  *      size of the processor registers.  If undefined, it
  *      will default to a value calculated from limits.h.
@@ -26,7 +26,7 @@
  * no special compiler flags.
  *
  * IMPORTANT NOTE: this software requires access to a 32-bit type.  Be
- * sure that "mt_u32bit_t" is set to an unsigned 32-bit integer type.
+ * sure that "mt_u32bit_t" is set to an uint32_t 32-bit integer type.
  * The Mersenne Twist algorithms are not guaranteed to produce correct
  * results with a 64-bit type.
  *
@@ -135,12 +135,12 @@
 #endif /* MT_MACHINE_BITS */
 
 /*
- * Define an unsigned type that is guaranteed to be 32 bits wide.
+ * Define an uint32_t type that is guaranteed to be 32 bits wide.
  */
 #if MT_MACHINE_BITS == 32
-typedef unsigned long mt_u32bit_t;
+typedef uint32_t mt_u32bit_t;
 #else /* MT_MACHINE_BITS */
-typedef unsigned int  mt_u32bit_t;
+typedef uint32_t  mt_u32bit_t;
 #endif /* MT_MACHINE_BITS */
 
 
@@ -171,8 +171,8 @@ typedef struct
     {
     mt_u32bit_t   statevec[MT_STATE_SIZE];
           /* Vector holding current state */
-    int     stateptr; /* Next state entry to be used */
-    int     initialized;  /* NZ if state was initialized */
+    int32_t     stateptr; /* Next state entry to be used */
+    int32_t     initialized;  /* NZ if state was initialized */
     }
       mt_state;
 
@@ -186,9 +186,9 @@ extern "C"
  */
 extern void   mts_mark_initialized(mt_state* state);
           /* Mark a PRNG state as initialized */
-extern void   mts_seed32(mt_state* state, unsigned long seed);
+extern void   mts_seed32(mt_state* state, uint32_t seed);
           /* Set random seed for any generator */
-extern void   mts_seed32new(mt_state* state, unsigned long seed);
+extern void   mts_seed32new(mt_state* state, uint32_t seed);
           /* Set random seed for any generator */
 extern void   mts_seedfull(mt_state* state,
         mt_u32bit_t seeds[MT_STATE_SIZE]);
@@ -214,19 +214,19 @@ extern void   mts_bestseed(mt_state* state);
           /* ..Not usually worth the cost.  */
 extern void   mts_refresh(mt_state* state);
           /* Generate 624 more random values */
-extern int    mts_savestate(FILE* statefile, mt_state* state);
+extern int32_t    mts_savestate(FILE* statefile, mt_state* state);
           /* Save state to a file (ASCII). */
           /* ..Returns NZ if succeeded. */
-extern int    mts_loadstate(FILE* statefile, mt_state* state);
+extern int32_t    mts_loadstate(FILE* statefile, mt_state* state);
           /* Load state from a file (ASCII). */
           /* ..Returns NZ if succeeded. */
 
 /*
  * Functions for manipulating the default generator.
  */
-extern void   mt_seed32(unsigned long seed);
+extern void   mt_seed32(uint32_t seed);
           /* Set random seed for default gen. */
-extern void   mt_seed32new(unsigned long seed);
+extern void   mt_seed32new(uint32_t seed);
           /* Set random seed for default gen. */
 extern void   mt_seedfull(mt_u32bit_t seeds[MT_STATE_SIZE]);
           /* Set complicated seed for default */
@@ -251,10 +251,10 @@ extern void   mt_bestseed(void);
 extern mt_state*  mt_getstate(void);
           /* Get current state of default */
           /* ..generator */
-extern int    mt_savestate(FILE* statefile);
+extern int32_t    mt_savestate(FILE* statefile);
           /* Save state to a file (ASCII) */
           /* ..Returns NZ if succeeded. */
-extern int    mt_loadstate(FILE* statefile);
+extern int32_t    mt_loadstate(FILE* statefile);
           /* Load state from a file (ASCII) */
           /* ..Returns NZ if succeeded. */
 
@@ -274,10 +274,10 @@ extern int    mt_loadstate(FILE* statefile);
 #undef MT_NO_INLINE     /* C++ definitely has inlining */
 #endif /* __cplusplus */
 
-extern unsigned long  mts_lrand(mt_state* state);
+extern uint32_t  mts_lrand(mt_state* state);
           /* Generate 32-bit value, any gen. */
 #ifndef MT_NO_LONGLONG
-extern unsigned long long
+extern uint64_t
       mts_llrand(mt_state* state);
           /* Generate 64-bit value, any gen. */
 #endif /* MT_NO_LONGLONG */
@@ -288,9 +288,9 @@ extern double   mts_ldrand(mt_state* state);
           /* Generate floating value, any gen. */
           /* Slower, with 64-bit precision */
 
-extern unsigned long  mt_lrand(void); /* Generate 32-bit random value */
+extern uint32_t  mt_lrand(void); /* Generate 32-bit random value */
 #ifndef MT_NO_LONGLONG
-extern unsigned long long
+extern uint64_t
       mt_llrand(void);
           /* Generate 64-bit random value */
 #endif /* MT_NO_LONGLONG */
@@ -351,9 +351,9 @@ extern double   mt_ldrand(void);
 extern mt_state   mt_default_state;
           /* State of the default generator */
 extern double   mt_32_to_double;
-          /* Multiplier to convert long to dbl */
+          /* Multiplier to convert int32_t to dbl */
 extern double   mt_64_to_double;
-          /* Mult'r to cvt long long to dbl */
+          /* Mult'r to cvt int64_t to dbl */
 
 /*
  * In gcc, inline functions must be declared extern or they'll produce
@@ -385,10 +385,10 @@ extern double   mt_64_to_double;
  * the pseudorandom numbers are generated in batches of MT_STATE_SIZE.  This
  * saves the cost of a modulus operation in the critical path.
  */
-MT_EXTERN MT_INLINE unsigned long mts_lrand(
+MT_EXTERN MT_INLINE uint32_t mts_lrand(
     register mt_state*  state)    /* State for the PRNG */
     {
-    register unsigned long
+    register uint32_t
       random_value; /* Pseudorandom value generated */
 
     if (state->stateptr <= 0)
@@ -415,12 +415,12 @@ MT_EXTERN MT_INLINE unsigned long mts_lrand(
  * optimize it out.  Doing so would be messy, since it would require two
  * nearly-identical internal implementations of mts_lrand.
  */
-MT_EXTERN MT_INLINE unsigned long long mts_llrand(
+MT_EXTERN MT_INLINE uint64_t mts_llrand(
     register mt_state*  state)    /* State for the PRNG */
     {
-    register unsigned long
+    register uint32_t
       random_value_1; /* 1st pseudorandom value generated */
-    register unsigned long
+    register uint32_t
       random_value_2; /* 2nd pseudorandom value generated */
 
     /*
@@ -449,8 +449,8 @@ MT_EXTERN MT_INLINE unsigned long long mts_llrand(
     random_value_2 = state->statevec[--state->stateptr];
     MT_PRE_TEMPER(random_value_2);
 
-    return ((unsigned long long) random_value_1 << 32)
-      | (unsigned long long) MT_FINAL_TEMPER(random_value_2);
+    return ((uint64_t) random_value_1 << 32)
+      | (uint64_t) MT_FINAL_TEMPER(random_value_2);
     }
 #endif /* MT_NO_LONGLONG */
 
@@ -462,7 +462,7 @@ MT_EXTERN MT_INLINE unsigned long long mts_llrand(
 MT_EXTERN MT_INLINE double mts_drand(
     register mt_state*  state)    /* State for the PRNG */
     {
-    register unsigned long
+    register uint32_t
       random_value; /* Pseudorandom value generated */
 
     if (state->stateptr <= 0)
@@ -483,11 +483,11 @@ MT_EXTERN MT_INLINE double mts_ldrand(
     register mt_state*  state)    /* State for the PRNG */
     {
 #if MT_MACHINE_BITS == 64
-    unsigned long long  final_value;  /* Final (integer) value */
+    uint64_t  final_value;  /* Final (integer) value */
 #endif /* MT_MACHINE_BITS */
-    register unsigned long
+    register uint32_t
       random_value_1; /* 1st pseudorandom value generated */
-    register unsigned long
+    register uint32_t
       random_value_2; /* 2nd pseudorandom value generated */
 
     /*
@@ -517,8 +517,8 @@ MT_EXTERN MT_INLINE double mts_ldrand(
     MT_TEMPER(random_value_2);
 
 #if MT_MACHINE_BITS == 64
-    final_value = ((unsigned long long) random_value_1 << 32)
-      | (unsigned long long) random_value_2;
+    final_value = ((uint64_t) random_value_1 << 32)
+      | (uint64_t) random_value_2;
     return final_value * mt_64_to_double;
 #else /* MT_MACHINE_BITS */
     return random_value_1 * mt_32_to_double + random_value_2 * mt_64_to_double;
@@ -531,9 +531,9 @@ MT_EXTERN MT_INLINE double mts_ldrand(
  *
  * See mts_lrand for full commentary.
  */
-MT_EXTERN MT_INLINE unsigned long mt_lrand()
+MT_EXTERN MT_INLINE uint32_t mt_lrand()
     {
-    register unsigned long
+    register uint32_t
       random_value; /* Pseudorandom value generated */
 
     if (mt_default_state.stateptr <= 0)
@@ -552,11 +552,11 @@ MT_EXTERN MT_INLINE unsigned long mt_lrand()
  *
  * See mts_llrand for full commentary.
  */
-MT_EXTERN MT_INLINE unsigned long long mt_llrand()
+MT_EXTERN MT_INLINE uint64_t mt_llrand()
     {
-    register unsigned long
+    register uint32_t
       random_value_1; /* 1st pseudorandom value generated */
-    register unsigned long
+    register uint32_t
       random_value_2; /* 2nd pseudorandom value generated */
 
     /*
@@ -588,8 +588,8 @@ MT_EXTERN MT_INLINE unsigned long long mt_llrand()
     random_value_2 = mt_default_state.statevec[--mt_default_state.stateptr];
     MT_PRE_TEMPER(random_value_2);
 
-    return ((unsigned long long) random_value_1 << 32)
-      | (unsigned long long) MT_FINAL_TEMPER(random_value_2);
+    return ((uint64_t) random_value_1 << 32)
+      | (uint64_t) MT_FINAL_TEMPER(random_value_2);
     }
 #endif /* MT_NO_LONGLONG */
 
@@ -600,7 +600,7 @@ MT_EXTERN MT_INLINE unsigned long long mt_llrand()
  */
 MT_EXTERN MT_INLINE double mt_drand()
     {
-    register unsigned long
+    register uint32_t
       random_value; /* Pseudorandom value generated */
 
     if (mt_default_state.stateptr <= 0)
@@ -620,11 +620,11 @@ MT_EXTERN MT_INLINE double mt_drand()
 MT_EXTERN MT_INLINE double mt_ldrand(void)
     {
 #if MT_MACHINE_BITS == 64
-    unsigned long long  final_value;  /* Final (integer) value */
+    uint64_t  final_value;  /* Final (integer) value */
 #endif /* MT_MACHINE_BITS */
-    register unsigned long
+    register uint32_t
       random_value_1; /* 1st pseudorandom value generated */
-    register unsigned long
+    register uint32_t
       random_value_2; /* 2nd pseudorandom value generated */
 
     /*
@@ -657,8 +657,8 @@ MT_EXTERN MT_INLINE double mt_ldrand(void)
     MT_TEMPER(random_value_2);
 
 #if MT_MACHINE_BITS == 64
-    final_value = ((unsigned long long) random_value_1 << 32)
-      | (unsigned long long) random_value_2;
+    final_value = ((uint64_t) random_value_1 << 32)
+      | (uint64_t) random_value_2;
     return final_value * mt_64_to_double;
 #else /* MT_MACHINE_BITS */
     return random_value_1 * mt_32_to_double + random_value_2 * mt_64_to_double;
@@ -695,7 +695,7 @@ class mt_prng
           if (pickSeed)
         mts_seed(&state);
           }
-      mt_prng(unsigned long seed)
+      mt_prng(uint32_t seed)
           // Construct with 32-bit seeding
           {
           state.stateptr = 0;
@@ -718,12 +718,12 @@ class mt_prng
   /*
    * PRNG seeding functions.
    */
-  void    seed32(unsigned long seed)
+  void    seed32(uint32_t seed)
           // Set 32-bit random seed
           {
           mts_seed32(&state, seed);
           }
-  void    seed32new(unsigned long seed)
+  void    seed32new(uint32_t seed)
           // Set 32-bit random seed
           {
           mts_seed32new(&state, seed);
@@ -753,12 +753,12 @@ class mt_prng
   /*
    * PRNG generation functions
    */
-  unsigned long lrand()   // Generate 32-bit pseudo-random value
+  uint32_t lrand()   // Generate 32-bit pseudo-random value
           {
           return mts_lrand(&state);
           }
 #ifndef MT_NO_LONGLONG
-  unsigned long long
+  uint64_t
       llrand()  // Generate 64-bit pseudo-random value
           {
           return mts_llrand(&state);

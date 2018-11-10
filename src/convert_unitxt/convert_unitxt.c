@@ -1,3 +1,4 @@
+#include  <stdint.h>
 #include  <stdio.h>
 #include  <stdlib.h>
 #include  <string.h>
@@ -7,24 +8,24 @@
 
 //#define WORD_WRAP_LEN 26
 
-unsigned short unitxt_buffer[512*1024];
-unsigned short new_unitxt_buffer[512*1024];
-unsigned short real_line_buffer[4096];
-unsigned char final_buffer[512*1024];
-unsigned char line_buffer[4096];
-unsigned short twobyte_buffer[4096];
-unsigned uni_offsets[8192] = {0};
-unsigned uni_sizes[8192] = {0};
-unsigned uni_categories[256] = {0};
-unsigned total_unicount;
-//unsigned char uni_header[0x128];
-unsigned prs_size;
+uint16_t unitxt_buffer[512*1024];
+uint16_t new_unitxt_buffer[512*1024];
+uint16_t real_line_buffer[4096];
+uint8_t final_buffer[512*1024];
+uint8_t line_buffer[4096];
+uint16_t twobyte_buffer[4096];
+uint32_t uni_offsets[8192] = {0};
+uint32_t uni_sizes[8192] = {0};
+uint32_t uni_categories[256] = {0};
+uint32_t total_unicount;
+//uint8_t uni_header[0x128];
+uint32_t prs_size;
 
 void main(int argc)
 {
   FILE *fp,*tp;
-  unsigned ch,ch2,ch3,ch4,ch5,ch6,ch7,uni_size,line_count,offset;
-  int do_wrap;
+  uint32_t ch,ch2,ch3,ch4,ch5,ch6,ch7,uni_size,line_count,offset;
+  int32_t do_wrap;
 
   printf ("\nUnitxt preparation tool v0.02 by Sodaboy\nPRS compression/decompression by Fuzziqersoftware\n");
   printf ("---\n");

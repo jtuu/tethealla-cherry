@@ -35,9 +35,9 @@
  *
  * Random-distribution functions:
  *
- * rds_iuniform(mt_state* state, long lower, long upper)
+ * rds_iuniform(mt_state* state, int32_t lower, int32_t upper)
  *    (Integer) uniform on the half-open interval [lower, upper).
- * rds_liuniform(mt_state* state, long long lower, long long upper)
+ * rds_liuniform(mt_state* state, int64_t lower, int64_t upper)
  *    (Integer) uniform on the half-open interval [lower, upper).
  *    Don't use unless you need numbers bigger than a long!
  * rds_uniform(mt_state* state, double lower, double upper)
@@ -50,9 +50,9 @@
  * rds_lexponential(mt_state* state, double mean)
  *    Exponential with the given mean.
  *    Higher precision but slower than rds_exponential.
- * rds_erlang(mt_state* state, int p, double mean)
+ * rds_erlang(mt_state* state, int32_t p, double mean)
  *    p-Erlang with the given mean.
- * rds_lerlang(mt_state* state, int p, double mean)
+ * rds_lerlang(mt_state* state, int32_t p, double mean)
  *    p-Erlang with the given mean.
  *    Higher precision but slower than rds_erlang.
  * rds_weibull(mt_state* state, double shape, double scale)
@@ -77,7 +77,7 @@
  *    Triangular on the closed interval (lower, upper) with
  *    the given mode.
  *    Higher precision but slower than rds_triangular.
- * rds_empirical(mt_state* state, int n_probs, double* values, double* probs)
+ * rds_empirical(mt_state* state, int32_t n_probs, double* values, double* probs)
  *    values[0] with probability probs[0], values[1] with
  *    probability probs[1] - probs[0], etc.; values[n_probs]
  *    with probability 1-probs[n_probs-1].  Note that there
@@ -87,11 +87,11 @@
  *    their sum is less than or equal to 1; if this
  *    condition is violated, some of the values will never
  *    be generated.
- * rds_lempirical(mt_state* state, int n_probs, double* values, double* probs)
+ * rds_lempirical(mt_state* state, int32_t n_probs, double* values, double* probs)
  *    Empirical distribution.  Higher precision but slower than
  *    rds_empirical.
- * rd_iuniform(long lower, long upper)
- * rd_liuniform(long long lower, long long upper)
+ * rd_iuniform(long lower, int32_t upper)
+ * rd_liuniform(int64_t lower, int64_t upper)
  *    As above, using the default MT-PRNG.
  * rd_uniform(double lower, double upper)
  * rd_luniform(double lower, double upper)
@@ -123,7 +123,7 @@
  * Fix notation for intervals in commentary.
  *
  * Revision 1.4  2001/06/20 09:07:58  geoff
- * Fix a place where long long wasn't conditionalized.
+ * Fix a place where int64_t wasn't conditionalized.
  *
  * Revision 1.3  2001/06/19 00:41:17  geoff
  * Add the "l" versions of all functions.
@@ -147,11 +147,11 @@ extern "C"
 /*
  * Functions that use a provided state.
  */
-extern long   rds_iuniform(mt_state* state, long lower, long upper);
+extern int32_t   rds_iuniform(mt_state* state, int32_t lower, int32_t upper);
           /* (Integer) uniform distribution */
 #ifndef MT_NO_LONGLONG
-extern long long  rds_liuniform(mt_state* state, long long lower,
-        long long upper);
+extern int64_t  rds_liuniform(mt_state* state, int64_t lower,
+        int64_t upper);
           /* (Integer) uniform distribution */
 #endif /* MT_NO_LONGLONG */
 extern double   rds_uniform(mt_state* state,
@@ -164,9 +164,9 @@ extern double   rds_exponential(mt_state* state, double mean);
           /* Exponential distribution */
 extern double   rds_lexponential(mt_state* state, double mean);
           /* Exponential distribution */
-extern double   rds_erlang(mt_state* state, int p, double mean);
+extern double   rds_erlang(mt_state* state, int32_t p, double mean);
           /* p-Erlang distribution */
-extern double   rds_lerlang(mt_state* state, int p, double mean);
+extern double   rds_lerlang(mt_state* state, int32_t p, double mean);
           /* p-Erlang distribution */
 extern double   rds_weibull(mt_state* state,
         double shape, double scale);
@@ -193,19 +193,19 @@ extern double   rds_ltriangular(mt_state* state,
         double lower, double upper, double mode);
           /* Triangular distribution */
 extern double   rds_empirical(mt_state* state,
-        int n_probs, double* values, double* probs);
+        int32_t n_probs, double* values, double* probs);
           /* Empirical distribution */
 extern double   rds_lempirical(mt_state* state,
-        int n_probs, double* values, double* probs);
+        int32_t n_probs, double* values, double* probs);
           /* Empirical distribution */
 
 /*
  * Functions that use the default state of the PRNG.
  */
-extern long   rd_iuniform(long lower, long upper);
+extern int32_t   rd_iuniform(long lower, int32_t upper);
           /* (Integer) uniform distribution */
 #ifndef MT_NO_LONGLONG
-extern long long  rd_liuniform(long long lower, long long upper);
+extern int64_t  rd_liuniform(int64_t lower, int64_t upper);
           /* (Integer) uniform distribution */
 #endif /* MT_NO_LONGLONG */
 extern double   rd_uniform(double lower, double upper);
@@ -268,12 +268,12 @@ class mt_distribution : public mt_prng
           : mt_prng(pickSeed)
           {
           }
-      mt_distribution(unsigned long seed)
+      mt_distribution(uint32_t seed)
           // Construct with 32-bit seeding
           : mt_prng(seed)
           {
           }
-      mt_distribution(unsigned long seeds[MT_STATE_SIZE])
+      mt_distribution(uint32_t seeds[MT_STATE_SIZE])
           // Construct with full seeding
           : mt_prng(seeds)
           {
@@ -284,13 +284,13 @@ class mt_distribution : public mt_prng
    * Functions for generating distributions.  These simply
    * invoke the C functions above.
    */
-  long    iuniform(long lower, long upper)
+  int32_t    iuniform(long lower, int32_t upper)
           /* Uniform distribution */
           {
           return rds_iuniform(&state, lower, upper);
           }
 #ifndef MT_NO_LONGLONG
-  long long liuniform(long long lower, long long upper)
+  int64_t liuniform(int64_t lower, int64_t upper)
           /* Uniform distribution */
           {
           return rds_liuniform(&state, lower, upper);

@@ -1,5 +1,6 @@
+#include  <stdint.h>
 #ifndef lint
-static char Rcs_Id[] =
+static int8_t Rcs_Id[] =
     "$Id: randistrs.c,v 1.8 2008/07/25 23:34:01 geoff Exp $";
 #endif
 
@@ -60,7 +61,7 @@ static char Rcs_Id[] =
  * code.
  *
  * Revision 1.5  2001/06/20 09:07:57  geoff
- * Fix a place where long long wasn't conditionalized.
+ * Fix a place where int64_t wasn't conditionalized.
  *
  * Revision 1.4  2001/06/19 00:41:17  geoff
  * Add the "l" versions of all functions.  Add the MT_NO_CACHING option.
@@ -86,11 +87,11 @@ static char Rcs_Id[] =
 /*
  * Table of contents:
  */
-long      rds_iuniform(mt_state * state, long lower, long upper);
+int32_t      rds_iuniform(mt_state * state, int32_t lower, int32_t upper);
           /* (Integer) uniform distribution */
 #ifndef MT_NO_LONGLONG
-long long   rds_liuniform(mt_state * state, long long lower,
-        long long upper);
+int64_t   rds_liuniform(mt_state * state, int64_t lower,
+        int64_t upper);
           /* (Integer) uniform distribution */
 #endif /* MT_NO_LONGLONG */
 double      rds_uniform(mt_state * state,
@@ -103,9 +104,9 @@ double      rds_exponential(mt_state * state, double mean);
           /* Exponential distribution */
 double      rds_lexponential(mt_state * state, double mean);
           /* Exponential distribution */
-double      rds_erlang(mt_state * state, int p, double mean);
+double      rds_erlang(mt_state * state, int32_t p, double mean);
           /* p-Erlang distribution */
-double      rds_lerlang(mt_state * state, int p, double mean);
+double      rds_lerlang(mt_state * state, int32_t p, double mean);
           /* p-Erlang distribution */
 double      rds_weibull(mt_state * state,
         double shape, double scale);
@@ -132,15 +133,15 @@ double      rds_ltriangular(mt_state * state,
         double lower, double upper, double mode);
           /* Triangular distribution */
 double      rds_empirical(mt_state * state,
-        int n_probs, double * values, double * probs);
+        int32_t n_probs, double * values, double * probs);
           /* Empirical distribution */
 double      rds_lempirical(mt_state * state,
-        int n_probs, double * values, double * probs);
+        int32_t n_probs, double * values, double * probs);
           /* Empirical distribution */
-long      rd_iuniform(long lower, long upper);
+int32_t      rd_iuniform(long lower, int32_t upper);
           /* (Integer) uniform distribution */
 #ifndef MT_NO_LONGLONG
-long long   rd_liuniform(long long lower, long long upper);
+int64_t   rd_liuniform(int64_t lower, int64_t upper);
           /* (Integer) uniform distribution */
 #endif /* MT_NO_LONGLONG */
 double      rd_uniform(double lower, double upper);
@@ -241,12 +242,12 @@ extern mt_state   mt_default_state;
  * because we may have to repeatedly draw random numbers to get a
  * one that works.
  */
-long rds_iuniform(
+int32_t rds_iuniform(
     mt_state *    state,    /* State of the MT PRNG to use */
-    long    lower,    /* Lower limit of distribution */
-    long    upper)    /* Upper limit of distribution */
+    int32_t    lower,    /* Lower limit of distribution */
+    int32_t    upper)    /* Upper limit of distribution */
     {
-    unsigned long range = upper - lower;
+    uint32_t range = upper - lower;
           /* Range of requested distribution */
 
     if (range <= RD_UNIFORM_THRESHOLD)
@@ -269,14 +270,14 @@ long rds_iuniform(
    * drawback.
    */
 #ifdef MT_NO_CACHING
-  unsigned long rangemask = 0;  /* Mask for range */
+  uint32_t rangemask = 0;  /* Mask for range */
 #else /* MT_NO_CACHING */
-  static unsigned long
+  static uint32_t
       lastrange = 0;  /* Range used last time */
-  static unsigned long
+  static uint32_t
       rangemask = 0;  /* Mask for range */
 #endif /* MT_NO_CACHING */
-  register unsigned long
+  register uint32_t
       ranval;   /* Random value from mts_lrand */
 
 #ifndef MT_NO_CACHING
@@ -325,12 +326,12 @@ long rds_iuniform(
  * Generate a uniform integer distribution on the half-open interval
  * [lower, upper).
  */
-long long rds_liuniform(
+int64_t rds_liuniform(
     mt_state *    state,    /* State of the MT PRNG to use */
-    long long   lower,    /* Lower limit of distribution */
-    long long   upper)    /* Upper limit of distribution */
+    int64_t   lower,    /* Lower limit of distribution */
+    int64_t   upper)    /* Upper limit of distribution */
     {
-    unsigned long long  range = upper - lower;
+    uint64_t  range = upper - lower;
           /* Range of requested distribution */
 
     /*
@@ -340,14 +341,14 @@ long long rds_liuniform(
      * do a bit of caching here.  See rds_iuniform for more information.
      */
 #ifdef MT_NO_CACHING
-    unsigned long rangemask = 0;  /* Mask for range */
+    uint32_t rangemask = 0;  /* Mask for range */
 #else /* MT_NO_CACHING */
-    static unsigned long
+    static uint32_t
         lastrange = 0;  /* Range used last time */
-    static unsigned long
+    static uint32_t
         rangemask = 0;  /* Mask for range */
 #endif /* MT_NO_CACHING */
-    register unsigned long
+    register uint32_t
         ranval;   /* Random value from mts_lrand */
 
 #ifndef MT_NO_CACHING
@@ -442,10 +443,10 @@ double rds_lexponential(
  */
 double rds_erlang(
     mt_state *    state,    /* State of the MT PRNG to use */
-    int     p,    /* Order of distribution to generate */
+    int32_t     p,    /* Order of distribution to generate */
     double    mean)   /* Mean of generated distribution */
     {
-    int     order;    /* Order generated so far */
+    int32_t     order;    /* Order generated so far */
     double    random_value; /* Value generated so far */
 
     do
@@ -465,10 +466,10 @@ double rds_erlang(
  */
 double rds_lerlang(
     mt_state *    state,    /* State of the MT PRNG to use */
-    int     p,    /* Order of distribution to generate */
+    int32_t     p,    /* Order of distribution to generate */
     double    mean)   /* Mean of generated distribution */
     {
-    int     order;    /* Order generated so far */
+    int32_t     order;    /* Order generated so far */
     double    random_value; /* Value generated so far */
 
     do
@@ -673,11 +674,11 @@ double rds_ltriangular(
  */
 double rds_empirical(
     mt_state *    state,    /* State of the MT PRNG to use */
-    int     n_probs,  /* Number of probabilities given */
+    int32_t     n_probs,  /* Number of probabilities given */
     double *    values,   /* Vals returned with various probs */
     double *    probs)    /* Probs of various values */
     {
-    int     i;    /* Index into both arrays */
+    int32_t     i;    /* Index into both arrays */
     double    ran_value;  /* Value generated by PRNG */
 
     ran_value = mts_drand(state);
@@ -699,11 +700,11 @@ double rds_empirical(
  */
 double rds_lempirical(
     mt_state *    state,    /* State of the MT PRNG to use */
-    int     n_probs,  /* Number of probabilities given */
+    int32_t     n_probs,  /* Number of probabilities given */
     double *    values,   /* Vals returned with various probs */
     double *    probs)    /* Probs of various values */
     {
-    int     i;    /* Index into both arrays */
+    int32_t     i;    /* Index into both arrays */
     double    ran_value;  /* Value generated by PRNG */
 
     ran_value = mts_ldrand(state);
@@ -723,9 +724,9 @@ double rds_lempirical(
  * Generate a uniform integer distribution on the half-open interval
  * [lower, upper).  See comments on rds_iuniform.
  */
-long rd_iuniform(
-    long    lower,    /* Lower limit of distribution */
-    long    upper)    /* Upper limit of distribution */
+int32_t rd_iuniform(
+    int32_t    lower,    /* Lower limit of distribution */
+    int32_t    upper)    /* Upper limit of distribution */
     {
     return rds_iuniform(&mt_default_state, lower, upper);
     }
@@ -735,9 +736,9 @@ long rd_iuniform(
  * Generate a uniform integer distribution on the open interval
  * [lower, upper).  See comments on rds_iuniform.
  */
-long long rd_liuniform(
-    long long   lower,    /* Lower limit of distribution */
-    long long   upper)    /* Upper limit of distribution */
+int64_t rd_liuniform(
+    int64_t   lower,    /* Lower limit of distribution */
+    int64_t   upper)    /* Upper limit of distribution */
     {
     return rds_liuniform(&mt_default_state, lower, upper);
     }
@@ -785,7 +786,7 @@ double rd_lexponential(
  * Generate a p-Erlang distribution with the given mean.
  */
 double rd_erlang(
-    int     p,    /* Order of distribution to generate */
+    int32_t     p,    /* Order of distribution to generate */
     double    mean)   /* Mean of generated distribution */
     {
     return rds_erlang (&mt_default_state, p, mean);
@@ -795,7 +796,7 @@ double rd_erlang(
  * Generate a p-Erlang distribution with the given mean.
  */
 double rd_lerlang(
-    int     p,    /* Order of distribution to generate */
+    int32_t     p,    /* Order of distribution to generate */
     double    mean)   /* Mean of generated distribution */
     {
     return rds_lerlang (&mt_default_state, p, mean);
@@ -894,7 +895,7 @@ double rd_ltriangular(
  * probabilities.
  */
 double rd_empirical(
-    int     n_probs,  /* Number of probabilities given */
+    int32_t     n_probs,  /* Number of probabilities given */
     double *    values,   /* Vals returned with various probs */
     double *    probs)    /* Probs of various values */
     {
@@ -906,7 +907,7 @@ double rd_empirical(
  * probabilities.
  */
 double rd_lempirical(
-    int     n_probs,  /* Number of probabilities given */
+    int32_t     n_probs,  /* Number of probabilities given */
     double *    values,   /* Vals returned with various probs */
     double *    probs)    /* Probs of various values */
     {

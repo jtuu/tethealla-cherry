@@ -32,12 +32,13 @@
  */
 
 /* -- include the following line if the md5.h header file is separate -- */
+#include  <stdint.h>
 #include "include/md5.h"
 
 /* forward declaration */
 static void Transform ();
 
-static unsigned char PADDING[64] = {
+static uint8_t PADDING[64] = {
   0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -92,11 +93,11 @@ void MD5Init (MD5_CTX *mdContext)
   mdContext->buf[3] = (UINT4)0x10325476;
 }
 
-void MD5Update (MD5_CTX *mdContext, unsigned char* inBuf, unsigned int inLen)
+void MD5Update (MD5_CTX *mdContext, uint8_t* inBuf, uint32_t inLen)
 {
   UINT4 in[16];
-  int mdi;
-  unsigned int i, ii;
+  int32_t mdi;
+  uint32_t i, ii;
 
   /* compute number of bytes mod 64 */
   mdi = (int)((mdContext->i[0] >> 3) & 0x3F);
@@ -127,9 +128,9 @@ void MD5Update (MD5_CTX *mdContext, unsigned char* inBuf, unsigned int inLen)
 void MD5Final (MD5_CTX *mdContext)
 {
   UINT4 in[16];
-  int mdi;
-  unsigned int i, ii;
-  unsigned int padLen;
+  int32_t mdi;
+  uint32_t i, ii;
+  uint32_t padLen;
 
   /* save number of bits */
   in[14] = mdContext->i[0];
@@ -152,13 +153,13 @@ void MD5Final (MD5_CTX *mdContext)
 
   /* store buffer in digest */
   for (i = 0, ii = 0; i < 4; i++, ii += 4) {
-    mdContext->digest[ii] = (unsigned char)(mdContext->buf[i] & 0xFF);
+    mdContext->digest[ii] = (uint8_t)(mdContext->buf[i] & 0xFF);
     mdContext->digest[ii+1] =
-      (unsigned char)((mdContext->buf[i] >> 8) & 0xFF);
+      (uint8_t)((mdContext->buf[i] >> 8) & 0xFF);
     mdContext->digest[ii+2] =
-      (unsigned char)((mdContext->buf[i] >> 16) & 0xFF);
+      (uint8_t)((mdContext->buf[i] >> 16) & 0xFF);
     mdContext->digest[ii+3] =
-      (unsigned char)((mdContext->buf[i] >> 24) & 0xFF);
+      (uint8_t)((mdContext->buf[i] >> 24) & 0xFF);
   }
 }
 

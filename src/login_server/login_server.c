@@ -24,6 +24,7 @@
 //#define NO_SQL
 #define NO_CONNECT_TEST
 
+#include  <stdint.h>
 #include  <stdarg.h>
 #include  <stdio.h>
 #include  <stdlib.h>
@@ -54,7 +55,7 @@
 #define MAX_DRESS_FLAGS 500
 #define DRESS_FLAG_EXPIRY 7200
 
-const char *PSO_CLIENT_VER_STRING = "TethVer12510";
+const int8_t *PSO_CLIENT_VER_STRING = "TethVer12510";
 #define PSO_CLIENT_VER 0x41
 
 //#define USEADDR_ANY
@@ -96,9 +97,9 @@ const char *PSO_CLIENT_VER_STRING = "TethVer12510";
 void strupr(char * temp) {
 
   // Convert to upper case
-  char *s = temp;
+  int8_t *s = temp;
   while (*s) {
-    *s = toupper((unsigned char) *s);
+    *s = toupper((uint8_t) *s);
     s++;
   }
 
@@ -112,17 +113,17 @@ void strupr(char * temp) {
 /* functions */
 
 void send_to_server(int sock, char* packet);
-int receive_from_server(int sock, char* packet);
+int32_t receive_from_server(int sock, char* packet);
 void debug(char *fmt, ...);
 void debug_perror(char * msg);
 void tcp_listen (int sockfd);
-int tcp_accept (int sockfd, struct sockaddr *client_addr, int *addr_len );
-int tcp_sock_connect(char* dest_addr, int port);
-int tcp_sock_open(struct in_addr ip, int port);
+int32_t tcp_accept (int sockfd, struct sockaddr *client_addr, int32_t *addr_len );
+int32_t tcp_sock_connect(char* dest_addr, int32_t port);
+int32_t tcp_sock_open(struct in_addr ip, int32_t port);
 
 /* Ship Packets */
 
-unsigned char ShipPacket00[] = {
+uint8_t ShipPacket00[] = {
   0x00, 0x00, 0x3F, 0x01, 0x03, 0x04, 0x19, 0x55, 0x54, 0x65, 0x74, 0x68, 0x65, 0x61, 0x6C, 0x6C,
   0x61, 0x20, 0x4C, 0x6F, 0x67, 0x69, 0x6E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -133,7 +134,7 @@ unsigned char ShipPacket00[] = {
 
 /* Start Encryption Packet */
 
-unsigned char Packet03[] = {
+uint8_t Packet03[] = {
   0xC8, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x50, 0x68, 0x61, 0x6E, 0x74, 0x61, 0x73, 0x79,
   0x20, 0x53, 0x74, 0x61, 0x72, 0x20, 0x4F, 0x6E, 0x6C, 0x69, 0x6E, 0x65, 0x20, 0x42, 0x6C, 0x75,
   0x65, 0x20, 0x42, 0x75, 0x72, 0x73, 0x74, 0x20, 0x47, 0x61, 0x6D, 0x65, 0x20, 0x53, 0x65, 0x72,
@@ -149,52 +150,52 @@ unsigned char Packet03[] = {
   0x29, 0x2A, 0x2B, 0x2C, 0x2D, 0x2E, 0x2F, 0x30
 };
 
-const unsigned char Message03[] = { "Tethealla Gate v.047" };
+const uint8_t Message03[] = { "Tethealla Gate v.047" };
 
 
 /* Server Redirect */
 
-const unsigned char Packet19[] = {
+const uint8_t Packet19[] = {
   0x10, 0x00, 0x19, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
 
 /* Login message */
 
-const unsigned char Packet1A[] = {
+const uint8_t Packet1A[] = {
   0x00, 0x00, 0x1A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x09, 0x00, 0x45, 0x00
 };
 
 /* Ping pong */
 
-const unsigned char Packet1D[] = {
+const uint8_t Packet1D[] = {
   0x08, 0x00, 0x1D, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
 /* Current time */
 
-const unsigned char PacketB1[] = {
+const uint8_t PacketB1[] = {
   0x24, 0x00, 0xB1, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
 /* Guild Card Data */
 
-unsigned char PacketDC01[0x14] = {0};
-unsigned char PacketDC02[0x10] = {0};
-unsigned char PacketDC_Check[54672] = {0};
+uint8_t PacketDC01[0x14] = {0};
+uint8_t PacketDC02[0x10] = {0};
+uint8_t PacketDC_Check[54672] = {0};
 
 /* No Character Header */
 
-unsigned char PacketE4[0x10] = { 0 };
+uint8_t PacketE4[0x10] = { 0 };
 
 
 /* Character Header */
 
-unsigned char PacketE5[0x88] = { 0 };
+uint8_t PacketE5[0x88] = { 0 };
 
 /* Security Packet */
 
-const unsigned char PacketE6[] = {
+const uint8_t PacketE6[] = {
 0x44, 0x00, 0xE6, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00,
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x38, 0x3F, 0x71, 0x8D, 0x34, 0x37, 0x7A, 0xBD,
 0x67, 0x39, 0x65, 0x6B, 0x2C, 0xB1, 0xA5, 0x7C, 0x17, 0x93, 0x93, 0x29, 0x4A, 0x90, 0xE9, 0x11,
@@ -204,18 +205,18 @@ const unsigned char PacketE6[] = {
 
 /* Acknowledging client's expected checksum */
 
-const unsigned char PacketE8[] = {
+const uint8_t PacketE8[] = {
   0x0C, 0x00, 0xE8, 0x02, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00
 };
 
 /* The "Top Broadcast" Packet */
 
-const unsigned char PacketEE[] = {
+const uint8_t PacketEE[] = {
     0x00, 0x00, 0xEE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
-unsigned char E2_Base[2808] = { 0 };
-unsigned char PacketE2Data[2808] = { 0 };
+uint8_t E2_Base[2808] = { 0 };
+uint8_t PacketE2Data[2808] = { 0 };
 
 /* String sent to server to retrieve IP address. */
 
@@ -223,40 +224,40 @@ char* HTTP_REQ = "GET http://www.pioneer2.net/remote.php HTTP/1.0\r\n\r\n\r\n";
 
 /* Populated by load_config_file(): */
 
-char mySQL_Host[255] = {0};
-char mySQL_Username[255] = {0};
-char mySQL_Password[255] = {0};
-char mySQL_Database[255] = {0};
-unsigned int mySQL_Port;
-unsigned char serverIP[4];
-unsigned short serverPort;
-int override_on = 0;
-unsigned char overrideIP[4];
-unsigned short serverMaxConnections;
-unsigned short serverMaxShips;
-unsigned serverNumConnections = 0;
-unsigned serverConnectionList[LOGIN_COMPILED_MAX_CONNECTIONS];
-unsigned serverNumShips = 0;
-unsigned serverShipList[SHIP_COMPILED_MAX_CONNECTIONS];
-unsigned quest_numallows;
+int8_t mySQL_Host[255] = {0};
+int8_t mySQL_Username[255] = {0};
+int8_t mySQL_Password[255] = {0};
+int8_t mySQL_Database[255] = {0};
+uint32_t mySQL_Port;
+uint8_t serverIP[4];
+uint16_t serverPort;
+int32_t override_on = 0;
+uint8_t overrideIP[4];
+uint16_t serverMaxConnections;
+uint16_t serverMaxShips;
+uint32_t serverNumConnections = 0;
+uint32_t serverConnectionList[LOGIN_COMPILED_MAX_CONNECTIONS];
+uint32_t serverNumShips = 0;
+uint32_t serverShipList[SHIP_COMPILED_MAX_CONNECTIONS];
+uint32_t quest_numallows;
 unsigned* quest_allow;
-unsigned max_ship_keys = 0;
+uint32_t max_ship_keys = 0;
 
 /* Rare table structure */
 
-unsigned rt_tables_ep1[0x200 * 10 * 4] = {0};
-unsigned rt_tables_ep2[0x200 * 10 * 4] = {0};
-unsigned rt_tables_ep4[0x200 * 10 * 4] = {0};
+uint32_t rt_tables_ep1[0x200 * 10 * 4] = {0};
+uint32_t rt_tables_ep2[0x200 * 10 * 4] = {0};
+uint32_t rt_tables_ep4[0x200 * 10 * 4] = {0};
 
-unsigned mob_rate[8]; // rare appearance rate
+uint32_t mob_rate[8]; // rare appearance rate
 
-char Welcome_Message[255] = {0};
+int8_t Welcome_Message[255] = {0};
 time_t servertime;
 
 #ifndef NO_SQL
 
 MYSQL * myData;
-char myQuery[0x10000] = {0};
+int8_t myQuery[0x10000] = {0};
 MYSQL_ROW myRow ;
 MYSQL_RES * myResult;
 
@@ -268,360 +269,360 @@ MYSQL_RES * myResult;
 
 typedef struct st_mag
 {
-  unsigned char two; // "02" =P
-  unsigned char mtype;
-  unsigned char level;
-  unsigned char blasts;
-  short defense;
-  short power;
-  short dex;
-  short mind;
-  unsigned itemid;
-  char synchro;
-  unsigned char IQ;
-  unsigned char PBflags;
-  unsigned char color;
+  uint8_t two; // "02" =P
+  uint8_t mtype;
+  uint8_t level;
+  uint8_t blasts;
+  int16_t defense;
+  int16_t power;
+  int16_t dex;
+  int16_t mind;
+  uint32_t itemid;
+  int8_t synchro;
+  uint8_t IQ;
+  uint8_t PBflags;
+  uint8_t color;
 } NO_ALIGN MAG;
 
 
 /* Character Data Structure */
 
 typedef struct st_minichar {
-  unsigned short packetSize; // 0x00 - 0x01
-  unsigned short command; // 0x02 - 0x03
-  unsigned char flags[4]; // 0x04 - 0x07
-  unsigned char unknown[8]; // 0x08 - 0x0F
-  unsigned short level; // 0x10 - 0x11
-  unsigned short reserved; // 0x12 - 0x13
-  char gcString[10]; // 0x14 - 0x1D
-  unsigned char unknown2[14]; // 0x1E - 0x2B
-  unsigned char nameColorBlue; // 0x2C
-  unsigned char nameColorGreen; // 0x2D
-  unsigned char nameColorRed; // 0x2E
-  unsigned char nameColorTransparency; // 0x2F
-  unsigned short skinID; // 0x30 - 0x31
-  unsigned char unknown3[18]; // 0x32 - 0x43
-  unsigned char sectionID; // 0x44
-  unsigned char _class; // 0x45
-  unsigned char skinFlag; // 0x46
-  unsigned char unknown4[5]; // 0x47 - 0x4B (same as unknown5 in E7)
-  unsigned short costume; // 0x4C - 0x4D
-  unsigned short skin; // 0x4E - 0x4F
-  unsigned short face; // 0x50 - 0x51
-  unsigned short head; // 0x52 - 0x53
-  unsigned short hair; // 0x54 - 0x55
-  unsigned short hairColorRed; // 0x56 - 0x57
-  unsigned short hairColorBlue; // 0x58 - 0x59
-  unsigned short hairColorGreen; // 0x5A - 0x5B
-  unsigned proportionX; // 0x5C - 0x5F
-  unsigned proportionY; // 0x60 - 0x63
-  unsigned char name[24]; // 0x64 - 0x7B
-  unsigned char unknown5[8] ; // 0x7C - 0x83
-  unsigned playTime;
+  uint16_t packetSize; // 0x00 - 0x01
+  uint16_t command; // 0x02 - 0x03
+  uint8_t flags[4]; // 0x04 - 0x07
+  uint8_t unknown[8]; // 0x08 - 0x0F
+  uint16_t level; // 0x10 - 0x11
+  uint16_t reserved; // 0x12 - 0x13
+  int8_t gcString[10]; // 0x14 - 0x1D
+  uint8_t unknown2[14]; // 0x1E - 0x2B
+  uint8_t nameColorBlue; // 0x2C
+  uint8_t nameColorGreen; // 0x2D
+  uint8_t nameColorRed; // 0x2E
+  uint8_t nameColorTransparency; // 0x2F
+  uint16_t skinID; // 0x30 - 0x31
+  uint8_t unknown3[18]; // 0x32 - 0x43
+  uint8_t sectionID; // 0x44
+  uint8_t _class; // 0x45
+  uint8_t skinFlag; // 0x46
+  uint8_t unknown4[5]; // 0x47 - 0x4B (same as unknown5 in E7)
+  uint16_t costume; // 0x4C - 0x4D
+  uint16_t skin; // 0x4E - 0x4F
+  uint16_t face; // 0x50 - 0x51
+  uint16_t head; // 0x52 - 0x53
+  uint16_t hair; // 0x54 - 0x55
+  uint16_t hairColorRed; // 0x56 - 0x57
+  uint16_t hairColorBlue; // 0x58 - 0x59
+  uint16_t hairColorGreen; // 0x5A - 0x5B
+  uint32_t proportionX; // 0x5C - 0x5F
+  uint32_t proportionY; // 0x60 - 0x63
+  uint8_t name[24]; // 0x64 - 0x7B
+  uint8_t unknown5[8] ; // 0x7C - 0x83
+  uint32_t playTime;
 } NO_ALIGN MINICHAR;
 
 //packetSize = 0x399C;
 //command = 0x00E7;
 
 typedef struct st_bank_item {
-  unsigned char data[12]; // the standard $setitem1 - $setitem3 fare
-  unsigned itemid; // player item id
-  unsigned char data2[4]; // $setitem4 (mag use only)
-  unsigned bank_count; // Why?
+  uint8_t data[12]; // the standard $setitem1 - $setitem3 fare
+  uint32_t itemid; // player item id
+  uint8_t data2[4]; // $setitem4 (mag use only)
+  uint32_t bank_count; // Why?
 } NO_ALIGN BANK_ITEM;
 
 typedef struct st_bank {
-  unsigned bankUse;
-  unsigned bankMeseta;
+  uint32_t bankUse;
+  uint32_t bankMeseta;
   BANK_ITEM bankInventory [200];
 } NO_ALIGN BANK;
 
 typedef struct st_item {
-  unsigned char data[12]; // the standard $setitem1 - $setitem3 fare
-  unsigned itemid; // player item id
-  unsigned char data2[4]; // $setitem4 (mag use only)
+  uint8_t data[12]; // the standard $setitem1 - $setitem3 fare
+  uint32_t itemid; // player item id
+  uint8_t data2[4]; // $setitem4 (mag use only)
 } NO_ALIGN ITEM;
 
 typedef struct st_inventory {
-  unsigned in_use; // 0x01 = item slot in use, 0xFF00 = unused
-  unsigned flags; // 8 = equipped
+  uint32_t in_use; // 0x01 = item slot in use, 0xFF00 = unused
+  uint32_t flags; // 8 = equipped
   ITEM item;
 } NO_ALIGN INVENTORY;
 
 typedef struct st_chardata {
-  unsigned short packetSize; // 0x00-0x01  // Always set to 0x399C
-  unsigned short command; // 0x02-0x03 // // Always set to 0x00E7
-  unsigned char flags[4]; // 0x04-0x07
-  unsigned char inventoryUse; // 0x08
-  unsigned char HPuse; // 0x09
-  unsigned char TPuse; // 0x0A
-  unsigned char lang; // 0x0B
+  uint16_t packetSize; // 0x00-0x01  // Always set to 0x399C
+  uint16_t command; // 0x02-0x03 // // Always set to 0x00E7
+  uint8_t flags[4]; // 0x04-0x07
+  uint8_t inventoryUse; // 0x08
+  uint8_t HPuse; // 0x09
+  uint8_t TPuse; // 0x0A
+  uint8_t lang; // 0x0B
   INVENTORY inventory[30]; // 0x0C-0x353
-  unsigned short ATP; // 0x354-0x355
-  unsigned short MST; // 0x356-0x357
-  unsigned short EVP; // 0x358-0x359
-  unsigned short HP; // 0x35A-0x35B
-  unsigned short DFP; // 0x35C-0x35D
-  unsigned short TP; // 0x35E-0x35F
-  unsigned short LCK; // 0x360-0x361
-  unsigned short ATA; // 0x362-0x363
-  unsigned char unknown[8]; // 0x364-0x36B  (Offset 0x360 has 0x0A value on Schthack's...)
-  unsigned short level; // 0x36C-0x36D;
-  unsigned short unknown2; // 0x36E-0x36F;
-  unsigned XP; // 0x370-0x373
-  unsigned meseta; // 0x374-0x377;
-  char gcString[10]; // 0x378-0x381;
-  unsigned char unknown3[14]; // 0x382-0x38F;  // Same as E5 unknown2
-  unsigned char nameColorBlue; // 0x390;
-  unsigned char nameColorGreen; // 0x391;
-  unsigned char nameColorRed; // 0x392;
-  unsigned char nameColorTransparency; // 0x393;
-  unsigned short skinID; // 0x394-0x395;
-  unsigned char unknown4[18]; // 0x396-0x3A7
-  unsigned char sectionID; // 0x3A8;
-  unsigned char _class; // 0x3A9;
-  unsigned char skinFlag; // 0x3AA;
-  unsigned char unknown5[5]; // 0x3AB-0x3AF;  // Same as E5 unknown4.
-  unsigned short costume; // 0x3B0 - 0x3B1;
-  unsigned short skin; // 0x3B2 - 0x3B3;
-  unsigned short face; // 0x3B4 - 0x3B5;
-  unsigned short head; // 0x3B6 - 0x3B7;
-  unsigned short hair; // 0x3B8 - 0x3B9;
-  unsigned short hairColorRed; // 0x3BA-0x3BB;
-  unsigned short hairColorBlue; // 0x3BC-0x3BD;
-  unsigned short hairColorGreen; // 0x3BE-0x3BF;
-  unsigned proportionX; // 0x3C0-0x3C3;
-  unsigned proportionY; // 0x3C4-0x3C7;
-  unsigned char name[24]; // 0x3C8-0x3DF;
-  unsigned playTime; // 0x3E0 - 0x3E3
-  unsigned char unknown6[4]; // 0x3E4 - 0x3E7;
-  unsigned char keyConfig[232]; // 0x3E8 - 0x4CF;
+  uint16_t ATP; // 0x354-0x355
+  uint16_t MST; // 0x356-0x357
+  uint16_t EVP; // 0x358-0x359
+  uint16_t HP; // 0x35A-0x35B
+  uint16_t DFP; // 0x35C-0x35D
+  uint16_t TP; // 0x35E-0x35F
+  uint16_t LCK; // 0x360-0x361
+  uint16_t ATA; // 0x362-0x363
+  uint8_t unknown[8]; // 0x364-0x36B  (Offset 0x360 has 0x0A value on Schthack's...)
+  uint16_t level; // 0x36C-0x36D;
+  uint16_t unknown2; // 0x36E-0x36F;
+  uint32_t XP; // 0x370-0x373
+  uint32_t meseta; // 0x374-0x377;
+  int8_t gcString[10]; // 0x378-0x381;
+  uint8_t unknown3[14]; // 0x382-0x38F;  // Same as E5 unknown2
+  uint8_t nameColorBlue; // 0x390;
+  uint8_t nameColorGreen; // 0x391;
+  uint8_t nameColorRed; // 0x392;
+  uint8_t nameColorTransparency; // 0x393;
+  uint16_t skinID; // 0x394-0x395;
+  uint8_t unknown4[18]; // 0x396-0x3A7
+  uint8_t sectionID; // 0x3A8;
+  uint8_t _class; // 0x3A9;
+  uint8_t skinFlag; // 0x3AA;
+  uint8_t unknown5[5]; // 0x3AB-0x3AF;  // Same as E5 unknown4.
+  uint16_t costume; // 0x3B0 - 0x3B1;
+  uint16_t skin; // 0x3B2 - 0x3B3;
+  uint16_t face; // 0x3B4 - 0x3B5;
+  uint16_t head; // 0x3B6 - 0x3B7;
+  uint16_t hair; // 0x3B8 - 0x3B9;
+  uint16_t hairColorRed; // 0x3BA-0x3BB;
+  uint16_t hairColorBlue; // 0x3BC-0x3BD;
+  uint16_t hairColorGreen; // 0x3BE-0x3BF;
+  uint32_t proportionX; // 0x3C0-0x3C3;
+  uint32_t proportionY; // 0x3C4-0x3C7;
+  uint8_t name[24]; // 0x3C8-0x3DF;
+  uint32_t playTime; // 0x3E0 - 0x3E3
+  uint8_t unknown6[4]; // 0x3E4 - 0x3E7;
+  uint8_t keyConfig[232]; // 0x3E8 - 0x4CF;
                 // Stored from ED 07 packet.
-  unsigned char techniques[20]; // 0x4D0 - 0x4E3;
-  unsigned char unknown7[16]; // 0x4E4 - 0x4F3;
-  unsigned char options[4]; // 0x4F4-0x4F7;
+  uint8_t techniques[20]; // 0x4D0 - 0x4E3;
+  uint8_t unknown7[16]; // 0x4E4 - 0x4F3;
+  uint8_t options[4]; // 0x4F4-0x4F7;
                 // Stored from ED 01 packet.
-  unsigned char unknown8[520]; // 0x4F8 - 0x6FF;
-  unsigned bankUse; // 0x700 - 0x703
-  unsigned bankMeseta; // 0x704 - 0x707;
+  uint8_t unknown8[520]; // 0x4F8 - 0x6FF;
+  uint32_t bankUse; // 0x700 - 0x703
+  uint32_t bankMeseta; // 0x704 - 0x707;
   BANK_ITEM bankInventory [200]; // 0x708 - 0x19C7
-  unsigned guildCard; // 0x19C8-0x19CB;
+  uint32_t guildCard; // 0x19C8-0x19CB;
             // Stored from E8 06 packet.
-  unsigned char name2[24]; // 0x19CC - 0x19E3;
-  unsigned char unknown9[232]; // 0x19E4-0x1ACB;
-  unsigned char reserved1;  // 0x1ACC; // Has value 0x01 on Schthack's
-  unsigned char reserved2; // 0x1ACD; // Has value 0x01 on Schthack's
-  unsigned char sectionID2; // 0x1ACE;
-  unsigned char _class2; // 0x1ACF;
-  unsigned char unknown10[4]; // 0x1AD0-0x1AD3;
-  unsigned char symbol_chats[1248]; // 0x1AD4 - 0x1FB3
+  uint8_t name2[24]; // 0x19CC - 0x19E3;
+  uint8_t unknown9[232]; // 0x19E4-0x1ACB;
+  uint8_t reserved1;  // 0x1ACC; // Has value 0x01 on Schthack's
+  uint8_t reserved2; // 0x1ACD; // Has value 0x01 on Schthack's
+  uint8_t sectionID2; // 0x1ACE;
+  uint8_t _class2; // 0x1ACF;
+  uint8_t unknown10[4]; // 0x1AD0-0x1AD3;
+  uint8_t symbol_chats[1248]; // 0x1AD4 - 0x1FB3
                     // Stored from ED 02 packet.
-  unsigned char shortcuts[2624];  // 0x1FB4 - 0x29F3
+  uint8_t shortcuts[2624];  // 0x1FB4 - 0x29F3
                   // Stored from ED 03 packet.
-  unsigned char unknown11[344]; // 0x29F4 - 0x2B4B;
-  unsigned char GCBoard[172]; // 0x2B4C - 0x2BF7;
-  unsigned char unknown12[200]; // 0x2BF8 - 0x2CBF;
-  unsigned char challengeData[320]; // 0x2CC0 - 0X2DFF
-  unsigned char unknown13[172]; // 0x2E00 - 0x2EAB;
-  unsigned char unknown14[276]; // 0x2EAC - 0x2FBF; // I don't know what this is, but split from unknown13 because this chunk is
+  uint8_t unknown11[344]; // 0x29F4 - 0x2B4B;
+  uint8_t GCBoard[172]; // 0x2B4C - 0x2BF7;
+  uint8_t unknown12[200]; // 0x2BF8 - 0x2CBF;
+  uint8_t challengeData[320]; // 0x2CC0 - 0X2DFF
+  uint8_t unknown13[172]; // 0x2E00 - 0x2EAB;
+  uint8_t unknown14[276]; // 0x2EAC - 0x2FBF; // I don't know what this is, but split from unknown13 because this chunk is
                             // actually copied into the 0xE2 packet during login @ 0x08
-  unsigned char keyConfigGlobal[364]; // 0x2FC0 - 0x312B  // Copied into 0xE2 login packet @ 0x11C
+  uint8_t keyConfigGlobal[364]; // 0x2FC0 - 0x312B  // Copied into 0xE2 login packet @ 0x11C
                     // Stored from ED 04 packet.
-  unsigned char joyConfigGlobal[56]; // 0x312C - 0x3163 // Copied into 0xE2 login packet @ 0x288
+  uint8_t joyConfigGlobal[56]; // 0x312C - 0x3163 // Copied into 0xE2 login packet @ 0x288
                     // Stored from ED 05 packet.
-  unsigned guildCard2; // 0x3164 - 0x3167 (From here on copied into 0xE2 login packet @ 0x2C0...)
-  unsigned teamID; // 0x3168 - 0x316B
-  unsigned char teamInformation[8]; // 0x316C - 0x3173 (usually blank...)
-  unsigned short privilegeLevel; // 0x3174 - 0x3175
-  unsigned short reserved3; // 0x3176 - 0x3177
-  unsigned char teamName[28]; // 0x3178 - 0x3193
-  unsigned unknown15; // 0x3194 - 0x3197
-  unsigned char teamFlag[2048]; // 0x3198 - 0x3997
-  unsigned char teamRewards[8]; // 0x3998 - 0x39A0
+  uint32_t guildCard2; // 0x3164 - 0x3167 (From here on copied into 0xE2 login packet @ 0x2C0...)
+  uint32_t teamID; // 0x3168 - 0x316B
+  uint8_t teamInformation[8]; // 0x316C - 0x3173 (usually blank...)
+  uint16_t privilegeLevel; // 0x3174 - 0x3175
+  uint16_t reserved3; // 0x3176 - 0x3177
+  uint8_t teamName[28]; // 0x3178 - 0x3193
+  uint32_t unknown15; // 0x3194 - 0x3197
+  uint8_t teamFlag[2048]; // 0x3198 - 0x3997
+  uint8_t teamRewards[8]; // 0x3998 - 0x39A0
 } NO_ALIGN CHARDATA;
 
 
 /* Player Structure */
 
 typedef struct st_banana {
-  int plySockfd;
-  int login;
-  unsigned char peekbuf[8];
-  unsigned char rcvbuf [TCP_BUFFER_SIZE];
-  unsigned short rcvread;
-  unsigned short expect;
-  unsigned char decryptbuf [TCP_BUFFER_SIZE];
-  unsigned char sndbuf [TCP_BUFFER_SIZE];
-  unsigned char encryptbuf [TCP_BUFFER_SIZE];
-  int snddata,
+  int32_t plySockfd;
+  int32_t login;
+  uint8_t peekbuf[8];
+  uint8_t rcvbuf [TCP_BUFFER_SIZE];
+  uint16_t rcvread;
+  uint16_t expect;
+  uint8_t decryptbuf [TCP_BUFFER_SIZE];
+  uint8_t sndbuf [TCP_BUFFER_SIZE];
+  uint8_t encryptbuf [TCP_BUFFER_SIZE];
+  int32_t snddata,
     sndwritten;
-  unsigned char packet [TCP_BUFFER_SIZE];
-  unsigned short packetdata;
-  unsigned short packetread;
-  int crypt_on;
+  uint8_t packet [TCP_BUFFER_SIZE];
+  uint16_t packetdata;
+  uint16_t packetread;
+  int32_t crypt_on;
   PSO_CRYPT server_cipher, client_cipher;
-  unsigned guildcard;
-  char guildcard_string[12];
-  unsigned char guildcard_data[20000];
-  int sendingchars;
-  short slotnum;
-  unsigned lastTick;    // The last second
-  unsigned toBytesSec;  // How many bytes per second the server sends to the client
-  unsigned fromBytesSec;  // How many bytes per second the server receives from the client
-  unsigned packetsSec;  // How many packets per second the server receives from the client
-  unsigned connected;
-  unsigned char sendCheck[MAX_SENDCHECK+2];
-  int todc;
-  unsigned char IP_Address[16];
-  char hwinfo[18];
-  int isgm;
-  int dress_flag;
-  unsigned connection_index;
+  uint32_t guildcard;
+  int8_t guildcard_string[12];
+  uint8_t guildcard_data[20000];
+  int32_t sendingchars;
+  int16_t slotnum;
+  uint32_t lastTick;    // The last second
+  uint32_t toBytesSec;  // How many bytes per second the server sends to the client
+  uint32_t fromBytesSec;  // How many bytes per second the server receives from the client
+  uint32_t packetsSec;  // How many packets per second the server receives from the client
+  uint32_t connected;
+  uint8_t sendCheck[MAX_SENDCHECK+2];
+  int32_t todc;
+  uint8_t IP_Address[16];
+  int8_t hwinfo[18];
+  int32_t isgm;
+  int32_t dress_flag;
+  uint32_t connection_index;
 } BANANA;
 
 typedef struct st_dressflag {
-  unsigned guildcard;
-  unsigned flagtime;
+  uint32_t guildcard;
+  uint32_t flagtime;
 } DRESSFLAG;
 
 /* a RC4 expanded key session */
 struct rc4_key {
-    unsigned char state[256];
-    unsigned x, y;
+    uint8_t state[256];
+    uint32_t x, y;
 };
 
 /* Ship Structure */
 
 typedef struct st_orange {
-  int shipSockfd;
-  unsigned char name[13];
-  unsigned playerCount;
-  unsigned char shipAddr[5];
-  unsigned char listenedAddr[4];
-  unsigned short shipPort;
-  unsigned char rcvbuf [TCP_BUFFER_SIZE];
-  unsigned long rcvread;
-  unsigned long expect;
-  unsigned char decryptbuf [TCP_BUFFER_SIZE];
-  unsigned char sndbuf [PACKET_BUFFER_SIZE];
-  unsigned char encryptbuf [TCP_BUFFER_SIZE];
-  unsigned char packet [PACKET_BUFFER_SIZE];
-  unsigned long packetread;
-  unsigned long packetdata;
-  int snddata,
+  int32_t shipSockfd;
+  uint8_t name[13];
+  uint32_t playerCount;
+  uint8_t shipAddr[5];
+  uint8_t listenedAddr[4];
+  uint16_t shipPort;
+  uint8_t rcvbuf [TCP_BUFFER_SIZE];
+  uint32_t rcvread;
+  uint32_t expect;
+  uint8_t decryptbuf [TCP_BUFFER_SIZE];
+  uint8_t sndbuf [PACKET_BUFFER_SIZE];
+  uint8_t encryptbuf [TCP_BUFFER_SIZE];
+  uint8_t packet [PACKET_BUFFER_SIZE];
+  uint32_t packetread;
+  uint32_t packetdata;
+  int32_t snddata,
     sndwritten;
-  unsigned shipID;
-  int authed;
-  int todc;
-  int crypt_on;
-  unsigned char user_key[128];
-  int key_change[128];
-  unsigned key_index;
+  uint32_t shipID;
+  int32_t authed;
+  int32_t todc;
+  int32_t crypt_on;
+  uint8_t user_key[128];
+  int32_t key_change[128];
+  uint32_t key_index;
   struct rc4_key cs_key; // Encryption keys
   struct rc4_key sc_key; // Encryption keys
-  unsigned connection_index;
-  unsigned connected;
-  unsigned last_ping;
-  int sent_ping;
+  uint32_t connection_index;
+  uint32_t connected;
+  uint32_t last_ping;
+  int32_t sent_ping;
 } ORANGE;
 
 fd_set ReadFDs, WriteFDs, ExceptFDs;
 
 DRESSFLAG dress_flags[MAX_DRESS_FLAGS];
-unsigned char dp[TCP_BUFFER_SIZE*4];
-unsigned char tmprcv[PACKET_BUFFER_SIZE];
-char Packet1AData[TCP_BUFFER_SIZE];
-char PacketEEData[TCP_BUFFER_SIZE];
-unsigned char PacketEB01[0x4C8*2] = {0};
-unsigned char PacketEB02[MAX_EB02] = {0};
-unsigned PacketEB01_Total;
-unsigned PacketEB02_Total;
+uint8_t dp[TCP_BUFFER_SIZE*4];
+uint8_t tmprcv[PACKET_BUFFER_SIZE];
+int8_t Packet1AData[TCP_BUFFER_SIZE];
+int8_t PacketEEData[TCP_BUFFER_SIZE];
+uint8_t PacketEB01[0x4C8*2] = {0};
+uint8_t PacketEB02[MAX_EB02] = {0};
+uint32_t PacketEB01_Total;
+uint32_t PacketEB02_Total;
 
-unsigned keys_in_use [SHIP_COMPILED_MAX_CONNECTIONS+1] = { 0 };
+uint32_t keys_in_use [SHIP_COMPILED_MAX_CONNECTIONS+1] = { 0 };
 
 #ifdef NO_SQL
 
 typedef struct st_bank_file {
-  unsigned guildcard;
+  uint32_t guildcard;
   BANK common_bank;
 } L_BANK_DATA;
 
 typedef struct st_account {
-  char username[18];
-  char password[33];
-  char email[255];
-  unsigned regtime;
-  char lastip[16];
-  long long lasthwinfo;
-  unsigned guildcard;
-  int isgm;
-  int isbanned;
-  int islogged;
-  int isactive;
-  int teamid;
-  int privlevel;
-  unsigned char lastchar[24];
+  int8_t username[18];
+  int8_t password[33];
+  int8_t email[255];
+  uint32_t regtime;
+  int8_t lastip[16];
+  int64_t lasthwinfo;
+  uint32_t guildcard;
+  int32_t isgm;
+  int32_t isbanned;
+  int32_t islogged;
+  int32_t isactive;
+  int32_t teamid;
+  int32_t privlevel;
+  uint8_t lastchar[24];
 } L_ACCOUNT_DATA;
 
 
 typedef struct st_character {
-  unsigned guildcard;
-  int slot;
+  uint32_t guildcard;
+  int32_t slot;
   CHARDATA data;
   MINICHAR header;
 } L_CHARACTER_DATA;
 
 
 typedef struct st_guild {
-  unsigned accountid;
-  unsigned friendid;
-  char friendname[24];
-  char friendtext[176];
-  unsigned short reserved;
-  unsigned short sectionid;
-  unsigned short pclass;
-  unsigned short comment[45];
-  int priority;
+  uint32_t accountid;
+  uint32_t friendid;
+  int8_t friendname[24];
+  int8_t friendtext[176];
+  uint16_t reserved;
+  uint16_t sectionid;
+  uint16_t pclass;
+  uint16_t comment[45];
+  int32_t priority;
 } L_GUILD_DATA;
 
 
 typedef struct st_hwbans {
-  unsigned guildcard;
-  long long hwinfo;
+  uint32_t guildcard;
+  int64_t hwinfo;
 } L_HW_BANS;
 
 
 typedef struct st_ipbans {
-  unsigned char ipinfo;
+  uint8_t ipinfo;
 } L_IP_BANS;
 
 
 typedef struct st_key_data {
-  unsigned guildcard;
-  unsigned char controls[420];
+  uint32_t guildcard;
+  uint8_t controls[420];
 } L_KEY_DATA;
 
 
 typedef struct st_security_data {
-  unsigned guildcard;
-  unsigned thirtytwo;
-  long long sixtyfour;
-  int slotnum;
-  int isgm;
+  uint32_t guildcard;
+  uint32_t thirtytwo;
+  int64_t sixtyfour;
+  int32_t slotnum;
+  int32_t isgm;
 } L_SECURITY_DATA;
 
 
 typedef struct st_ship_data {
-  unsigned char rc4key[128];
-  unsigned idx;
+  uint8_t rc4key[128];
+  uint32_t idx;
 } L_SHIP_DATA;
 
 
 typedef struct st_team_data {
-  unsigned short name[12];
-  unsigned owner;
-  unsigned char flag[2048];
-  unsigned teamid;
+  uint16_t name[12];
+  uint32_t owner;
+  uint8_t flag[2048];
+  uint32_t teamid;
 } L_TEAM_DATA;
 
 // Oh brother :D
@@ -637,18 +638,18 @@ L_SECURITY_DATA *security_data[MAX_ACCOUNTS];
 L_SHIP_DATA *ship_data[SHIP_COMPILED_MAX_CONNECTIONS];
 L_TEAM_DATA *team_data[MAX_ACCOUNTS];
 
-unsigned num_accounts = 0;
-unsigned num_characters = 0;
-unsigned num_guilds = 0;
-unsigned num_hwbans = 0;
-unsigned num_ipbans = 0;
-unsigned num_keydata = 0;
-unsigned num_bankdata = 0;
-unsigned num_security = 0;
-unsigned num_shipkeys = 0;
-unsigned num_teams = 0;
-unsigned ds,ds2;
-int ds_found, new_record, free_record;
+uint32_t num_accounts = 0;
+uint32_t num_characters = 0;
+uint32_t num_guilds = 0;
+uint32_t num_hwbans = 0;
+uint32_t num_ipbans = 0;
+uint32_t num_keydata = 0;
+uint32_t num_bankdata = 0;
+uint32_t num_security = 0;
+uint32_t num_shipkeys = 0;
+uint32_t num_teams = 0;
+uint32_t ds,ds2;
+int32_t ds_found, new_record, free_record;
 
 #endif
 
@@ -656,21 +657,21 @@ BANK empty_bank;
 
 /* encryption stuff */
 
-void prepare_key(unsigned char *keydata, unsigned len, struct rc4_key *key);
+void prepare_key(uint8_t *keydata, uint32_t len, struct rc4_key *key);
 
 PSO_CRYPT* cipher_ptr;
 
-void encryptcopy (BANANA* client, const unsigned char* src, unsigned size);
-void decryptcopy (unsigned char* dest, const unsigned char* src, unsigned size);
-void compressShipPacket ( ORANGE* ship, unsigned char* src, unsigned long src_size );
-void decompressShipPacket ( ORANGE* ship, unsigned char* dest, unsigned char* src );
+void encryptcopy (BANANA* client, const uint8_t* src, uint32_t size);
+void decryptcopy (uint8_t* dest, const uint8_t* src, uint32_t size);
+void compressShipPacket ( ORANGE* ship, uint8_t* src, uint32_t src_size );
+void decompressShipPacket ( ORANGE* ship, uint8_t* dest, uint8_t* src );
 
 #ifdef NO_SQL
 
-void UpdateDataFile ( const char* filename, unsigned count, void* data, unsigned record_size, int new_record );
-void DumpDataFile ( const char* filename, unsigned* count, void** data, unsigned record_size );
+void UpdateDataFile ( const char* filename, uint32_t count, void* data, uint32_t record_size, int32_t new_record );
+void DumpDataFile ( const char* filename, unsigned* count, void** data, uint32_t record_size );
 
-unsigned lastdump = 0;
+uint32_t lastdump = 0;
 
 #endif
 
@@ -680,7 +681,7 @@ void WriteLog(char *fmt, ...)
 #define MAX_GM_MESG_LEN 4096
 
   va_list args;
-  char text[ MAX_GM_MESG_LEN ];
+  int8_t text[ MAX_GM_MESG_LEN ];
 //  SYSTEMTIME rawtime;
 
   FILE *fp;
@@ -708,9 +709,9 @@ void WriteLog(char *fmt, ...)
 }
 
 
-void display_packet ( unsigned char* buf, int len )
+void display_packet ( uint8_t* buf, int32_t len )
 {
-  int c, c2, c3, c4;
+  int32_t c, c2, c3, c4;
 
   c = c2 = c3 = c4 = 0;
 
@@ -764,12 +765,12 @@ void display_packet ( unsigned char* buf, int len )
    carriage return.
  */
 void MDString (inString, outString)
-char *inString;
-char *outString;
+int8_t *inString;
+int8_t *outString;
 {
-  unsigned char c;
+  uint8_t c;
   MD5_CTX mdContext;
-  unsigned int len = strlen (inString);
+  uint32_t len = strlen (inString);
 
   MD5Init (&mdContext);
   MD5Update (&mdContext, inString, len);
@@ -781,10 +782,10 @@ char *outString;
   }
 }
 
-void convertIPString (char* IPData, unsigned IPLen, int fromConfig )
+void convertIPString (char* IPData, uint32_t IPLen, int32_t fromConfig )
 {
-  unsigned p,p2,p3;
-  char convert_buffer[5];
+  uint32_t p,p2,p3;
+  int8_t convert_buffer[5];
 
   p2 = 0;
   p3 = 0;
@@ -827,12 +828,12 @@ void convertIPString (char* IPData, unsigned IPLen, int fromConfig )
   }
 }
 
-long CalculateChecksum(void* data,unsigned long size)
+int32_t CalculateChecksum(void* data,uint32_t size)
 {
-    long offset,y,cs = 0xFFFFFFFF;
+    int32_t offset,y,cs = 0xFFFFFFFF;
     for (offset = 0; offset < (long)size; offset++)
     {
-        cs ^= *(unsigned char*)((long)data + offset);
+        cs ^= *(uint8_t*)((long)data + offset);
         for (y = 0; y < 8; y++)
         {
             if (!(cs & 1)) cs = (cs >> 1) & 0x7FFFFFFF;
@@ -842,18 +843,18 @@ long CalculateChecksum(void* data,unsigned long size)
     return (cs ^ 0xFFFFFFFF);
 }
 
-unsigned char EBBuffer [0x10000];
+uint8_t EBBuffer [0x10000];
 
 void construct0xEB()
 {
-  char EBFiles[16][255];
-  unsigned EBSize;
-  unsigned EBOffset = 0;
-  unsigned EBChecksum;
+  int8_t EBFiles[16][255];
+  uint32_t EBSize;
+  uint32_t EBOffset = 0;
+  uint32_t EBChecksum;
   FILE* fp;
   FILE* fpb;
-  unsigned char ch, ch6;
-  unsigned ch2, ch3, ch4, ch5, ch7;
+  uint8_t ch, ch6;
+  uint32_t ch2, ch3, ch4, ch5, ch7;
 
   if ( ( fp = fopen ("e8send.txt", "r" ) ) == NULL )
   {
@@ -913,7 +914,7 @@ void construct0xEB()
       ch4++;
       if (ch4 == 26636)
       {
-        *(unsigned short*) &PacketEB02[ch5 - 26636] = (unsigned short) ch4;
+        *(uint16_t*) &PacketEB02[ch5 - 26636] = (uint16_t) ch4;
         ch4 = 0;
         ch6++;
       }
@@ -922,7 +923,7 @@ void construct0xEB()
 
   if ( ch4 ) // Probably have some remaining data.
   {
-    *(unsigned short*)&PacketEB02 [ch5 - ch4] = (unsigned short) ch4;
+    *(uint16_t*)&PacketEB02 [ch5 - ch4] = (uint16_t) ch4;
     PacketEB02_Total = ch5;
     if (ch5 > MAX_EB02)
     {
@@ -933,31 +934,31 @@ void construct0xEB()
     }
   }
 
-  *(unsigned short*) &PacketEB01[0x00] = (unsigned short) ch3;
+  *(uint16_t*) &PacketEB01[0x00] = (uint16_t) ch3;
   PacketEB01[0x04] = ch;
   PacketEB01_Total = ch3;
   fclose ( fp );
 }
 
-unsigned normalName = 0xFFFFFFFF;
-unsigned globalName = 0xFF1D94F7;
-unsigned localName = 0xFFB0C4DE;
+uint32_t normalName = 0xFFFFFFFF;
+uint32_t globalName = 0xFF1D94F7;
+uint32_t localName = 0xFFB0C4DE;
 
-unsigned char hexToByte ( char* hs )
+uint8_t hexToByte ( char* hs )
 {
-  unsigned b;
+  uint32_t b;
 
   if ( hs[0] < 58 ) b = (hs[0] - 48); else b = (hs[0] - 55);
   b *= 16;
   if ( hs[1] < 58 ) b += (hs[1] - 48); else b += (hs[1] - 55);
-  return (unsigned char) b;
+  return (uint8_t) b;
 }
 
 void load_config_file()
 {
-  int config_index = 0;
-  char config_data[255];
-  unsigned ch;
+  int32_t config_index = 0;
+  int8_t config_data[255];
+  uint32_t ch;
 
   FILE* fp;
 
@@ -1009,8 +1010,8 @@ void load_config_file()
             {
               struct sockaddr_in pn_in;
               struct hostent *pn_host;
-              int pn_sockfd, pn_len;
-              char pn_buf[512];
+              int32_t pn_sockfd, pn_len;
+              int8_t pn_buf[512];
               char* pn_ipdata;
 
               printf ("\n** Determining IP address ... ");
@@ -1146,25 +1147,25 @@ void load_config_file()
           break;
         case 0x13:
           // Global GM name color
-          config_data[6] = (unsigned char) hexToByte (&config_data[4]);
-          config_data[7] = (unsigned char) hexToByte (&config_data[2]);
-          config_data[8] = (unsigned char) hexToByte (&config_data[0]);
+          config_data[6] = (uint8_t) hexToByte (&config_data[4]);
+          config_data[7] = (uint8_t) hexToByte (&config_data[2]);
+          config_data[8] = (uint8_t) hexToByte (&config_data[0]);
           config_data[9]  = 0xFF;
           globalName = *(unsigned *) &config_data[6];
           break;
         case 0x14:
           // Local GM name color
-          config_data[6] = (unsigned char) hexToByte (&config_data[4]);
-          config_data[7] = (unsigned char) hexToByte (&config_data[2]);
-          config_data[8] = (unsigned char) hexToByte (&config_data[0]);
+          config_data[6] = (uint8_t) hexToByte (&config_data[4]);
+          config_data[7] = (uint8_t) hexToByte (&config_data[2]);
+          config_data[8] = (uint8_t) hexToByte (&config_data[0]);
           config_data[9]  = 0xFF;
           localName = *(unsigned *) &config_data[6];
           break;
         case 0x15:
           // Normal name color
-          config_data[6] = (unsigned char) hexToByte (&config_data[4]);
-          config_data[7] = (unsigned char) hexToByte (&config_data[2]);
-          config_data[8] = (unsigned char) hexToByte (&config_data[0]);
+          config_data[6] = (uint8_t) hexToByte (&config_data[4]);
+          config_data[7] = (uint8_t) hexToByte (&config_data[2]);
+          config_data[8] = (uint8_t) hexToByte (&config_data[0]);
           config_data[9]  = 0xFF;
           normalName = *(unsigned *) &config_data[6];
           break;
@@ -1190,20 +1191,20 @@ ORANGE * ships[SHIP_COMPILED_MAX_CONNECTIONS];
 BANANA * workConnect;
 ORANGE * workShip;
 
-unsigned char PacketA0Data[0x4000] = {0};
-unsigned short PacketA0Size = 0;
-const char serverName[] = { "T\0E\0T\0H\0E\0A\0L\0L\0A\0" };
+uint8_t PacketA0Data[0x4000] = {0};
+uint16_t PacketA0Size = 0;
+const int8_t serverName[] = { "T\0E\0T\0H\0E\0A\0L\0L\0A\0" };
 
-const char NoShips[9] = "No ships!";
+const int8_t NoShips[9] = "No ships!";
 
 void construct0xA0()
 {
   ORANGE* shipcheck;
-  unsigned totalShips = 0xFFFFFFF4;
-  unsigned short A0Offset;
+  uint32_t totalShips = 0xFFFFFFF4;
+  uint16_t A0Offset;
   char* shipName;
-  unsigned char playerCountString[5];
-  unsigned ch, ch2, shipNum;
+  uint8_t playerCountString[5];
+  uint32_t ch, ch2, shipNum;
 
   memset (&PacketA0Data[0], 0, 0x4000);
 
@@ -1263,15 +1264,15 @@ void construct0xA0()
   *(unsigned *) &PacketA0Data[0x04] = totalShips;
   while (A0Offset % 8)
     PacketA0Data[A0Offset++] = 0x00;
-  *(unsigned short*) &PacketA0Data[0x00] = (unsigned short) A0Offset;
+  *(uint16_t*) &PacketA0Data[0x00] = (uint16_t) A0Offset;
   PacketA0Size = A0Offset;
 }
 
 
 
-unsigned free_connection()
+uint32_t free_connection()
 {
-  unsigned fc;
+  uint32_t fc;
   BANANA* wc;
 
   for (fc=0;fc<serverMaxConnections;fc++)
@@ -1283,9 +1284,9 @@ unsigned free_connection()
   return 0xFFFF;
 }
 
-unsigned free_shipconnection()
+uint32_t free_shipconnection()
 {
-  unsigned fc;
+  uint32_t fc;
   ORANGE* wc;
 
   for (fc=0;fc<serverMaxShips;fc++)
@@ -1300,7 +1301,7 @@ unsigned free_shipconnection()
 
 void initialize_connection (BANANA* connect)
 {
-  unsigned ch, ch2;
+  uint32_t ch, ch2;
 
   if (connect->plySockfd >= 0)
   {
@@ -1322,7 +1323,7 @@ void initialize_connection (BANANA* connect)
 
 void initialize_ship (ORANGE* ship)
 {
-  unsigned ch, ch2;
+  uint32_t ch, ch2;
 
   if (ship->shipSockfd >= 0)
   {
@@ -1349,7 +1350,7 @@ void initialize_ship (ORANGE* ship)
 
 void start_encryption(BANANA* connect)
 {
-  unsigned c, c3, c4, connectNum;
+  uint32_t c, c3, c4, connectNum;
   BANANA *workConnect, *c5;
 
   // Limit the number of connections from an IP address to MAX_SIMULTANEOUS_CONNECTIONS.
@@ -1396,8 +1397,8 @@ void start_encryption(BANANA* connect)
   memcpy (&connect->sndbuf[0], &Packet03[0], sizeof (Packet03));
   for (c=0;c<0x30;c++)
   {
-    connect->sndbuf[0x68+c] = (unsigned char) rand() % 255;
-    connect->sndbuf[0x98+c] = (unsigned char) rand() % 255;
+    connect->sndbuf[0x68+c] = (uint8_t) rand() % 255;
+    connect->sndbuf[0x98+c] = (uint8_t) rand() % 255;
   }
   connect->snddata += sizeof (Packet03);
   cipher_ptr = &connect->server_cipher;
@@ -1417,7 +1418,7 @@ void SendB1 (BANANA* client)
   if ((client->guildcard) && (client->slotnum != -1))
   {
 //    GetSystemTime (&rawtime);
-    *(long long*) &client->encryptbuf[0] = *(long long*) &PacketB1[0];
+    *(int64_t*) &client->encryptbuf[0] = *(int64_t*) &PacketB1[0];
     memset (&client->encryptbuf[0x08], 0, 28);
 //    sprintf (&client->encryptbuf[8], "%u:%02u:%02u: %02u:%02u:%02u.%03u", rawtime.wYear, rawtime.wMonth, rawtime.wDay,
 //      rawtime.wHour, rawtime.wMinute, rawtime.wSecond, rawtime.wMilliseconds );
@@ -1428,9 +1429,9 @@ void SendB1 (BANANA* client)
     client->todc = 1;
 }
 
-void Send1A (const char *mes, BANANA* client)
+void Send1A (const int8_t *mes, BANANA* client)
 {
-  unsigned short x1A_Len;
+  uint16_t x1A_Len;
 
   memcpy (&Packet1AData[0], &Packet1A[0], sizeof (Packet1A));
   x1A_Len = sizeof (Packet1A);
@@ -1446,7 +1447,7 @@ void Send1A (const char *mes, BANANA* client)
 
   while (x1A_Len % 8)
     Packet1AData[x1A_Len++] = 0x00;
-  *(unsigned short*) &Packet1AData[0] = x1A_Len;
+  *(uint16_t*) &Packet1AData[0] = x1A_Len;
   cipher_ptr = &client->server_cipher;
   encryptcopy (client, &Packet1AData[0], x1A_Len);
   client->todc = 1;
@@ -1457,16 +1458,16 @@ void SendA0 (BANANA* client)
   if ((client->guildcard) && (client->slotnum != -1))
   {
     cipher_ptr = &client->server_cipher;
-    encryptcopy (client, &PacketA0Data[0], *(unsigned short*) &PacketA0Data[0]);
+    encryptcopy (client, &PacketA0Data[0], *(uint16_t*) &PacketA0Data[0]);
   }
   else
     client->todc = 1;
 }
 
 
-void SendEE (const char *mes, BANANA* client)
+void SendEE (const int8_t *mes, BANANA* client)
 {
-  unsigned short xEE_Len;
+  uint16_t xEE_Len;
 
   if ((client->guildcard) && (client->slotnum != -1))
   {
@@ -1484,29 +1485,29 @@ void SendEE (const char *mes, BANANA* client)
 
     while (xEE_Len % 8)
       PacketEEData[xEE_Len++] = 0x00;
-    *(unsigned short*) &PacketEEData[0] = xEE_Len;
+    *(uint16_t*) &PacketEEData[0] = xEE_Len;
     cipher_ptr = &client->server_cipher;
     encryptcopy (client, &PacketEEData[0], xEE_Len);
   }
 }
 
-void Send19 (unsigned char ip1, unsigned char ip2, unsigned char ip3, unsigned char ip4, unsigned short ipp, BANANA* client)
+void Send19 (uint8_t ip1, uint8_t ip2, uint8_t ip3, uint8_t ip4, uint16_t ipp, BANANA* client)
 {
   memcpy ( &client->encryptbuf[0], &Packet19, sizeof (Packet19));
   client->encryptbuf[0x08] = ip1;
   client->encryptbuf[0x09] = ip2;
   client->encryptbuf[0x0A] = ip3;
   client->encryptbuf[0x0B] = ip4;
-  *(unsigned short*) &client->encryptbuf[0x0C] = ipp;
+  *(uint16_t*) &client->encryptbuf[0x0C] = ipp;
   cipher_ptr = &client->server_cipher;
   encryptcopy (client, &client->encryptbuf[0], sizeof (Packet19));
 }
 
-unsigned char key_data_send[840+10] = {0};
+uint8_t key_data_send[840+10] = {0};
 
 void SendE2 (BANANA* client)
 {
-  int key_exists = 0;
+  int32_t key_exists = 0;
 
   if ((client->guildcard) && (!client->sendCheck[SEND_PACKET_E2]))
   {
@@ -1579,9 +1580,9 @@ void SendE2 (BANANA* client)
     client->todc = 1;
 }
 
-unsigned StringLength (const char* src)
+uint32_t StringLength (const char* src)
 {
-  unsigned ch = 0;
+  uint32_t ch = 0;
 
   while (*src != 0x00)
   {
@@ -1592,28 +1593,28 @@ unsigned StringLength (const char* src)
 }
 
 CHARDATA E7_Base, E7_Work;
-unsigned char chardata[0x200];
-unsigned char E7chardata[(sizeof(CHARDATA)*2)+100];
-unsigned char startingStats[12*14];
-unsigned char DefaultTeamFlagSlashes[4098];
-unsigned char DefaultTeamFlag[2048];
-unsigned char FlagSlashes[4098];
+uint8_t chardata[0x200];
+uint8_t E7chardata[(sizeof(CHARDATA)*2)+100];
+uint8_t startingStats[12*14];
+uint8_t DefaultTeamFlagSlashes[4098];
+uint8_t DefaultTeamFlag[2048];
+uint8_t FlagSlashes[4098];
 
-void AckCharacter_Creation(unsigned char slotnum, BANANA* client)
+void AckCharacter_Creation(uint8_t slotnum, BANANA* client)
 {
-  unsigned short *n;
+  uint16_t *n;
 #ifndef NO_SQL
-  int char_exists;
+  int32_t char_exists;
 #endif
-  unsigned short packetSize;
+  uint16_t packetSize;
   MINICHAR* clientchar;
   CHARDATA* E7Base;
   CHARDATA* NewE7;
-  unsigned short maxFace, maxHair, maxHairColorRed, maxHairColorBlue, maxHairColorGreen,
+  uint16_t maxFace, maxHair, maxHairColorRed, maxHairColorBlue, maxHairColorGreen,
     maxCostume, maxSkin, maxHead;
-  unsigned ch;
+  uint32_t ch;
 
-  packetSize = *(unsigned short*) &client->decryptbuf[0];
+  packetSize = *(uint16_t*) &client->decryptbuf[0];
   if ( ( client->guildcard ) && ( slotnum < 4 ) && ( client->sendingchars == 0 ) &&
     ( packetSize == 0x88 ) && ( client->decryptbuf[0x45] < CLASS_MAX ) )
   {
@@ -1758,9 +1759,9 @@ void AckCharacter_Creation(unsigned char slotnum, BANANA* client)
 
       if ((clientchar->_class == CLASS_HUCAST) || (clientchar->_class == CLASS_HUCASEAL) ||
         (clientchar->_class == CLASS_RACAST) || (clientchar->_class == CLASS_RACASEAL))
-        NewE7->inventory[2].item.data2[3] = (unsigned char) clientchar->skin;
+        NewE7->inventory[2].item.data2[3] = (uint8_t) clientchar->skin;
       else
-        NewE7->inventory[2].item.data2[3] = (unsigned char) clientchar->costume;
+        NewE7->inventory[2].item.data2[3] = (uint8_t) clientchar->costume;
 
       if (NewE7->inventory[2].item.data2[3] > 0x11)
         NewE7->inventory[2].item.data2[3] -= 0x11;
@@ -1801,13 +1802,13 @@ void AckCharacter_Creation(unsigned char slotnum, BANANA* client)
       }
 
       memcpy (&NewE7->ATP, &startingStats[clientchar->_class * 14], 14);
-      *(long long*) &NewE7->unknown = *(long long*) &E7Base->unknown;
+      *(int64_t*) &NewE7->unknown = *(int64_t*) &E7Base->unknown;
       //NewE7->level = 0x00;
       NewE7->unknown2 = E7Base->unknown2;
       //NewE7->XP = 0;
       NewE7->meseta = 300;
       memset (&NewE7->gcString[0], 0x20, 2);
-      *(long long*) &NewE7->gcString[2] = *(long long*) &client->guildcard_string[0];
+      *(int64_t*) &NewE7->gcString[2] = *(int64_t*) &client->guildcard_string[0];
       memcpy (&NewE7->unknown3, &clientchar->unknown2, 14 );
       *(unsigned *) &NewE7->nameColorBlue = *(unsigned *) &clientchar->nameColorBlue; // Will copy all 4 values.
       NewE7->skinID = clientchar->skinID;
@@ -1826,7 +1827,7 @@ void AckCharacter_Creation(unsigned char slotnum, BANANA* client)
       NewE7->hairColorGreen = clientchar->hairColorGreen;
       NewE7->proportionX = clientchar->proportionX;
       NewE7->proportionY = clientchar->proportionY;
-      n = (unsigned short*) &clientchar->name[4];
+      n = (uint16_t*) &clientchar->name[4];
       for (ch=0;ch<10;ch++)
       {
         if (*n == 0x0000)
@@ -1869,7 +1870,7 @@ void AckCharacter_Creation(unsigned char slotnum, BANANA* client)
 
 #ifndef NO_SQL
 
-      mysql_real_escape_string ( myData, &E7chardata[0], (unsigned char*) NewE7, sizeof (CHARDATA) );
+      mysql_real_escape_string ( myData, &E7chardata[0], (uint8_t*) NewE7, sizeof (CHARDATA) );
 
 #endif
 
@@ -1901,7 +1902,7 @@ void AckCharacter_Creation(unsigned char slotnum, BANANA* client)
       NewE7 = &E7_Work;
       memcpy (NewE7, &character_data[ds_found]->data, sizeof (CHARDATA) );
       memcpy (&NewE7->gcString[0], &clientchar->gcString[0], 0x68);
-      *(long long*) &clientchar->unknown5[0] = *(long long*) &NewE7->unknown6[0];
+      *(int64_t*) &clientchar->unknown5[0] = *(int64_t*) &NewE7->unknown6[0];
       //NewE7->playTime = 0;
       memcpy (&character_data[ds_found]->header, &client->decryptbuf[0x10], 0x78);
       memcpy (&character_data[ds_found]->data, NewE7, sizeof (CHARDATA));
@@ -1980,10 +1981,10 @@ void AckCharacter_Creation(unsigned char slotnum, BANANA* client)
           NewE7 = &E7_Work;
           memcpy (NewE7, myRow[2], sizeof (CHARDATA) );
           memcpy (&NewE7->gcString[0], &clientchar->gcString[0], 0x68);
-          *(long long*) &clientchar->unknown5[0] = *(long long*) &NewE7->unknown6[0];
+          *(int64_t*) &clientchar->unknown5[0] = *(int64_t*) &NewE7->unknown6[0];
           //NewE7->playTime = 0;
           mysql_real_escape_string ( myData, &chardata[0], &client->decryptbuf[0x10], 0x78 );
-          mysql_real_escape_string ( myData, &E7chardata[0], (unsigned char*) NewE7, sizeof (CHARDATA) );
+          mysql_real_escape_string ( myData, &E7chardata[0], (uint8_t*) NewE7, sizeof (CHARDATA) );
         }
       }
       mysql_free_result ( myResult );
@@ -2027,9 +2028,9 @@ void AckCharacter_Creation(unsigned char slotnum, BANANA* client)
   else
     client->todc = 1;
 }
-void SendE4_E5(unsigned char slotnum, unsigned char selecting, BANANA* client)
+void SendE4_E5(uint8_t slotnum, uint8_t selecting, BANANA* client)
 {
-  int char_exists = 0;
+  int32_t char_exists = 0;
   MINICHAR* mc;
 
   if ((client->guildcard) && (slotnum < 0x04))
@@ -2051,7 +2052,7 @@ void SendE4_E5(unsigned char slotnum, unsigned char selecting, BANANA* client)
         if (!selecting)
         {
           mc = (MINICHAR*) &PacketE5[0x00];
-          *(unsigned short*) &PacketE5[0x10] = character_data[ds_found]->data.level;    // Updated level
+          *(uint16_t*) &PacketE5[0x10] = character_data[ds_found]->data.level;    // Updated level
           memcpy (&PacketE5[0x14], &character_data[ds_found]->data.gcString[0], 0x70 ); // Updated data
           *(unsigned *) &PacketE5[0x84] = character_data[ds_found]->data.playTime;    // Updated playtime
           if ( mc->skinFlag )
@@ -2203,9 +2204,9 @@ void SendE8 (BANANA* client)
     client->todc = 1;
 }
 
-void SendEB (unsigned char subCommand, unsigned char EBOffset, BANANA* client)
+void SendEB (uint8_t subCommand, uint8_t EBOffset, BANANA* client)
 {
-  unsigned CalcOffset;
+  uint32_t CalcOffset;
 
   if ((client->guildcard) && (client->sendCheck[SEND_PACKET_EB] < 17))
   {
@@ -2235,17 +2236,17 @@ void SendEB (unsigned char subCommand, unsigned char EBOffset, BANANA* client)
     client->todc = 1;
 }
 
-void SendDC (int sendChecksum, unsigned char PacketNum, BANANA* client)
+void SendDC (int sendChecksum, uint8_t PacketNum, BANANA* client)
 {
-  unsigned gc_ofs = 0,
+  uint32_t gc_ofs = 0,
     total_guilds = 0;
-  unsigned friendid;
-  unsigned short sectionid, _class;
-  unsigned GCChecksum = 0;
-  unsigned ch;
-  unsigned CalcOffset;
-  int numguilds = 0;
-  unsigned to_send;
+  uint32_t friendid;
+  uint16_t sectionid, _class;
+  uint32_t GCChecksum = 0;
+  uint32_t ch;
+  uint32_t CalcOffset;
+  int32_t numguilds = 0;
+  uint32_t to_send;
 
   if ((client->guildcard) && (client->sendCheck[SEND_PACKET_DC] < 0x04))
   {
@@ -2268,8 +2269,8 @@ void SendDC (int sendChecksum, unsigned char PacketNum, BANANA* client)
             memcpy (&client->guildcard_data[gc_ofs+0x04], &guild_data[ds]->friendname, 0x18 );
             memcpy (&client->guildcard_data[gc_ofs+0x54], &guild_data[ds]->friendtext, 0xB0 );
             client->guildcard_data[gc_ofs+0x104] = 0x01;
-            client->guildcard_data[gc_ofs+0x106] = (unsigned char) sectionid;
-            *(unsigned short*) &client->guildcard_data[gc_ofs+0x107] = _class;
+            client->guildcard_data[gc_ofs+0x106] = (uint8_t) sectionid;
+            *(uint16_t*) &client->guildcard_data[gc_ofs+0x107] = _class;
             // comment @ 0x10C
             memcpy (&client->guildcard_data[gc_ofs+0x10C], &guild_data[ds]->comment, 0x44 );
             total_guilds++;
@@ -2296,16 +2297,16 @@ void SendDC (int sendChecksum, unsigned char PacketNum, BANANA* client)
           while ((myRow = mysql_fetch_row ( myResult )) && (total_guilds < 40))
           {
             friendid = atoi (myRow[1]);
-            sectionid = (unsigned short) atoi (myRow[5]);
-            _class = (unsigned short) atoi (myRow[6]);
+            sectionid = (uint16_t) atoi (myRow[5]);
+            _class = (uint16_t) atoi (myRow[6]);
             for (ch=0;ch<444;ch++)
               client->guildcard_data[gc_ofs+ch] = 0x00;
             *(unsigned*) &client->guildcard_data[gc_ofs] =  friendid;
             memcpy (&client->guildcard_data[gc_ofs+0x04], myRow[2], 0x18 );
             memcpy (&client->guildcard_data[gc_ofs+0x54], myRow[3], 0xB0 );
             client->guildcard_data[gc_ofs+0x104] = 0x01;
-            client->guildcard_data[gc_ofs+0x106] = (unsigned char) sectionid;
-            *(unsigned short*) &client->guildcard_data[gc_ofs+0x107] = _class;
+            client->guildcard_data[gc_ofs+0x106] = (uint8_t) sectionid;
+            *(uint16_t*) &client->guildcard_data[gc_ofs+0x107] = _class;
             // comment @ 0x10C
             memcpy (&client->guildcard_data[gc_ofs+0x10C], myRow[7], 0x44 );
             total_guilds++;
@@ -2355,7 +2356,7 @@ void SendDC (int sendChecksum, unsigned char PacketNum, BANANA* client)
           to_send = 26640;
         else
           to_send = 1440;
-        *(unsigned short*) &PacketDC02[0x00] = to_send;
+        *(uint16_t*) &PacketDC02[0x00] = to_send;
         PacketDC02[0x02] = 0xDC;
         PacketDC02[0x03] = 0x02;
         PacketDC02[0x0C] = PacketNum;
@@ -2372,12 +2373,12 @@ void SendDC (int sendChecksum, unsigned char PacketNum, BANANA* client)
 
 /* Ship start authentication */
 
-const unsigned char RC4publicKey[32] = {
+const uint8_t RC4publicKey[32] = {
   103, 196, 247, 176, 71, 167, 89, 233, 200, 100, 044, 209, 190, 231, 83, 42,
   6, 95, 151, 28, 140, 243, 130, 61, 107, 234, 243, 172, 77, 24, 229, 156
 };
 
-void ShipSend0F (unsigned char episode, unsigned char part, ORANGE* ship)
+void ShipSend0F (uint8_t episode, uint8_t part, ORANGE* ship)
 {
   ship->encryptbuf[0x00] = 0x0F;
   ship->encryptbuf[0x01] = episode;
@@ -2417,14 +2418,14 @@ void ShipSend11 (ORANGE* ship)
 
 void ShipSend00 (ORANGE* ship)
 {
-  unsigned char ch, ch2;
+  uint8_t ch, ch2;
 
   ch2 = 0;
 
   for (ch=0x18;ch<0x58;ch+=2) // change 32 bytes of the key
   {
-    ShipPacket00[ch]   = (unsigned char) rand() % 255;
-    ShipPacket00[ch+1] = (unsigned char) rand() % 255;
+    ShipPacket00[ch]   = (uint8_t) rand() % 255;
+    ShipPacket00[ch+1] = (uint8_t) rand() % 255;
     ship->key_change [ch2+(ShipPacket00[ch] % 4)] = ShipPacket00[ch+1];
     ch2 += 4;
   }
@@ -2438,9 +2439,9 @@ void ShipSend00 (ORANGE* ship)
 
 /* Ship authentication result */
 
-void ShipSend02 (unsigned char result, ORANGE* ship)
+void ShipSend02 (uint8_t result, ORANGE* ship)
 {
-  unsigned si,ch,shipNum;
+  uint32_t si,ch,shipNum;
   ORANGE* tempShip;
 
   ship->encryptbuf [0x00] = 0x02;
@@ -2485,20 +2486,20 @@ void ShipSend08 (unsigned gcn, ORANGE* ship)
 }
 
 
-void ShipSend0D (unsigned char command, ORANGE* ship)
+void ShipSend0D (uint8_t command, ORANGE* ship)
 {
-  unsigned shipNum;
+  uint32_t shipNum;
   ORANGE* tship;
 
   switch (command)
   {
   case 0x00:
     {
-      unsigned ch;
+      uint32_t ch;
       // Send ship list data.
-      unsigned short tempdw;
+      uint16_t tempdw;
 
-      tempdw = *(unsigned short*) &PacketA0Data[0];
+      tempdw = *(uint16_t*) &PacketA0Data[0];
       // Ship requesting the ship list.
       memcpy (&ship->encryptbuf[0x00], &ship->decryptbuf[0x04], 6);
       memcpy (&ship->encryptbuf[0x06], &PacketA0Data[0], tempdw);
@@ -2514,7 +2515,7 @@ void ShipSend0D (unsigned char command, ORANGE* ship)
           tempdw += 4;
           *(unsigned *) &ship->encryptbuf[tempdw] = *(unsigned *) &tship->shipAddr[0];
           tempdw += 4;
-          *(unsigned short*) &ship->encryptbuf[tempdw] = (unsigned short) tship->shipPort;
+          *(uint16_t*) &ship->encryptbuf[tempdw] = (uint16_t) tship->shipPort;
           tempdw += 2;
         }
       }
@@ -2530,13 +2531,13 @@ void ShipSend0D (unsigned char command, ORANGE* ship)
 
 void FixItem (ITEM* i)
 {
-  unsigned ch3;
+  uint32_t ch3;
 
   if (i->data[0] == 2) // Mag
   {
     MAG* m;
-    short mDefense, mPower, mDex, mMind;
-    int total_levels;
+    int16_t mDefense, mPower, mDex, mMind;
+    int32_t total_levels;
 
     m = (MAG*) &i->data[0];
 
@@ -2581,10 +2582,10 @@ void FixItem (ITEM* i)
 
   if (i->data[0] == 0) // Weapon
   {
-    signed char percent_table[6];
-    signed char percent;
-    unsigned max_percents, num_percents;
-    int srank;
+    int8_t percent_table[6];
+    int8_t percent;
+    uint32_t max_percents, num_percents;
+    int32_t srank;
 
     if ( ( i->data[1] == 0x33 ) ||  // SJS & Lame max 2 percents
       ( i->data[1] == 0xAB ) )
@@ -2632,7 +2633,7 @@ void FixItem (ITEM* i)
         if ( percent_table[ch3] )
         {
           i->data[6 + ( num_percents * 2 )] = ch3;
-          i->data[7 + ( num_percents * 2 )] = (unsigned char) percent_table[ch3];
+          i->data[7 + ( num_percents * 2 )] = (uint8_t) percent_table[ch3];
           num_percents ++;
           if ( num_percents == max_percents )
             break;
@@ -2643,21 +2644,21 @@ void FixItem (ITEM* i)
 }
 
 
-unsigned char gcname[24*2];
-unsigned char gctext[176*2];
-unsigned short gccomment[45] = {0x305C};
-unsigned char check_key[32];
-unsigned char check_key2[32];
+uint8_t gcname[24*2];
+uint8_t gctext[176*2];
+uint16_t gccomment[45] = {0x305C};
+uint8_t check_key[32];
+uint8_t check_key2[32];
 
 void ShipProcessPacket (ORANGE* ship)
 {
-  unsigned cv, shipNum;
-  int pass;
-  unsigned char sv;
-  unsigned shop_checksum;
-  int key_exists;
+  uint32_t cv, shipNum;
+  int32_t pass;
+  uint8_t sv;
+  uint32_t shop_checksum;
+  int32_t key_exists;
 #ifndef NO_CONNECT_TEST
-  int tempfd;
+  int32_t tempfd;
   struct sockaddr_in sa;
 #endif
 
@@ -2686,7 +2687,7 @@ void ShipProcessPacket (ORANGE* ship)
     else
     {
       //unsigned ch, sameIP;
-      unsigned ch2, shipOK;
+      uint32_t ch2, shipOK;
       //ORANGE* tship;
 
       shipOK = 1;
@@ -2699,7 +2700,7 @@ void ShipProcessPacket (ORANGE* ship)
       else
         *(unsigned *) &ship->shipAddr[0] = *(unsigned *) &ship->decryptbuf[0x3C];
       ship->shipAddr[5] = 0;
-      ship->shipPort = *(unsigned short*) &ship->decryptbuf[0x40];
+      ship->shipPort = *(uint16_t*) &ship->decryptbuf[0x40];
 
       /*
       for (ch=0;ch<serverNumShips;ch++)
@@ -2757,7 +2758,7 @@ void ShipProcessPacket (ORANGE* ship)
 
             if ( ! mysql_query ( myData, &myQuery[0] ) )
             {
-              unsigned key_rows;
+              uint32_t key_rows;
 
               myResult = mysql_store_result ( myData );
               key_rows = (int) mysql_num_rows ( myResult );
@@ -2849,7 +2850,7 @@ void ShipProcessPacket (ORANGE* ship)
                     memset (&sa, 0, sizeof(sa));
                     sa.sin_family = AF_INET;
                     *(unsigned *) &sa.sin_addr.s_addr = *(unsigned *) &ship->shipAddr[0];
-                    sa.sin_port = htons((unsigned short) ship->shipPort);
+                    sa.sin_port = htons((uint16_t) ship->shipPort);
 
                     if ((tempfd >= 0) && (connect(tempfd, (struct sockaddr*) &sa, sizeof(sa)) >= 0))
                     {
@@ -2874,7 +2875,7 @@ void ShipProcessPacket (ORANGE* ship)
 
                       for (ch2=0;ch2<128;ch2++)
                         if (ship->key_change[ch2] != -1)
-                          ship->user_key[ch2] = (unsigned char) ship->key_change[ch2]; // update the key
+                          ship->user_key[ch2] = (uint8_t) ship->key_change[ch2]; // update the key
 
                       prepare_key(&ship->user_key[0], sizeof(ship->user_key), &ship->cs_key);
                       prepare_key(&ship->user_key[0], sizeof(ship->user_key), &ship->sc_key);
@@ -2914,26 +2915,26 @@ void ShipProcessPacket (ORANGE* ship)
       {
         // Send full player data here.
 
-        unsigned guildcard;
-        unsigned short slotnum;
-        unsigned size;
-        int char_exists = 0;
-        int bank_exists = 0;
-        int teamid;
-        unsigned short privlevel;
+        uint32_t guildcard;
+        uint16_t slotnum;
+        uint32_t size;
+        int32_t char_exists = 0;
+        int32_t bank_exists = 0;
+        int32_t teamid;
+        uint16_t privlevel;
         CHARDATA* PlayerData;
-        unsigned shipid;
-        int sockfd;
+        uint32_t shipid;
+        int32_t sockfd;
 
         guildcard = *(unsigned*) &ship->decryptbuf[0x06];
-        slotnum = *(unsigned short*) &ship->decryptbuf[0x0A];
+        slotnum = *(uint16_t*) &ship->decryptbuf[0x0A];
         sockfd = *(int *) &ship->decryptbuf[0x0C];
         shipid = *(unsigned*) &ship->decryptbuf[0x10];
 
         ship->encryptbuf[0x00] = 0x04;
 
         *(unsigned*) &ship->encryptbuf[0x02] = *(unsigned*)  &ship->decryptbuf[0x06];
-        *(unsigned short*) &ship->encryptbuf[0x06] = *(unsigned short*) &ship->decryptbuf[0x0A];
+        *(uint16_t*) &ship->encryptbuf[0x06] = *(uint16_t*) &ship->decryptbuf[0x0A];
         *(unsigned*) &ship->encryptbuf[0x08] = *(unsigned*) &ship->decryptbuf[0x0C];
 
 #ifdef NO_SQL
@@ -3072,7 +3073,7 @@ void ShipProcessPacket (ORANGE* ship)
               {
                 // Create bank
                 memcpy (&ship->encryptbuf[0x0C+sizeof(CHARDATA)], &empty_bank, sizeof (BANK));
-                mysql_real_escape_string ( myData, &E7chardata[0], (unsigned char*) &empty_bank, sizeof (BANK) );
+                mysql_real_escape_string ( myData, &E7chardata[0], (uint8_t*) &empty_bank, sizeof (BANK) );
 
                 sprintf (&myQuery[0], "INSERT into bank_data (guildcard, data) VALUES ('%u','%s')", guildcard, (char*) &E7chardata[0] );
                 if ( mysql_query ( myData, &myQuery[0] ) )
@@ -3093,7 +3094,7 @@ void ShipProcessPacket (ORANGE* ship)
 
             // Update the last used character info...
 
-            mysql_real_escape_string ( myData, &E7chardata[0], (unsigned char*) &PlayerData->name[0], 24 );
+            mysql_real_escape_string ( myData, &E7chardata[0], (uint8_t*) &PlayerData->name[0], 24 );
             sprintf (&myQuery[0], "UPDATE account_data SET lastchar = '%s' WHERE guildcard = '%u'", (char*) &E7chardata[0], PlayerData->guildCard );
             mysql_query ( myData, &myQuery[0] );
 
@@ -3156,14 +3157,14 @@ void ShipProcessPacket (ORANGE* ship)
       break;
     case 0x02:
       {
-        unsigned guildcard, ch2;
-        unsigned short slotnum;
+        uint32_t guildcard, ch2;
+        uint16_t slotnum;
         CHARDATA* character;
-        unsigned short maxFace, maxHair, maxHairColorRed, maxHairColorBlue, maxHairColorGreen,
+        uint16_t maxFace, maxHair, maxHairColorRed, maxHairColorBlue, maxHairColorGreen,
           maxCostume, maxSkin, maxHead;
 
         guildcard = *(unsigned*) &ship->decryptbuf[0x06];
-        slotnum = *(unsigned short*) &ship->decryptbuf[0x0A];
+        slotnum = *(uint16_t*) &ship->decryptbuf[0x0A];
 
         character = (CHARDATA*) &ship->decryptbuf[0x0C];
 
@@ -3183,7 +3184,7 @@ void ShipProcessPacket (ORANGE* ship)
 
 #else
 
-        mysql_real_escape_string ( myData, &E7chardata[0], (unsigned char*) &ship->decryptbuf[0x0C+sizeof(CHARDATA)], sizeof (BANK) );
+        mysql_real_escape_string ( myData, &E7chardata[0], (uint8_t*) &ship->decryptbuf[0x0C+sizeof(CHARDATA)], sizeof (BANK) );
         sprintf (&myQuery[0], "UPDATE bank_data set data = '%s' WHERE guildcard = '%u'", (char*) &E7chardata[0], guildcard );
         if ( mysql_query ( myData, &myQuery[0] ) )
         {
@@ -3281,7 +3282,7 @@ void ShipProcessPacket (ORANGE* ship)
           }
         }
 #else
-        mysql_real_escape_string ( myData, &E7chardata[0], (unsigned char*) &ship->decryptbuf[0x0C], sizeof (CHARDATA) );
+        mysql_real_escape_string ( myData, &E7chardata[0], (uint8_t*) &ship->decryptbuf[0x0C], sizeof (CHARDATA) );
         sprintf (&myQuery[0], "UPDATE character_data set data = '%s' WHERE guildcard = '%u' AND slot = '%u'", (char*) &E7chardata[0], guildcard, slotnum );
         if ( mysql_query ( myData, &myQuery[0] ) )
         {
@@ -3308,7 +3309,7 @@ void ShipProcessPacket (ORANGE* ship)
           }
         }
 #else
-        mysql_real_escape_string ( myData, &E7chardata[0], (unsigned char*) &ship->decryptbuf[0x2FCC], 420 );
+        mysql_real_escape_string ( myData, &E7chardata[0], (uint8_t*) &ship->decryptbuf[0x2FCC], 420 );
         sprintf (&myQuery[0], "UPDATE key_data set controls = '%s' WHERE guildcard = '%u'", (char*) &E7chardata[0], guildcard );
         if ( mysql_query ( myData, &myQuery[0] ) )
           debug ("Could not save control information for guild card user %u", guildcard);
@@ -3326,15 +3327,15 @@ void ShipProcessPacket (ORANGE* ship)
     case 0x00:
       // Add a guild card here.
       {
-        unsigned clientGcn, friendGcn;
-        int gc_priority;
+        uint32_t clientGcn, friendGcn;
+        int32_t gc_priority;
 #ifdef NO_SQL
-        unsigned ch2;
+        uint32_t ch2;
 #endif
 #ifndef NO_SQL
-        unsigned num_gcs;
-        int gc_exists;
-        unsigned char friendSecID, friendClass;
+        uint32_t num_gcs;
+        int32_t gc_exists;
+        uint8_t friendSecID, friendClass;
 #endif
 
         clientGcn = *(unsigned*) &ship->decryptbuf[0x06];
@@ -3489,7 +3490,7 @@ void ShipProcessPacket (ORANGE* ship)
     case 0x01:
       // Delete a guild card here.
       {
-        unsigned clientGcn, deletedGcn;
+        uint32_t clientGcn, deletedGcn;
 
         clientGcn = *(unsigned*) &ship->decryptbuf[0x06];
         deletedGcn = *(unsigned*) &ship->decryptbuf[0x0A];
@@ -3516,7 +3517,7 @@ void ShipProcessPacket (ORANGE* ship)
     case 0x02:
       // Modify guild card comment.
       {
-        unsigned clientGcn, friendGcn;
+        uint32_t clientGcn, friendGcn;
 
         clientGcn = *(unsigned*) &ship->decryptbuf[0x06];
         friendGcn = *(unsigned*) &ship->decryptbuf[0x0A];
@@ -3544,8 +3545,8 @@ void ShipProcessPacket (ORANGE* ship)
     case 0x03:
       // Sort guild card
       {
-        unsigned clientGcn, gcn1, gcn2;
-        int priority1, priority2, priority_save;
+        uint32_t clientGcn, gcn1, gcn2;
+        int32_t priority1, priority2, priority_save;
 #ifdef NO_SQL
         L_GUILD_DATA tempgc;
 #endif
@@ -3652,8 +3653,8 @@ void ShipProcessPacket (ORANGE* ship)
     case 0x01:
       // Ship requesting a guild search
       {
-        unsigned clientGcn, friendGcn, ch, teamid;
-        int gc_exists = 0;
+        uint32_t clientGcn, friendGcn, ch, teamid;
+        int32_t gc_exists = 0;
         ORANGE* tship;
 
         friendGcn = *(unsigned*) &ship->decryptbuf[0x06];
@@ -3755,8 +3756,8 @@ void ShipProcessPacket (ORANGE* ship)
     case 0x03:
       // Send mail
       {
-        unsigned clientGcn, friendGcn, ch, teamid;
-        int gc_exists = 0;
+        uint32_t clientGcn, friendGcn, ch, teamid;
+        int32_t gc_exists = 0;
         ORANGE* tship;
 
         friendGcn = *(unsigned*) &ship->decryptbuf[0x36];
@@ -3868,15 +3869,15 @@ void ShipProcessPacket (ORANGE* ship)
         // 0x1E = Guild card of creator
         //
         //
-        unsigned char CreateResult;
-        int team_exists, teamid;
-        unsigned highid;
-        unsigned gcn;
+        uint8_t CreateResult;
+        int32_t team_exists, teamid;
+        uint32_t highid;
+        uint32_t gcn;
 #ifndef NO_SQL
-        unsigned char TeamNameCheck[50];
+        uint8_t TeamNameCheck[50];
 #else
-        unsigned short char_check;
-        int match;
+        uint16_t char_check;
+        int32_t match;
 #endif
 
         gcn = *(unsigned*) &ship->decryptbuf[0x1E];
@@ -3896,7 +3897,7 @@ void ShipProcessPacket (ORANGE* ship)
           match = 1;
           for (ds2=0;ds2<12;ds2++)
           {
-            char_check = *(unsigned short*) &ship->decryptbuf[0x06+(ds2*2)];
+            char_check = *(uint16_t*) &ship->decryptbuf[0x06+(ds2*2)];
             if (team_data[ds]->name[ds2] != char_check)
             {
               match = 0;
@@ -3992,7 +3993,7 @@ void ShipProcessPacket (ORANGE* ship)
       // 0x806 = Guild card of invoking person
       //
       {
-        unsigned teamid;
+        uint32_t teamid;
 
         teamid = *(unsigned*) &ship->decryptbuf[0x806];
 #ifdef NO_SQL
@@ -4038,7 +4039,7 @@ void ShipProcessPacket (ORANGE* ship)
       // 0x06 = Guild card of invoking person
       //
       {
-        unsigned teamid;
+        uint32_t teamid;
 
         teamid = *(unsigned*) &ship->decryptbuf[0x06];
 #ifdef NO_SQL
@@ -4079,7 +4080,7 @@ void ShipProcessPacket (ORANGE* ship)
       // 0x0A = Guild card
       //
       {
-        unsigned gcn, teamid;
+        uint32_t gcn, teamid;
 
         teamid = *(unsigned*) &ship->decryptbuf[0x06];
         gcn = *(unsigned*) &ship->decryptbuf[0x0A];
@@ -4108,7 +4109,7 @@ void ShipProcessPacket (ORANGE* ship)
       // Team Chat
       {
         ORANGE* tship;
-        unsigned size,ch;
+        uint32_t size,ch;
 
         size = *(unsigned*) &ship->decryptbuf[0x00];
         size -= 4;
@@ -4126,13 +4127,13 @@ void ShipProcessPacket (ORANGE* ship)
     case 0x05:
       // Request team list
       {
-        unsigned teamid, packet_offset;
-        int num_mates;
+        uint32_t teamid, packet_offset;
+        int32_t num_mates;
 #ifndef NO_SQL
-        int ch;
-        unsigned guildcard, privlevel;
+        int32_t ch;
+        uint32_t guildcard, privlevel;
 #else
-        unsigned save_offset;
+        uint32_t save_offset;
 #endif
 
 
@@ -4169,7 +4170,7 @@ void ShipProcessPacket (ORANGE* ship)
         }
         *(unsigned*) &ship->encryptbuf[save_offset] = num_mates;
         packet_offset -= 0x0A;
-        *(unsigned short*) &ship->encryptbuf[0x0A] = (unsigned short) packet_offset;
+        *(uint16_t*) &ship->encryptbuf[0x0A] = (uint16_t) packet_offset;
         packet_offset += 0x0A;
         compressShipPacket (ship, &ship->encryptbuf[0x00], packet_offset);
 #else
@@ -4198,7 +4199,7 @@ void ShipProcessPacket (ORANGE* ship)
           }
           mysql_free_result ( myResult );
           packet_offset -= 0x0A;
-          *(unsigned short*) &ship->encryptbuf[0x0A] = (unsigned short) packet_offset;
+          *(uint16_t*) &ship->encryptbuf[0x0A] = (uint16_t) packet_offset;
           packet_offset += 0x0A;
           compressShipPacket (ship, &ship->encryptbuf[0x00], packet_offset);
         }
@@ -4218,12 +4219,12 @@ void ShipProcessPacket (ORANGE* ship)
       // 0x0B = New level
       //
       {
-        unsigned gcn, teamid;
-        unsigned char privlevel;
+        uint32_t gcn, teamid;
+        uint8_t privlevel;
 
         teamid = *(unsigned*) &ship->decryptbuf[0x06];
         gcn = *(unsigned*) &ship->decryptbuf[0x0A];
-        privlevel = (unsigned char) ship->decryptbuf[0x0E];
+        privlevel = (uint8_t) ship->decryptbuf[0x0E];
 #ifdef NO_SQL
         for (ds=0;ds<num_accounts;ds++)
         {
@@ -4268,7 +4269,7 @@ void ShipProcessPacket (ORANGE* ship)
       // 0x0A = Guild card
       //
       {
-        unsigned gcn, teamid;
+        uint32_t gcn, teamid;
 
         teamid = *(unsigned*) &ship->decryptbuf[0x06];
         gcn = *(unsigned*) &ship->decryptbuf[0x0A];
@@ -4303,12 +4304,12 @@ void ShipProcessPacket (ORANGE* ship)
     {
     case 0x00:
       {
-        int security_client_thirtytwo, security_thirtytwo_check;
-        long long security_client_sixtyfour, security_sixtyfour_check;
-        unsigned char fail_to_auth = 0;
-        unsigned gcn;
-        unsigned char slotnum;
-        unsigned char isgm;
+        int32_t security_client_thirtytwo, security_thirtytwo_check;
+        int64_t security_client_sixtyfour, security_sixtyfour_check;
+        uint8_t fail_to_auth = 0;
+        uint32_t gcn;
+        uint8_t slotnum;
+        uint8_t isgm;
 
         gcn = *(unsigned*) &ship->decryptbuf[0x06];
 #ifdef NO_SQL
@@ -4316,7 +4317,7 @@ void ShipProcessPacket (ORANGE* ship)
         {
           if (security_data[ds]->guildcard == gcn)
           {
-            int found_match;
+            int32_t found_match;
 
             security_thirtytwo_check = security_data[ds]->thirtytwo;
             security_sixtyfour_check = security_data[ds]->sixtyfour;
@@ -4325,23 +4326,23 @@ void ShipProcessPacket (ORANGE* ship)
 
             found_match = 0;
 
-            security_client_sixtyfour = *(long long*) &ship->decryptbuf[0x0E];
+            security_client_sixtyfour = *(int64_t*) &ship->decryptbuf[0x0E];
             if (security_client_sixtyfour == security_sixtyfour_check)
               found_match = 1;
 
-            security_client_sixtyfour = *(long long*) &ship->decryptbuf[0x16];
+            security_client_sixtyfour = *(int64_t*) &ship->decryptbuf[0x16];
             if (security_client_sixtyfour == security_sixtyfour_check)
               found_match = 1;
 
-            security_client_sixtyfour = *(long long*) &ship->decryptbuf[0x1E];
+            security_client_sixtyfour = *(int64_t*) &ship->decryptbuf[0x1E];
             if (security_client_sixtyfour == security_sixtyfour_check)
               found_match = 1;
 
-            security_client_sixtyfour = *(long long*) &ship->decryptbuf[0x26];
+            security_client_sixtyfour = *(int64_t*) &ship->decryptbuf[0x26];
             if (security_client_sixtyfour == security_sixtyfour_check)
               found_match = 1;
 
-            security_client_sixtyfour = *(long long*) &ship->decryptbuf[0x2E];
+            security_client_sixtyfour = *(int64_t*) &ship->decryptbuf[0x2E];
             if (security_client_sixtyfour == security_sixtyfour_check)
               found_match = 1;
 
@@ -4361,7 +4362,7 @@ void ShipProcessPacket (ORANGE* ship)
         // Nom nom nom
         if ( ! mysql_query ( myData, &myQuery[0] ) )
         {
-          int num_rows, found_match;
+          int32_t num_rows, found_match;
 
           found_match = 0;
 
@@ -4377,23 +4378,23 @@ void ShipProcessPacket (ORANGE* ship)
             slotnum = atoi (myRow[3]);
             isgm = atoi (myRow[4]);
 
-            security_client_sixtyfour = *(long long*) &ship->decryptbuf[0x0E];
+            security_client_sixtyfour = *(int64_t*) &ship->decryptbuf[0x0E];
             if (security_client_sixtyfour == security_sixtyfour_check)
               found_match = 1;
 
-            security_client_sixtyfour = *(long long*) &ship->decryptbuf[0x16];
+            security_client_sixtyfour = *(int64_t*) &ship->decryptbuf[0x16];
             if (security_client_sixtyfour == security_sixtyfour_check)
               found_match = 1;
 
-            security_client_sixtyfour = *(long long*) &ship->decryptbuf[0x1E];
+            security_client_sixtyfour = *(int64_t*) &ship->decryptbuf[0x1E];
             if (security_client_sixtyfour == security_sixtyfour_check)
               found_match = 1;
 
-            security_client_sixtyfour = *(long long*) &ship->decryptbuf[0x26];
+            security_client_sixtyfour = *(int64_t*) &ship->decryptbuf[0x26];
             if (security_client_sixtyfour == security_sixtyfour_check)
               found_match = 1;
 
-            security_client_sixtyfour = *(long long*) &ship->decryptbuf[0x2E];
+            security_client_sixtyfour = *(int64_t*) &ship->decryptbuf[0x2E];
             if (security_client_sixtyfour == security_sixtyfour_check)
               found_match = 1;
 
@@ -4419,7 +4420,7 @@ void ShipProcessPacket (ORANGE* ship)
         ship->encryptbuf[0x06] = slotnum;
         ship->encryptbuf[0x07] = isgm;
         *(unsigned *) &ship->encryptbuf[0x08] = security_thirtytwo_check;
-        *(long long*) &ship->encryptbuf[0x0C] = security_sixtyfour_check;
+        *(int64_t*) &ship->encryptbuf[0x0C] = security_sixtyfour_check;
         compressShipPacket ( ship, &ship->encryptbuf[0x00], 0x14 );
       }
       break;
@@ -4434,7 +4435,7 @@ void ShipProcessPacket (ORANGE* ship)
   case 0x0E:
     {
       // Update player count.
-      unsigned updateID;
+      uint32_t updateID;
 
       updateID = *(unsigned *) &ship->decryptbuf[0x06];
       updateID--;
@@ -4482,7 +4483,7 @@ void ShipProcessPacket (ORANGE* ship)
     // Global announcement
     {
       ORANGE* tship;
-      unsigned size,ch;
+      uint32_t size,ch;
 
       size = *(unsigned *) &ship->decryptbuf[0x00];
       size -= 4;
@@ -4507,20 +4508,20 @@ void ShipProcessPacket (ORANGE* ship)
 
 void CharacterProcessPacket (BANANA* client)
 {
-  char username[17];
-  char password[34];
-  char hwinfo[18];
-  unsigned short clientver;
-  char md5password[34] = {0};
-  unsigned char MDBuffer[17] = {0};
-  unsigned gcn;
-  unsigned ch;
-  unsigned selected;
-  unsigned shipNum;
-  int security_client_thirtytwo, security_thirtytwo_check;
-  long long security_client_sixtyfour, security_sixtyfour_check;
+  int8_t username[17];
+  int8_t password[34];
+  int8_t hwinfo[18];
+  uint16_t clientver;
+  int8_t md5password[34] = {0};
+  uint8_t MDBuffer[17] = {0};
+  uint32_t gcn;
+  uint32_t ch;
+  uint32_t selected;
+  uint32_t shipNum;
+  int32_t security_client_thirtytwo, security_thirtytwo_check;
+  int64_t security_client_sixtyfour, security_sixtyfour_check;
 #ifdef NO_SQL
-  long long truehwinfo;
+  int64_t truehwinfo;
 #endif
 
   switch (client->decryptbuf[0x02])
@@ -4557,15 +4558,15 @@ void CharacterProcessPacket (BANANA* client)
   case 0x93:
     if (!client->sendCheck[RECEIVE_PACKET_93])
     {
-      int fail_to_auth = 0;
+      int32_t fail_to_auth = 0;
 
-      clientver = *(unsigned short*) &client->decryptbuf[0x10];
+      clientver = *(uint16_t*) &client->decryptbuf[0x10];
       memcpy (&username[0], &client->decryptbuf[0x1C], 17 );
       memcpy (&password[0], &client->decryptbuf[0x4C], 17 );
       memset (&hwinfo[0], 0, 18);
 #ifdef NO_SQL
-      *(long long*) &client->hwinfo[0] = *(long long*) &client->decryptbuf[0x84];
-      truehwinfo = *(long long*) &client->decryptbuf[0x84];
+      *(int64_t*) &client->hwinfo[0] = *(int64_t*) &client->decryptbuf[0x84];
+      truehwinfo = *(int64_t*) &client->decryptbuf[0x84];
       fail_to_auth = 2; // default fail with wrong username
       for (ds=0;ds<num_accounts;ds++)
       {
@@ -4575,7 +4576,7 @@ void CharacterProcessPacket (BANANA* client)
           sprintf (&password[strlen(password)], "_%u_salt", account_data[ds]->regtime );
           MDString (&password[0], &MDBuffer[0] );
           for (ch=0;ch<16;ch++)
-            sprintf (&md5password[ch*2], "%02x", (unsigned char) MDBuffer[ch]);
+            sprintf (&md5password[ch*2], "%02x", (uint8_t) MDBuffer[ch]);
           md5password[32] = 0;
           if (!strcmp(&md5password[0],&account_data[ds]->password[0]))
           {
@@ -4603,7 +4604,7 @@ void CharacterProcessPacket (BANANA* client)
         {
           if (security_data[ds]->guildcard == gcn)
           {
-            int found_match;
+            int32_t found_match;
 
             client->dress_flag = 0;
             for (ch=0;ch<MAX_DRESS_FLAGS;ch++)
@@ -4618,23 +4619,23 @@ void CharacterProcessPacket (BANANA* client)
 
             found_match = 0;
 
-            security_client_sixtyfour = *(long long*) &client->decryptbuf[0x8C];
+            security_client_sixtyfour = *(int64_t*) &client->decryptbuf[0x8C];
             if (security_client_sixtyfour == security_sixtyfour_check)
               found_match = 1;
 
-            security_client_sixtyfour = *(long long*) &client->decryptbuf[0x94];
+            security_client_sixtyfour = *(int64_t*) &client->decryptbuf[0x94];
             if (security_client_sixtyfour == security_sixtyfour_check)
               found_match = 1;
 
-            security_client_sixtyfour = *(long long*) &client->decryptbuf[0x9C];
+            security_client_sixtyfour = *(int64_t*) &client->decryptbuf[0x9C];
             if (security_client_sixtyfour == security_sixtyfour_check)
               found_match = 1;
 
-            security_client_sixtyfour = *(long long*) &client->decryptbuf[0xA4];
+            security_client_sixtyfour = *(int64_t*) &client->decryptbuf[0xA4];
             if (security_client_sixtyfour == security_sixtyfour_check)
               found_match = 1;
 
-            security_client_sixtyfour = *(long long*) &client->decryptbuf[0xAC];
+            security_client_sixtyfour = *(int64_t*) &client->decryptbuf[0xAC];
             if (security_client_sixtyfour == security_sixtyfour_check)
               found_match = 1;
 
@@ -4664,7 +4665,7 @@ void CharacterProcessPacket (BANANA* client)
       // Check to see if that account already exists.
       if ( ! mysql_query ( myData, &myQuery[0] ) )
       {
-        int num_rows, max_fields;
+        int32_t num_rows, max_fields;
 
         myResult = mysql_store_result ( myData );
         num_rows = (int) mysql_num_rows ( myResult );
@@ -4676,7 +4677,7 @@ void CharacterProcessPacket (BANANA* client)
           sprintf (&password[strlen(password)], "_%s_salt", myRow[3] );
           MDString (&password[0], &MDBuffer[0] );
           for (ch=0;ch<16;ch++)
-            sprintf (&md5password[ch*2], "%02x", (unsigned char) MDBuffer[ch]);
+            sprintf (&md5password[ch*2], "%02x", (uint8_t) MDBuffer[ch]);
           md5password[32] = 0;
           if (!strcmp(&md5password[0],myRow[1]))
           {
@@ -4722,7 +4723,7 @@ void CharacterProcessPacket (BANANA* client)
         // Nom nom nom
         if ( ! mysql_query ( myData, &myQuery[0] ) )
         {
-          int num_rows, found_match;
+          int32_t num_rows, found_match;
 
           found_match = 0;
 
@@ -4744,23 +4745,23 @@ void CharacterProcessPacket (BANANA* client)
             memcpy (&security_sixtyfour_check, myRow[2], 8 );
             client->slotnum = atoi (myRow[3]);
 
-            security_client_sixtyfour = *(long long*) &client->decryptbuf[0x8C];
+            security_client_sixtyfour = *(int64_t*) &client->decryptbuf[0x8C];
             if (security_client_sixtyfour == security_sixtyfour_check)
               found_match = 1;
 
-            security_client_sixtyfour = *(long long*) &client->decryptbuf[0x94];
+            security_client_sixtyfour = *(int64_t*) &client->decryptbuf[0x94];
             if (security_client_sixtyfour == security_sixtyfour_check)
               found_match = 1;
 
-            security_client_sixtyfour = *(long long*) &client->decryptbuf[0x9C];
+            security_client_sixtyfour = *(int64_t*) &client->decryptbuf[0x9C];
             if (security_client_sixtyfour == security_sixtyfour_check)
               found_match = 1;
 
-            security_client_sixtyfour = *(long long*) &client->decryptbuf[0xA4];
+            security_client_sixtyfour = *(int64_t*) &client->decryptbuf[0xA4];
             if (security_client_sixtyfour == security_sixtyfour_check)
               found_match = 1;
 
-            security_client_sixtyfour = *(long long*) &client->decryptbuf[0xAC];
+            security_client_sixtyfour = *(int64_t*) &client->decryptbuf[0xAC];
             if (security_client_sixtyfour == security_sixtyfour_check)
               found_match = 1;
 
@@ -4801,11 +4802,11 @@ void CharacterProcessPacket (BANANA* client)
         client->guildcard = gcn;
         sprintf(&client->guildcard_string[0], "%d", gcn);
         // Store some security shit in the E6 packet.
-        *(long long*) &client->encryptbuf[0x38] = security_sixtyfour_check;
+        *(int64_t*) &client->encryptbuf[0x38] = security_sixtyfour_check;
         if (security_thirtytwo_check == 0)
         {
           for (ch=0;ch<4;ch++)
-            MDBuffer[ch] = (unsigned char)( rand() % 256 );
+            MDBuffer[ch] = (uint8_t)( rand() % 256 );
           security_thirtytwo_check = *(unsigned *) &MDBuffer[0];
 #ifdef NO_SQL
           for (ds=0;ds<num_security;ds++)
@@ -4978,21 +4979,21 @@ void CharacterProcessPacket (BANANA* client)
 
 void LoginProcessPacket (BANANA* client)
 {
-  char username[17];
-  char password[34];
-  long long security_sixtyfour_check;
-  char hwinfo[18];
-  unsigned short clientver;
-  char md5password[34] = {0};
-  unsigned char MDBuffer[17] = {0};
-  unsigned gcn;
-  unsigned ch,connectNum,shipNum;
+  int8_t username[17];
+  int8_t password[34];
+  int64_t security_sixtyfour_check;
+  int8_t hwinfo[18];
+  uint16_t clientver;
+  int8_t md5password[34] = {0};
+  uint8_t MDBuffer[17] = {0};
+  uint32_t gcn;
+  uint32_t ch,connectNum,shipNum;
 #ifdef NO_SQL
-  long long truehwinfo;
+  int64_t truehwinfo;
 #endif
   ORANGE* tship;
 #ifndef NO_SQL
-  char security_sixtyfour_binary[18];
+  int8_t security_sixtyfour_binary[18];
 #endif
 
 
@@ -5007,14 +5008,14 @@ void LoginProcessPacket (BANANA* client)
   case 0x93:
     if (!client->sendCheck[RECEIVE_PACKET_93])
     {
-      int fail_to_auth = 0;
-      clientver = *(unsigned short*) &client->decryptbuf[0x10];
+      int32_t fail_to_auth = 0;
+      clientver = *(uint16_t*) &client->decryptbuf[0x10];
       memcpy (&username[0], &client->decryptbuf[0x1C], 17 );
       memcpy (&password[0], &client->decryptbuf[0x4C], 17 );
       memset (&hwinfo[0], 0, 18);
 #ifdef NO_SQL
-      *(long long*) &client->hwinfo[0] = *(long long*) &client->decryptbuf[0x84];
-      truehwinfo = *(long long*) &client->decryptbuf[0x84];
+      *(int64_t*) &client->hwinfo[0] = *(int64_t*) &client->decryptbuf[0x84];
+      truehwinfo = *(int64_t*) &client->decryptbuf[0x84];
       fail_to_auth = 2; // default fail with wrong username
       for (ds=0;ds<num_accounts;ds++)
       {
@@ -5024,7 +5025,7 @@ void LoginProcessPacket (BANANA* client)
           sprintf (&password[strlen(password)], "_%u_salt", account_data[ds]->regtime );
           MDString (&password[0], &MDBuffer[0] );
           for (ch=0;ch<16;ch++)
-            sprintf (&md5password[ch*2], "%02x", (unsigned char) MDBuffer[ch]);
+            sprintf (&md5password[ch*2], "%02x", (uint8_t) MDBuffer[ch]);
           md5password[32] = 0;
           if (!strcmp(&md5password[0],&account_data[ds]->password[0]))
           {
@@ -5055,7 +5056,7 @@ void LoginProcessPacket (BANANA* client)
       // Check to see if that account already exists.
       if ( ! mysql_query ( myData, &myQuery[0] ) )
       {
-        int num_rows, max_fields;
+        int32_t num_rows, max_fields;
 
         myResult = mysql_store_result ( myData );
         num_rows = (int) mysql_num_rows ( myResult );
@@ -5067,7 +5068,7 @@ void LoginProcessPacket (BANANA* client)
           sprintf (&password[strlen(password)], "_%s_salt", myRow[3] );
           MDString (&password[0], &MDBuffer[0] );
           for (ch=0;ch<16;ch++)
-            sprintf (&md5password[ch*2], "%02x", (unsigned char) MDBuffer[ch]);
+            sprintf (&md5password[ch*2], "%02x", (uint8_t) MDBuffer[ch]);
           md5password[32] = 0;
           if (!strcmp(&md5password[0],myRow[1]))
           {
@@ -5141,9 +5142,9 @@ void LoginProcessPacket (BANANA* client)
 
         // Store some security shit
         for (ch=0;ch<8;ch++)
-          client->encryptbuf[0x38+ch] = (unsigned char) rand() % 255;
+          client->encryptbuf[0x38+ch] = (uint8_t) rand() % 255;
 
-        security_sixtyfour_check = *(long long*) &client->encryptbuf[0x38];
+        security_sixtyfour_check = *(int64_t*) &client->encryptbuf[0x38];
 
         // Nom, nom, nom.
 
@@ -5234,9 +5235,9 @@ void LoginProcessPacket (BANANA* client)
 
 void LoadQuestAllow ()
 {
-  unsigned ch;
-  char allow_data[256];
-  unsigned char* qa;
+  uint32_t ch;
+  int8_t allow_data[256];
+  uint8_t* qa;
   FILE* fp;
 
   quest_numallows = 0;
@@ -5262,7 +5263,7 @@ void LoadQuestAllow ()
       if ((allow_data[0] != 35) && (strlen(&allow_data[0]) > 5))
       {
         quest_allow[ch] = 0;
-        qa = (unsigned char*) &quest_allow[ch++];
+        qa = (uint8_t*) &quest_allow[ch++];
         qa[0] = hexToByte (&allow_data[0]);
         qa[1] = hexToByte (&allow_data[2]);
         qa[2] = hexToByte (&allow_data[4]);
@@ -5276,12 +5277,12 @@ void LoadQuestAllow ()
 
 void LoadDropData()
 {
-  unsigned ch,ch2,ch3,d;
-  unsigned char* rt_table;
-  char id_file[256];
+  uint32_t ch,ch2,ch3,d;
+  uint8_t* rt_table;
+  int8_t id_file[256];
   FILE* fp;
-  char convert_ch[10];
-  int look_rate;
+  int8_t convert_ch[10];
+  int32_t look_rate;
 
   printf ("Loading drop data...\n");
 
@@ -5293,13 +5294,13 @@ void LoadDropData()
       switch (ch)
       {
       case 0x01:
-        rt_table = (unsigned char*) &rt_tables_ep1[0];
+        rt_table = (uint8_t*) &rt_tables_ep1[0];
         break;
       case 0x02:
-        rt_table = (unsigned char*) &rt_tables_ep2[0];
+        rt_table = (uint8_t*) &rt_tables_ep2[0];
         break;
       case 0x04:
-        rt_table = (unsigned char*) &rt_tables_ep4[0];
+        rt_table = (uint8_t*) &rt_tables_ep4[0];
         break;
       }
       // Each difficulty
@@ -5343,7 +5344,7 @@ void LoadDropData()
             {
               if ( look_rate )
               {
-                rt_table[ch3++] = (unsigned char) atoi (&dp[0]);
+                rt_table[ch3++] = (uint8_t) atoi (&dp[0]);
                 look_rate = 0;
               }
               else
@@ -5385,11 +5386,11 @@ void LoadDropData()
               switch ( look_rate )
               {
               case 0x00:
-                rt_table[ch3] = (unsigned char) atoi (&dp[0]);
+                rt_table[ch3] = (uint8_t) atoi (&dp[0]);
                 look_rate = 1;
                 break;
               case 0x01:
-                rt_table[0x1B2 + ((ch3-0x194)*4)] = (unsigned char) atoi (&dp[0]);
+                rt_table[0x1B2 + ((ch3-0x194)*4)] = (uint8_t) atoi (&dp[0]);
                 look_rate = 2;
                 break;
               case 0x02:
@@ -5420,10 +5421,10 @@ void LoadDropData()
 
 #ifdef NO_SQL
 
-void UpdateDataFile ( const char* filename, unsigned count, void* data, unsigned record_size, int new_record )
+void UpdateDataFile ( const char* filename, uint32_t count, void* data, uint32_t record_size, int32_t new_record )
 {
   FILE* fp;
-  unsigned fs;
+  uint32_t fs;
 
   fp = fopen (filename, "r+b");
   if (fp)
@@ -5453,10 +5454,10 @@ void UpdateDataFile ( const char* filename, unsigned count, void* data, unsigned
 }
 
 
-void DumpDataFile ( const char* filename, unsigned* count, void** data, unsigned record_size )
+void DumpDataFile ( const char* filename, unsigned* count, void** data, uint32_t record_size )
 {
   FILE* fp;
-  unsigned ch;
+  uint32_t ch;
 
   printf ("Dumping \"%s\" ... ", filename);
   fp = fopen (filename, "wb");
@@ -5471,10 +5472,10 @@ void DumpDataFile ( const char* filename, unsigned* count, void** data, unsigned
   printf ("done!\n");
 }
 
-void LoadDataFile ( const char* filename, unsigned* count, void** data, unsigned record_size )
+void LoadDataFile ( const char* filename, unsigned* count, void** data, uint32_t record_size )
 {
   FILE* fp;
-  unsigned ch;
+  uint32_t ch;
 
   printf ("Loading \"%s\" ... ", filename);
   fp = fopen (filename, "rb");
@@ -5508,23 +5509,23 @@ void LoadDataFile ( const char* filename, unsigned* count, void** data, unsigned
 ********************************************************/
 
 int
-main( int argc, char * argv[] )
+main( int32_t argc, int8_t * argv[] )
 {
-  unsigned ch,ch2;
+  uint32_t ch,ch2;
   struct in_addr login_in;
   struct in_addr character_in;
   struct in_addr ship_in;
   struct sockaddr_in listen_in;
-  unsigned listen_length;
-  int login_sockfd = -1, character_sockfd = -1, ship_sockfd = -1;
-  int pkt_len, pkt_c, bytes_sent;
-  unsigned short this_packet;
-  unsigned ship_this_packet;
+  uint32_t listen_length;
+  int32_t login_sockfd = -1, character_sockfd = -1, ship_sockfd = -1;
+  int32_t pkt_len, pkt_c, bytes_sent;
+  uint16_t this_packet;
+  uint32_t ship_this_packet;
 
   FILE* fp;
   //int wserror;
-  unsigned char MDBuffer[17] = {0};
-  unsigned connectNum, shipNum;
+  uint8_t MDBuffer[17] = {0};
+  uint32_t connectNum, shipNum;
 
   dp[0] = 0;
 
@@ -5721,7 +5722,7 @@ main( int argc, char * argv[] )
 
   if ( ! mysql_query ( myData, &myQuery[0] ) )
   {
-    unsigned key_rows;
+    uint32_t key_rows;
 
     myResult = mysql_store_result ( myData );
     key_rows = (int) mysql_num_rows ( myResult );
@@ -5828,7 +5829,7 @@ main( int argc, char * argv[] )
 
   for (;;)
   {
-    int nfds = 0;
+    int32_t nfds = 0;
 
     /* Ping pong?! */
 
@@ -5869,7 +5870,7 @@ main( int argc, char * argv[] )
       {
         if (workConnect->packetdata)
         {
-          this_packet = *(unsigned short*) &workConnect->packet[workConnect->packetread];
+          this_packet = *(uint16_t*) &workConnect->packet[workConnect->packetread];
           memcpy (&workConnect->decryptbuf[0], &workConnect->packet[workConnect->packetread], this_packet);
 
           switch (workConnect->login)
@@ -6093,7 +6094,7 @@ main( int argc, char * argv[] )
 
                   /* Make sure we're expecting a multiple of 8 bytes. */
 
-                  workConnect->expect = *(unsigned short*) &workConnect->peekbuf[0];
+                  workConnect->expect = *(uint16_t*) &workConnect->peekbuf[0];
 
                   if ( workConnect->expect % 8 )
                     workConnect->expect += ( 8 - ( workConnect->expect % 8 ) );
@@ -6118,12 +6119,12 @@ main( int argc, char * argv[] )
 
                     cipher_ptr = &workConnect->client_cipher;
 
-                    *(long long*) &workConnect->packet[workConnect->packetdata] = *(long long*) &workConnect->peekbuf[0];
+                    *(int64_t*) &workConnect->packet[workConnect->packetdata] = *(int64_t*) &workConnect->peekbuf[0];
 
                     if ( workConnect->rcvread > 8 )
                       decryptcopy ( &workConnect->packet[workConnect->packetdata + 8], &workConnect->rcvbuf[8], workConnect->expect - 8 );
 
-                    this_packet = *(unsigned short*) &workConnect->peekbuf[0];
+                    this_packet = *(uint16_t*) &workConnect->peekbuf[0];
                     workConnect->packetdata += this_packet;
 
                     workConnect->packetsSec ++;
@@ -6291,7 +6292,7 @@ main( int argc, char * argv[] )
 
 void send_to_server(int sock, char* packet)
 {
- int pktlen;
+ int32_t pktlen;
 
  pktlen = strlen (packet);
 
@@ -6305,9 +6306,9 @@ void send_to_server(int sock, char* packet)
 
 }
 
-int receive_from_server(int sock, char* packet)
+int32_t receive_from_server(int sock, char* packet)
 {
- int pktlen;
+ int32_t pktlen;
 
   if ((pktlen = recv(sock, packet, TCP_BUFFER_SIZE - 1, 0)) <= 0)
   {
@@ -6331,9 +6332,9 @@ void tcp_listen (int sockfd)
   }
 }
 
-int tcp_accept (int sockfd, struct sockaddr *client_addr, int *addr_len )
+int32_t tcp_accept (int sockfd, struct sockaddr *client_addr, int32_t *addr_len )
 {
-  int fd;
+  int32_t fd;
 
   if ((fd = accept (sockfd, client_addr, addr_len)) < 0)
     debug_perror ("Could not accept connection");
@@ -6341,9 +6342,9 @@ int tcp_accept (int sockfd, struct sockaddr *client_addr, int *addr_len )
   return (fd);
 }
 
-int tcp_sock_connect(char* dest_addr, int port)
+int32_t tcp_sock_connect(char* dest_addr, int32_t port)
 {
-  int fd;
+  int32_t fd;
   struct sockaddr_in sa;
 
   /* Clear it out */
@@ -6360,7 +6361,7 @@ int tcp_sock_connect(char* dest_addr, int port)
     memset (&sa, 0, sizeof(sa));
     sa.sin_family = AF_INET;
     sa.sin_addr.s_addr = inet_addr (dest_addr);
-    sa.sin_port = htons((unsigned short) port);
+    sa.sin_port = htons((uint16_t) port);
 
     if (connect(fd, (struct sockaddr*) &sa, sizeof(sa)) < 0)
       debug_perror("Could not make TCP connection");
@@ -6371,9 +6372,9 @@ int tcp_sock_connect(char* dest_addr, int port)
 }
 
 /*****************************************************************************/
-int tcp_sock_open(struct in_addr ip, int port)
+int32_t tcp_sock_open(struct in_addr ip, int32_t port)
 {
-  int fd, turn_on_option_flag = 1, rcSockopt;
+  int32_t fd, turn_on_option_flag = 1, rcSockopt;
 
   struct sockaddr_in sa;
 
@@ -6392,7 +6393,7 @@ int tcp_sock_open(struct in_addr ip, int port)
 
   sa.sin_family = AF_INET;
   memcpy((void *)&sa.sin_addr, (void *)&ip, sizeof(struct in_addr));
-  sa.sin_port = htons((unsigned short) port);
+  sa.sin_port = htons((uint16_t) port);
 
   /* Reuse port */
 
@@ -6422,7 +6423,7 @@ void debug(char *fmt, ...)
 #define MAX_MESG_LEN 1024
 
   va_list args;
-  char text[ MAX_MESG_LEN ];
+  int8_t text[ MAX_MESG_LEN ];
 
   va_start (args, fmt);
   strcpy (text + vsprintf( text,fmt,args), "\r\n");
@@ -6433,9 +6434,9 @@ void debug(char *fmt, ...)
 
 /* Blue Burst encryption routines */
 
-static void pso_crypt_init_key_bb(unsigned char *data)
+static void pso_crypt_init_key_bb(uint8_t *data)
 {
-  unsigned x;
+  uint32_t x;
   for (x = 0; x < 48; x += 3)
   {
     data[x] ^= 0x19;
@@ -6445,22 +6446,22 @@ static void pso_crypt_init_key_bb(unsigned char *data)
 }
 
 
-void pso_crypt_decrypt_bb(PSO_CRYPT *pcry, unsigned char *data, unsigned
+void pso_crypt_decrypt_bb(PSO_CRYPT *pcry, uint8_t *data, unsigned
               length)
 {
-  unsigned eax, ecx, edx, ebx, ebp, esi, edi;
+  uint32_t eax, ecx, edx, ebx, ebp, esi, edi;
 
   edx = 0;
   ecx = 0;
   eax = 0;
   while (edx < length)
   {
-    ebx = *(unsigned long *) &data[edx];
+    ebx = *(uint32_t *) &data[edx];
     ebx = ebx ^ pcry->tbl[5];
     ebp = ((pcry->tbl[(ebx >> 0x18) + 0x12]+pcry->tbl[((ebx >> 0x10)& 0xff) + 0x112])
       ^ pcry->tbl[((ebx >> 0x8)& 0xff) + 0x212]) + pcry->tbl[(ebx & 0xff) + 0x312];
     ebp = ebp ^ pcry->tbl[4];
-    ebp ^= *(unsigned long *) &data[edx+4];
+    ebp ^= *(uint32_t *) &data[edx+4];
     edi = ((pcry->tbl[(ebp >> 0x18) + 0x12]+pcry->tbl[((ebp >> 0x10)& 0xff) + 0x112])
       ^ pcry->tbl[((ebp >> 0x8)& 0xff) + 0x212]) + pcry->tbl[(ebp & 0xff) + 0x312];
     edi = edi ^ pcry->tbl[3];
@@ -6473,29 +6474,29 @@ void pso_crypt_decrypt_bb(PSO_CRYPT *pcry, unsigned char *data, unsigned
     edi = edi ^ pcry->tbl[1];
     ebp = ebp ^ pcry->tbl[0];
     ebx = ebx ^ edi;
-    *(unsigned long *) &data[edx] = ebp;
-    *(unsigned long *) &data[edx+4] = ebx;
+    *(uint32_t *) &data[edx] = ebp;
+    *(uint32_t *) &data[edx+4] = ebx;
     edx = edx+8;
   }
 }
 
 
-void pso_crypt_encrypt_bb(PSO_CRYPT *pcry, unsigned char *data, unsigned
+void pso_crypt_encrypt_bb(PSO_CRYPT *pcry, uint8_t *data, unsigned
               length)
 {
-  unsigned eax, ecx, edx, ebx, ebp, esi, edi;
+  uint32_t eax, ecx, edx, ebx, ebp, esi, edi;
 
   edx = 0;
   ecx = 0;
   eax = 0;
   while (edx < length)
   {
-    ebx = *(unsigned long *) &data[edx];
+    ebx = *(uint32_t *) &data[edx];
     ebx = ebx ^ pcry->tbl[0];
     ebp = ((pcry->tbl[(ebx >> 0x18) + 0x12]+pcry->tbl[((ebx >> 0x10)& 0xff) + 0x112])
       ^ pcry->tbl[((ebx >> 0x8)& 0xff) + 0x212]) + pcry->tbl[(ebx & 0xff) + 0x312];
     ebp = ebp ^ pcry->tbl[1];
-    ebp ^= *(unsigned long *) &data[edx+4];
+    ebp ^= *(uint32_t *) &data[edx+4];
     edi = ((pcry->tbl[(ebp >> 0x18) + 0x12]+pcry->tbl[((ebp >> 0x10)& 0xff) + 0x112])
       ^ pcry->tbl[((ebp >> 0x8)& 0xff) + 0x212]) + pcry->tbl[(ebp & 0xff) + 0x312];
     edi = edi ^ pcry->tbl[2];
@@ -6508,15 +6509,15 @@ void pso_crypt_encrypt_bb(PSO_CRYPT *pcry, unsigned char *data, unsigned
     edi = edi ^ pcry->tbl[4];
     ebp = ebp ^ pcry->tbl[5];
     ebx = ebx ^ edi;
-    *(unsigned long *) &data[edx] = ebp;
-    *(unsigned long *) &data[edx+4] = ebx;
+    *(uint32_t *) &data[edx] = ebp;
+    *(uint32_t *) &data[edx+4] = ebx;
     edx = edx+8;
   }
 }
 
-void encryptcopy (BANANA* client, const unsigned char* src, unsigned size)
+void encryptcopy (BANANA* client, const uint8_t* src, uint32_t size)
 {
-  unsigned char* dest;
+  uint8_t* dest;
 
   if (TCP_BUFFER_SIZE - client->snddata < ( (int) size + 7 ) )
     client->todc = 1;
@@ -6532,20 +6533,20 @@ void encryptcopy (BANANA* client, const unsigned char* src, unsigned size)
 }
 
 
-void decryptcopy (unsigned char* dest, const unsigned char* src, unsigned size)
+void decryptcopy (uint8_t* dest, const uint8_t* src, uint32_t size)
 {
   memcpy (dest,src,size);
   pso_crypt_decrypt_bb(cipher_ptr,dest,size);
 }
 
 
-void pso_crypt_table_init_bb(PSO_CRYPT *pcry, const unsigned char *salt)
+void pso_crypt_table_init_bb(PSO_CRYPT *pcry, const uint8_t *salt)
 {
-  unsigned long eax, ecx, edx, ebx, ebp, esi, edi, ou, x;
-  unsigned char s[48];
-  unsigned short* pcryp;
-  unsigned short* bbtbl;
-  unsigned short dx;
+  uint32_t eax, ecx, edx, ebx, ebp, esi, edi, ou, x;
+  uint8_t s[48];
+  uint16_t* pcryp;
+  uint16_t* bbtbl;
+  uint16_t dx;
 
   pcry->cur = 0;
   pcry->mangle = NULL;
@@ -6554,8 +6555,8 @@ void pso_crypt_table_init_bb(PSO_CRYPT *pcry, const unsigned char *salt)
   memcpy(s, salt, sizeof(s));
   pso_crypt_init_key_bb(s);
 
-  bbtbl = (unsigned short*) &bbtable[0];
-  pcryp = (unsigned short*) &pcry->tbl[0];
+  bbtbl = (uint16_t*) &bbtable[0];
+  pcryp = (uint16_t*) &pcry->tbl[0];
 
   eax = 0;
   ebx = 0;
@@ -6602,19 +6603,19 @@ void pso_crypt_table_init_bb(PSO_CRYPT *pcry, const unsigned char *salt)
   while (ebx < 0x12)
   {
     //in a loop
-    ebp=((unsigned long) (s[ecx])) << 0x18;
+    ebp=((uint32_t) (s[ecx])) << 0x18;
     eax=ecx+1;
     edx=eax-((eax / 48)*48);
-    eax=(((unsigned long) (s[edx])) << 0x10) & 0xFF0000;
+    eax=(((uint32_t) (s[edx])) << 0x10) & 0xFF0000;
     ebp=(ebp | eax) & 0xffff00ff;
     eax=ecx+2;
     edx=eax-((eax / 48)*48);
-    eax=(((unsigned long) (s[edx])) << 0x8) & 0xFF00;
+    eax=(((uint32_t) (s[edx])) << 0x8) & 0xFF00;
     ebp=(ebp | eax) & 0xffffff00;
     eax=ecx+3;
     ecx=ecx+4;
     edx=eax-((eax / 48)*48);
-    eax=(unsigned long) (s[edx]);
+    eax=(uint32_t) (s[edx]);
     ebp=ebp | eax;
     eax=ecx;
     edx=eax-((eax / 48)*48);
@@ -6788,11 +6789,11 @@ void pso_crypt_table_init_bb(PSO_CRYPT *pcry, const unsigned char *salt)
   }
 }
 
-unsigned RleEncode(unsigned char *src, unsigned char *dest, unsigned src_size)
+uint32_t RleEncode(uint8_t *src, uint8_t *dest, uint32_t src_size)
 {
-  unsigned char currChar, prevChar;             /* current and previous characters */
-  unsigned short count;                /* number of characters in a run */
-  unsigned char *src_end, *dest_start;
+  uint8_t currChar, prevChar;             /* current and previous characters */
+  uint16_t count;                /* number of characters in a run */
+  uint8_t *src_end, *dest_start;
 
   dest_start = dest;
   src_end = src + src_size;
@@ -6821,13 +6822,13 @@ unsigned RleEncode(unsigned char *src, unsigned char *dest, unsigned src_size)
             src++;
             if ( src == src_end )
             {
-              *(unsigned short*) dest = count;
+              *(uint16_t*) dest = count;
               dest += 2;
             }
           }
           else
           {
-            *(unsigned short*) dest = count;
+            *(uint16_t*) dest = count;
             dest += 2;
             prevChar = 0xFF - *src;
             break;
@@ -6841,17 +6842,17 @@ unsigned RleEncode(unsigned char *src, unsigned char *dest, unsigned src_size)
   return dest - dest_start;
 }
 
-void RleDecode(unsigned char *src, unsigned char *dest, unsigned src_size)
+void RleDecode(uint8_t *src, uint8_t *dest, uint32_t src_size)
 {
-    unsigned char currChar, prevChar;             /* current and previous characters */
-    unsigned short count;                /* number of characters in a run */
-  unsigned char *src_end;
+    uint8_t currChar, prevChar;             /* current and previous characters */
+    uint16_t count;                /* number of characters in a run */
+  uint8_t *src_end;
 
   src_end = src + src_size;
 
     /* decode */
 
-    prevChar = 0xFF - *src;     /* force next char to be different */
+    prevChar = 0xFF - *src;     /* force next int8_t to be different */
 
     /* read input until there's nothing left */
 
@@ -6865,7 +6866,7 @@ void RleDecode(unsigned char *src, unsigned char *dest, unsigned src_size)
         if (currChar == prevChar)
         {
             /* we have a run.  write it out. */
-            count = *(unsigned short*) src;
+            count = *(uint16_t*) src;
             src += 2;
             while (count > 0)
             {
@@ -6873,7 +6874,7 @@ void RleDecode(unsigned char *src, unsigned char *dest, unsigned src_size)
               count--;
             }
 
-            prevChar = 0xFF - *src;     /* force next char to be different */
+            prevChar = 0xFF - *src;     /* force next int8_t to be different */
         }
         else
         {
@@ -6886,10 +6887,10 @@ void RleDecode(unsigned char *src, unsigned char *dest, unsigned src_size)
 
 /* expand a key (makes a rc4_key) */
 
-void prepare_key(unsigned char *keydata, unsigned len, struct rc4_key *key)
+void prepare_key(uint8_t *keydata, uint32_t len, struct rc4_key *key)
 {
-    unsigned index1, index2, counter;
-    unsigned char *state;
+    uint32_t index1, index2, counter;
+    uint8_t *state;
 
     state = key->state;
 
@@ -6912,10 +6913,10 @@ void prepare_key(unsigned char *keydata, unsigned len, struct rc4_key *key)
 
 /* reversible encryption, will encode a buffer updating the key */
 
-void rc4(unsigned char *buffer, unsigned len, struct rc4_key *key)
+void rc4(uint8_t *buffer, uint32_t len, struct rc4_key *key)
 {
-    unsigned x, y, xorIndex, counter;
-    unsigned char *state;
+    uint32_t x, y, xorIndex, counter;
+    uint8_t *state;
 
     /* get local copies */
     x = key->x; y = key->y;
@@ -6938,10 +6939,10 @@ void rc4(unsigned char *buffer, unsigned len, struct rc4_key *key)
     key->x = x; key->y = y;
 }
 
-void compressShipPacket ( ORANGE* ship, unsigned char* src, unsigned long src_size )
+void compressShipPacket ( ORANGE* ship, uint8_t* src, uint32_t src_size )
 {
-  unsigned char* dest;
-  unsigned long result;
+  uint8_t* dest;
+  uint32_t result;
 
   if (ship->shipSockfd >= 0)
   {
@@ -6978,10 +6979,10 @@ void compressShipPacket ( ORANGE* ship, unsigned char* src, unsigned long src_si
   }
 }
 
-void decompressShipPacket ( ORANGE* ship, unsigned char* dest, unsigned char* src )
+void decompressShipPacket ( ORANGE* ship, uint8_t* dest, uint8_t* src )
 {
-  unsigned src_size, dest_size;
-  unsigned char *srccpy;
+  uint32_t src_size, dest_size;
+  uint8_t *srccpy;
 
   if (ship->crypt_on)
   {

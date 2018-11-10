@@ -9,6 +9,7 @@
 /****************************************************************/
 
 
+#include  <stdint.h>
 #include  <stdio.h>
 #include  <string.h>
 #include  <time.h>
@@ -23,24 +24,24 @@
 ********************************************************/
 
 int
-main( int argc, char * argv[] )
+main( int32_t argc, int8_t * argv[] )
 {
-  char inputstr[255] = {0};
+  int8_t inputstr[255] = {0};
   MYSQL * myData;
-  char myQuery[255] = {0};
+  int8_t myQuery[255] = {0};
   MYSQL_ROW myRow ;
   MYSQL_RES * myResult;
-  int num_rows;
-  unsigned gc_num, slot;
+  int32_t num_rows;
+  uint32_t gc_num, slot;
 
-  char mySQL_Host[255] = {0};
-  char mySQL_Username[255] = {0};
-  char mySQL_Password[255] = {0};
-  char mySQL_Database[255] = {0};
-  unsigned int mySQL_Port;
-  int config_index = 0;
-  char config_data[255];
-  unsigned ch;
+  int8_t mySQL_Host[255] = {0};
+  int8_t mySQL_Username[255] = {0};
+  int8_t mySQL_Password[255] = {0};
+  int8_t mySQL_Database[255] = {0};
+  uint32_t mySQL_Port;
+  int32_t config_index = 0;
+  int8_t config_data[255];
+  uint32_t ch;
 
   FILE* fp;
   FILE* cf;

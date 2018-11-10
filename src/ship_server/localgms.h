@@ -16,19 +16,19 @@ This source is under no copyright.
 
 typedef struct st_localgm
 {
-    unsigned int guildcard;
-    int level;
+    uint32_t guildcard;
+    int32_t level;
 } LOCALGM;
 
 LOCALGM localgms[100];
-int localgmcount = -1;
-int localgmrights[11];
+int32_t localgmcount = -1;
+int32_t localgmrights[11];
 
-int readLocalGMFile()
+int32_t readLocalGMFile()
 {
     FILE* gmfile;
-    char inistring[512];
-    int i;
+    int8_t inistring[512];
+    int32_t i;
 
   printf( "Loading Local GMs and permissions..\n" );
 
@@ -75,7 +75,7 @@ int readLocalGMFile()
                         if ( inistring[0] != '#' && inistring[0] != ';' && inistring[0] != '[' )
                         {
 
-                            int index = atoi(strtok(inistring,","));
+                            int32_t index = atoi(strtok(inistring,","));
 
                             localgmrights[index] = atoi(strtok(NULL,","));
 
@@ -116,9 +116,9 @@ int readLocalGMFile()
 
 }
 
-int getbit( int value, int bit)
+int32_t getbit( int32_t value, int32_t bit)
 {
-    int mask = 1<<bit;
+    int32_t mask = 1<<bit;
 
     if((value&mask)>0)
     {
@@ -130,10 +130,10 @@ int getbit( int value, int bit)
     }
 }
 
-int playerHasRights( unsigned int guildcard, int command)
+int32_t playerHasRights( uint32_t guildcard, int32_t command)
 {
-    int i;
-    int rights = 0;
+    int32_t i;
+    int32_t rights = 0;
 
     //printf("Checking player %i's permission",guildcard);
     for(i = 0; i <= localgmcount; i++)
@@ -156,9 +156,9 @@ int playerHasRights( unsigned int guildcard, int command)
     }
 }
 
-int isLocalGM( unsigned int guildcard )
+int32_t isLocalGM( uint32_t guildcard )
 {
-    int i;
+    int32_t i;
     for(i = 0; i <= localgmcount; i++)
     {
         if( localgms[i].guildcard == guildcard )

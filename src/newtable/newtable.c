@@ -1,29 +1,30 @@
 /* random number functions */
 
+#include  <stdint.h>
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
 
 typedef struct st_pcrys
 {
-  unsigned tbl[18];
+  uint32_t tbl[18];
 } PCRYS;
 
 void main()
 {
   PCRYS pcrys;
   PCRYS* pcry;
-  unsigned value;
+  uint32_t value;
   FILE* fp;
   FILE* bp;
-  unsigned ch;
+  uint32_t ch;
 
   pcry = &pcrys;
   srand (time (0));
 
   fp = fopen ("bbtable.h","w");
   bp = fopen ("bbtable.bin", "wb");
-  fprintf (fp, "\n\nstatic const unsigned long bbtable[18+1024] =\n{\n");
+  fprintf (fp, "\n\nstatic const uint32_t bbtable[18+1024] =\n{\n");
   for (ch=0;ch<1024+18;ch++)
   {
     value = rand();

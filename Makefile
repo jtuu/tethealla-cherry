@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-I. -L/usr/lib/mysql -lmysqlclient -march=native -m32
+CFLAGS=-I. -L/usr/lib/mysql -lmysqlclient -march=native
 
 %.o: %.c
 	$(CC) -c -o $@ $< $(CFLAGS)

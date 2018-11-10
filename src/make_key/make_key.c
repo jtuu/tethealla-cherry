@@ -1,3 +1,4 @@
+#include  <stdint.h>
 #include  <stdio.h>
 #include  <stdlib.h>
 #include  <string.h>
@@ -10,12 +11,12 @@
 #define SHIP_COMPILED_MAX_CONNECTIONS 50
 
 typedef struct st_ship_data {
-  unsigned char rc4key[128];
-  unsigned idx;
+  uint8_t rc4key[128];
+  uint32_t idx;
 } L_SHIP_DATA;
 
-unsigned num_shipkeys = 0;
-unsigned ds;
+uint32_t num_shipkeys = 0;
+uint32_t ds;
 
 L_SHIP_DATA *ship_data[SHIP_COMPILED_MAX_CONNECTIONS];
 
@@ -25,10 +26,10 @@ L_SHIP_DATA *ship_data[SHIP_COMPILED_MAX_CONNECTIONS];
 
 #ifdef NO_SQL
 
-void UpdateDataFile ( const char* filename, unsigned count, void* data, unsigned record_size, int new_record )
+void UpdateDataFile ( const char* filename, uint32_t count, void* data, uint32_t record_size, int32_t new_record )
 {
   FILE* fp;
-  unsigned fs;
+  uint32_t fs;
 
   fp = fopen (filename, "r+b");
   if (fp)
@@ -57,10 +58,10 @@ void UpdateDataFile ( const char* filename, unsigned count, void* data, unsigned
   }
 }
 
-void LoadDataFile ( const char* filename, unsigned* count, void** data, unsigned record_size )
+void LoadDataFile ( const char* filename, unsigned* count, void** data, uint32_t record_size )
 {
   FILE* fp;
-  unsigned ch;
+  uint32_t ch;
 
   printf ("Loading \"%s\" ... ", filename);
   fp = fopen (filename, "rb");
@@ -86,26 +87,26 @@ void LoadDataFile ( const char* filename, unsigned* count, void** data, unsigned
 
 #endif
 
-int main()
+int32_t main()
 {
-  unsigned ch;
-  unsigned ship_index;
-  unsigned char ship_key[128];
-  char ship_string[512];
+  uint32_t ch;
+  uint32_t ship_index;
+  uint8_t ship_key[128];
+  int8_t ship_string[512];
   FILE* fp;
 #ifdef NO_SQL
-  unsigned highid = 0;
+  uint32_t highid = 0;
 #else
   MYSQL * myData;
 #endif
-  char myQuery[255] = {0};
-  char mySQL_Host[255] = {0};
-  char mySQL_Username[255] = {0};
-  char mySQL_Password[255] = {0};
-  char mySQL_Database[255] = {0};
-  unsigned int mySQL_Port;
-  int config_index = 0;
-  char config_data[255];
+  int8_t myQuery[255] = {0};
+  int8_t mySQL_Host[255] = {0};
+  int8_t mySQL_Username[255] = {0};
+  int8_t mySQL_Password[255] = {0};
+  int8_t mySQL_Database[255] = {0};
+  uint32_t mySQL_Port;
+  int32_t config_index = 0;
+  int8_t config_data[255];
 
 
   srand (time (0));

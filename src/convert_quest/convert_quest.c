@@ -1,17 +1,18 @@
+#include  <stdint.h>
 #include "stdio.h"
 #define _CRT_SECURE_NO_DEPRECATE
 #include "string.h"
 
-char convert_file_name[255];
-unsigned short packet_length;
+int8_t convert_file_name[255];
+uint16_t packet_length;
 FILE *fp;
 FILE *cp;
-char quest_file_name[0x10];
-unsigned quest_packet_size;
-int readOK;
-char packet_buffer [2048];
+int8_t quest_file_name[0x10];
+uint32_t quest_packet_size;
+int32_t readOK;
+int8_t packet_buffer [2048];
 
-int main(int argc, char *argv[])
+int32_t main(int argc, int8_t *argv[])
 {
   printf ("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
   printf ("Blue Burst .RAW Quest conversion tool v .123 written by Sodaboy\n");

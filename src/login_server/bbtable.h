@@ -1,6 +1,6 @@
 
 
-static const unsigned long bbtable[18+1024] =
+static const uint32_t bbtable[18+1024] =
 {
 0x640cded2,
 0xca6cf7cf,

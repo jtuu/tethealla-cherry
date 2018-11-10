@@ -8,6 +8,7 @@
 /*    07/22/2008  TC  First version...            */
 /****************************************************************/
 
+#include  <stdint.h>
 #include  <stdio.h>
 #include  <stdlib.h>
 #include  <string.h>
@@ -21,12 +22,12 @@
    carriage return.
  */
 void MDString (inString, outString)
-char *inString;
-char *outString;
+int8_t *inString;
+int8_t *outString;
 {
-  unsigned char c;
+  uint8_t c;
   MD5_CTX mdContext;
-  unsigned int len = strlen (inString);
+  uint32_t len = strlen (inString);
 
   MD5Init (&mdContext);
   MD5Update (&mdContext, inString, len);
@@ -38,10 +39,10 @@ char *outString;
   }
 }
 
-void UpdateDataFile ( const char* filename, unsigned count, void* data, unsigned record_size, int new_record )
+void UpdateDataFile ( const char* filename, uint32_t count, void* data, uint32_t record_size, int32_t new_record )
 {
   FILE* fp;
-  unsigned fs;
+  uint32_t fs;
 
   fp = fopen (filename, "r+b");
   if (fp)
@@ -70,10 +71,10 @@ void UpdateDataFile ( const char* filename, unsigned count, void* data, unsigned
   }
 }
 
-void LoadDataFile ( const char* filename, unsigned* count, void** data, unsigned record_size )
+void LoadDataFile ( const char* filename, unsigned* count, void** data, uint32_t record_size )
 {
   FILE* fp;
-  unsigned ch;
+  uint32_t ch;
 
   printf ("Loading \"%s\" ... ", filename);
   fp = fopen (filename, "rb");
@@ -105,36 +106,36 @@ void LoadDataFile ( const char* filename, unsigned* count, void** data, unsigned
 ********************************************************/
 
 int
-main( int argc, char * argv[] )
+main( int32_t argc, int8_t * argv[] )
 {
-  char inputstr[255] = {0};
-  char username[17];
-  char password[34];
-  char password_check[17];
-  char md5password[34] = {0};
-  char email[255];
-  char email_check[255];
-  unsigned char ch;
+  int8_t inputstr[255] = {0};
+  int8_t username[17];
+  int8_t password[34];
+  int8_t password_check[17];
+  int8_t md5password[34] = {0};
+  int8_t email[255];
+  int8_t email_check[255];
+  uint8_t ch;
   time_t regtime;
-  unsigned reg_seconds;
-  unsigned char max_fields;
+  uint32_t reg_seconds;
+  uint8_t max_fields;
 
   MYSQL * myData;
-  char myQuery[255] = {0};
+  int8_t myQuery[255] = {0};
   MYSQL_ROW myRow ;
   MYSQL_RES * myResult;
-  int num_rows, pw_ok, pw_same;
-  unsigned guildcard_number;
+  int32_t num_rows, pw_ok, pw_same;
+  uint32_t guildcard_number;
 
-  char mySQL_Host[255] = {0};
-  char mySQL_Username[255] = {0};
-  char mySQL_Password[255] = {0};
-  char mySQL_Database[255] = {0};
-  unsigned int mySQL_Port;
-  int config_index = 0;
-  char config_data[255];
+  int8_t mySQL_Host[255] = {0};
+  int8_t mySQL_Username[255] = {0};
+  int8_t mySQL_Password[255] = {0};
+  int8_t mySQL_Database[255] = {0};
+  uint32_t mySQL_Port;
+  int32_t config_index = 0;
+  int8_t config_data[255];
 
-  unsigned char MDBuffer[17] = {0};
+  uint8_t MDBuffer[17] = {0};
 
   FILE* fp;
 
@@ -339,7 +340,7 @@ main( int argc, char * argv[] )
   //printf ("New password = %s\n", password );
   MDString (&password[0], &MDBuffer[0] );
   for (ch=0;ch<16;ch++)
-    sprintf (&md5password[ch*2], "%02x", (unsigned char) MDBuffer[ch]);
+    sprintf (&md5password[ch*2], "%02x", (uint8_t) MDBuffer[ch]);
   md5password[32] = 0;
   if (!num_rows)
   {

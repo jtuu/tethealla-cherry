@@ -1,5 +1,6 @@
+#include  <stdint.h>
 #ifndef lint
-static char Rcs_Id[] =
+static int8_t Rcs_Id[] =
     "$Id: mtwist.c,v 1.20 2007/10/26 07:21:06 geoff Exp $";
 #endif
 
@@ -22,7 +23,7 @@ static char Rcs_Id[] =
  *  MT_NO_INLINE  should be defined if the compiler doesn't support
  *      the "inline" keyword.
  *  MT_NO_LONGLONG  should be defined if the compiler doesn't support a
- *      "long long" type for 64-bit integers
+ *      "int64_t" type for 64-bit integers
  *  MT_MACHINE_BITS must be either 32 or 64, reflecting the natural
  *      size of the processor registers.  If undefined, it
  *      will default to 32.
@@ -127,7 +128,7 @@ static char Rcs_Id[] =
  * them by the appropriate value to scale them, and then add them as
  * doubles.  I suspect the reason is that there is no instruction to
  * convert a 64-bit value directly to a double, so the work of building
- * the long long (which isn't easy anyway, without assembly access) is
+ * the int64_t (which isn't easy anyway, without assembly access) is
  * worse than wasted.  So add support for MT_MACHINE_BITS, and only go
  * the via-long-long route on a true 64-bit machine.
  *
@@ -136,7 +137,7 @@ static char Rcs_Id[] =
  * macros for the guts of the PRNG code.  Take advantage of the
  * conversion to get rid of unnecessary calls initialization tests.  Also
  * clean up the generation of long-double pseudorandom numbers on
- * machines that have the long long type (by converting first to a long
+ * machines that have the int64_t type (by converting first to a long
  * long, then to a double, saving one floating-point operation).  The
  * latter change might be a mistake on 32-bit machines.  The code is now
  * much faster as a result of macro-izing.
@@ -182,9 +183,9 @@ static char Rcs_Id[] =
  */
 void      mts_mark_initialized(mt_state* state);
           /* Mark a PRNG state as initialized */
-void      mts_seed32(mt_state* state, unsigned long seed);
+void      mts_seed32(mt_state* state, uint32_t seed);
           /* Set random seed for any generator */
-void      mts_seed32new(mt_state* state, unsigned long seed);
+void      mts_seed32new(mt_state* state, uint32_t seed);
           /* Set random seed for any generator */
 void      mts_seedfull(mt_state* state,
         mt_u32bit_t seeds[MT_STATE_SIZE]);
@@ -201,14 +202,14 @@ void      mts_bestseed(mt_state* state);
           /* ..input (can be *very* slow) */
 void      mts_refresh(mt_state* state);
           /* Generate 624 more random values */
-int     mts_savestate(FILE* statefile, mt_state* state);
+int32_t     mts_savestate(FILE* statefile, mt_state* state);
           /* Save state to a file (ASCII) */
-int     mts_loadstate(FILE* statefile, mt_state* state);
+int32_t     mts_loadstate(FILE* statefile, mt_state* state);
           /* Load state from a file (ASCII) */
 
-void      mt_seed32(unsigned long seed);
+void      mt_seed32(uint32_t seed);
           /* Set random seed for default gen. */
-void      mt_seed32new(unsigned long seed);
+void      mt_seed32new(uint32_t seed);
           /* Set random seed for default gen. */
 void      mt_seedfull(mt_u32bit_t seeds[MT_STATE_SIZE]);
           /* Set complicated seed for default */
@@ -222,9 +223,9 @@ void      mt_bestseed(void);
 extern mt_state*  mt_getstate(void);
           /* Get current state of default */
           /* ..generator */
-int     mt_savestate(FILE* statefile);
+int32_t     mt_savestate(FILE* statefile);
           /* Save state to a file (ASCII) */
-int     mt_loadstate(FILE* statefile);
+int32_t     mt_loadstate(FILE* statefile);
           /* Load state from a file (ASCII) */
 
 
@@ -324,9 +325,9 @@ mt_state    mt_default_state;
  * result.
  */
 double      mt_32_to_double;
-          /* Multiplier to convert long to dbl */
+          /* Multiplier to convert int32_t to dbl */
 double      mt_64_to_double;
-          /* Mult'r to cvt long long to dbl */
+          /* Mult'r to cvt int64_t to dbl */
 
 /*
  * In the recurrence relation, the new value is XORed with MATRIX_A only if
@@ -351,7 +352,7 @@ static mt_u32bit_t  matrix_decider[2] =
 void mts_mark_initialized(
     mt_state*   state)    /* State vector to mark initialized */
     {
-    int     i;    /* Power of 2 being calculated */
+    int32_t     i;    /* Power of 2 being calculated */
 
     /*
      * Figure out the proper multiplier for long-to-double conversion.  We
@@ -387,9 +388,9 @@ void mts_mark_initialized(
  */
 void mts_seed32(
     mt_state*   state,    /* State vector to initialize */
-    unsigned long seed)   /* 32-bit seed to start from */
+    uint32_t seed)   /* 32-bit seed to start from */
     {
-    int     i;    /* Loop index */
+    int32_t     i;    /* Loop index */
 
     if (seed == 0)
   seed = DEFAULT_SEED32_OLD;
@@ -423,9 +424,9 @@ void mts_seed32(
  */
 void mts_seed32new(
     mt_state*   state,    /* State vector to initialize */
-    unsigned long seed)   /* 32-bit seed to start from */
+    uint32_t seed)   /* 32-bit seed to start from */
     {
-    int     i;    /* Loop index */
+    int32_t     i;    /* Loop index */
     mt_u32bit_t   nextval;  /* Next value being calculated */
 
     /*
@@ -477,8 +478,8 @@ void mts_seedfull(
     mt_u32bit_t   seeds[MT_STATE_SIZE])
           /* Seed array to start from */
     {
-    int     had_nz = 0; /* NZ if at least one NZ seen */
-    int     i;    /* Loop index */
+    int32_t     had_nz = 0; /* NZ if at least one NZ seen */
+    int32_t     i;    /* Loop index */
 
     for (i = 0;  i < MT_STATE_SIZE;  i++)
         {
@@ -537,16 +538,16 @@ static void mts_devseed(
     mt_state*   state,    /* State vector to seed */
     char*   seed_dev) /* Device to seed from */
     {
-    int     bytesread;  /* Byte count read from device */
-    int     nextbyte; /* Index of next byte to read */
+    int32_t     bytesread;  /* Byte count read from device */
+    int32_t     nextbyte; /* Index of next byte to read */
     FILE*   ranfile;  /* Access to device */
     union
   {
-  char    ranbuffer[sizeof (unsigned long)];
-          /* Space for reading random int */
-  unsigned long randomvalue;  /* Random value for initialization */
+  int8_t    ranbuffer[sizeof (uint32_t)];
+          /* Space for reading random int32_t */
+  uint32_t randomvalue;  /* Random value for initialization */
   }
-      randomunion;  /* Union for reading random int */
+      randomunion;  /* Union for reading random int32_t */
 #ifdef WIN32
     struct _timeb tb;   /* Time of day (Windows mode) */
 #else /* WIN32 */
@@ -600,7 +601,7 @@ static void mts_devseed(
  * Choose a seed based on the best random input available.  Prefers
  * /dev/random as a source of random numbers, and reads the entire
  * 624-long state from that device.  Because of this approach, the
- * function can take a long time (in real time) to complete, since
+ * function can take a int32_t time (in real time) to complete, since
  * /dev/random may have to wait quite a while before it can provide
  * that much randomness.  If /dev/random is unavailable, falls back to
  * calling mts_goodseed.
@@ -608,8 +609,8 @@ static void mts_devseed(
 void mts_bestseed(
     mt_state*   state)    /* State vector to seed */
     {
-    int     bytesread;  /* Byte count read from device */
-    int     nextbyte; /* Index of next byte to read */
+    int32_t     bytesread;  /* Byte count read from device */
+    int32_t     nextbyte; /* Index of next byte to read */
     FILE*   ranfile;  /* Access to device */
 
     ranfile = fopen("/dev/random", "rb");
@@ -647,7 +648,7 @@ void mts_bestseed(
 void mts_refresh(
     register mt_state*  state)    /* State for the PRNG */
     {
-    register int  i;    /* Index into the state */
+    register int32_t  i;    /* Index into the state */
     register mt_u32bit_t*
       state_ptr;  /* Next place to get from state */
     register mt_u32bit_t
@@ -805,14 +806,14 @@ void mts_refresh(
 /*
  * Save state to a file.  The save format is compatible with Richard
  * J. Wagner's format, although the details are different.  Returns NZ
- * if the save succeeded.  Produces one very long line containing 625
+ * if the save succeeded.  Produces one very int32_t line containing 625
  * numbers.
  */
-int mts_savestate(
+int32_t mts_savestate(
     FILE*   statefile,  /* File to save to */
     mt_state*   state)    /* State to be saved */
     {
-    int     i;    /* Next word to save */
+    int32_t     i;    /* Next word to save */
 
     if (!state->initialized)
   mts_seed32(state, DEFAULT_SEED32_OLD);
@@ -832,11 +833,11 @@ int mts_savestate(
 /*
  * Load state from a file.  Returns NZ if the load succeeded.
  */
-int mts_loadstate(
+int32_t mts_loadstate(
     FILE*   statefile,  /* File to load from */
     mt_state*   state)    /* State to be loaded */
     {
-    int     i;    /* Next word to load */
+    int32_t     i;    /* Next word to load */
 
     /*
      * Set the state to "uninitialized" in case the load fails.
@@ -873,7 +874,7 @@ int mts_loadstate(
  * See mts_seed32 for full commentary.
  */
 void mt_seed32(
-    unsigned long seed)   /* 32-bit seed to start from */
+    uint32_t seed)   /* 32-bit seed to start from */
     {
     mts_seed32(&mt_default_state, seed);
     }
@@ -884,7 +885,7 @@ void mt_seed32(
  * See mts_seed32new for full commentary.
  */
 void mt_seed32new(
-    unsigned long seed)   /* 32-bit seed to start from */
+    uint32_t seed)   /* 32-bit seed to start from */
     {
     mts_seed32new(&mt_default_state, seed);
     }
@@ -939,7 +940,7 @@ extern mt_state* mt_getstate()
  * Save state to a file.  The save format is compatible with Richard
  * J. Wagner's format, although the details are different.
  */
-int mt_savestate(
+int32_t mt_savestate(
     FILE*   statefile)  /* File to save to */
     {
     return mts_savestate(statefile, &mt_default_state);
@@ -948,7 +949,7 @@ int mt_savestate(
 /*
  * Load state from a file.
  */
-int mt_loadstate(
+int32_t mt_loadstate(
     FILE*   statefile)  /* File to load from */
     {
     return mts_loadstate(statefile, &mt_default_state);

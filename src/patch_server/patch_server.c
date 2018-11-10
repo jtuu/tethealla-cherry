@@ -15,6 +15,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************/
 
+#include  <stdint.h>
 #include  <stdarg.h>
 #include  <stdio.h>
 #include  <stdlib.h>
@@ -32,14 +33,14 @@
 
 // Encryption data struct
 typedef struct {
-    unsigned long keys[1042]; // encryption stream
-    unsigned long pc_posn; // PSOPC crypt position
+    uint32_t keys[1042]; // encryption stream
+    uint32_t pc_posn; // PSOPC crypt position
 } CRYPT_SETUP;
 
-unsigned long CRYPT_PC_GetNextKey(CRYPT_SETUP*);
+uint32_t CRYPT_PC_GetNextKey(CRYPT_SETUP*);
 void CRYPT_PC_MixKeys(CRYPT_SETUP*);
-void CRYPT_PC_CreateKeys(CRYPT_SETUP*,unsigned long);
-void CRYPT_PC_CryptData(CRYPT_SETUP*,void*,unsigned long);
+void CRYPT_PC_CreateKeys(CRYPT_SETUP*,uint32_t);
+void CRYPT_PC_CryptData(CRYPT_SETUP*,void*,uint32_t);
 
 #define MAX_PATCHES 4096
 #define PATCH_COMPILED_MAX_CONNECTIONS 300
@@ -62,9 +63,9 @@ void CRYPT_PC_CryptData(CRYPT_SETUP*,void*,unsigned long);
 void strupr(char * temp) {
 
   // Convert to upper case
-  char *s = temp;
+  int8_t *s = temp;
   while (*s) {
-    *s = toupper((unsigned char) *s);
+    *s = toupper((uint8_t) *s);
     s++;
   }
 
@@ -78,17 +79,17 @@ void strupr(char * temp) {
 /* functions */
 
 void send_to_server(int sock, char* packet);
-int receive_from_server(int sock, char* packet);
+int32_t receive_from_server(int sock, char* packet);
 void debug(char *fmt, ...);
 void debug_perror(char * msg);
 void tcp_listen (int sockfd);
-int tcp_accept (int sockfd, struct sockaddr *client_addr, int *addr_len );
-int tcp_sock_connect(char* dest_addr, int port);
-int tcp_sock_open(struct in_addr ip, int port);
+int32_t tcp_accept (int sockfd, struct sockaddr *client_addr, int32_t *addr_len );
+int32_t tcp_sock_connect(char* dest_addr, int32_t port);
+int32_t tcp_sock_open(struct in_addr ip, int32_t port);
 
 /* "Welcome" Packet */
 
-unsigned char Packet02[] = {
+uint8_t Packet02[] = {
   0x4C, 0x00, 0x02, 0x00, 0x50, 0x61, 0x74, 0x63, 0x68, 0x20, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72,
   0x2E, 0x20, 0x43, 0x6F, 0x70, 0x79, 0x72, 0x69, 0x67, 0x68, 0x74, 0x20, 0x53, 0x6F, 0x6E, 0x69,
   0x63, 0x54, 0x65, 0x61, 0x6D, 0x2C, 0x20, 0x4C, 0x54, 0x44, 0x2E, 0x20, 0x32, 0x30, 0x30, 0x31,
@@ -96,7 +97,7 @@ unsigned char Packet02[] = {
   0x00, 0x00, 0x00, 0x00, 0x2D, 0x69, 0x06, 0x9E, 0xDC, 0xE0, 0x6F, 0xCA
 };
 
-const unsigned char Message02[] = { "Tethealla Patch" };
+const uint8_t Message02[] = { "Tethealla Patch" };
 
 /* String sent to server to retrieve IP address. */
 
@@ -104,97 +105,97 @@ char* HTTP_REQ = "GET http://www.pioneer2.net/remote.php HTTP/1.0\r\n\r\n\r\n";
 
 /* Populated by load_config_file(): */
 
-unsigned char serverIP[4];
-unsigned short serverPort;
-int override_on = 0;
-unsigned char overrideIP[4];
-unsigned short serverMaxConnections;
-unsigned serverNumConnections = 0;
-unsigned serverConnectionList[PATCH_COMPILED_MAX_CONNECTIONS]; // One patch, one data.
+uint8_t serverIP[4];
+uint16_t serverPort;
+int32_t override_on = 0;
+uint8_t overrideIP[4];
+uint16_t serverMaxConnections;
+uint32_t serverNumConnections = 0;
+uint32_t serverConnectionList[PATCH_COMPILED_MAX_CONNECTIONS]; // One patch, one data.
 
-char Welcome_Message[4096] = {0};
-unsigned short Welcome_Message_Size = 0;
+int8_t Welcome_Message[4096] = {0};
+uint16_t Welcome_Message_Size = 0;
 time_t servertime;
 time_t sendtime;
-int maxbytes  = 0;
+int32_t maxbytes  = 0;
 
 /* Client Structure */
 
 typedef struct st_patch_data {
-  unsigned file_size;
-  unsigned checksum;
-  char full_file_name[PATH_MAX+48];
-  char file_name[48];
-  char folder[PATH_MAX];
-  unsigned char patch_folders[128]; // Command to get to the folder this file resides in...
-  unsigned patch_folders_size;
-  unsigned patch_steps; // How many steps from the root folder this file is...
+  uint32_t file_size;
+  uint32_t checksum;
+  int8_t full_file_name[PATH_MAX+48];
+  int8_t file_name[48];
+  int8_t folder[PATH_MAX];
+  uint8_t patch_folders[128]; // Command to get to the folder this file resides in...
+  uint32_t patch_folders_size;
+  uint32_t patch_steps; // How many steps from the root folder this file is...
 } patch_data;
 
 typedef struct st_client_data {
-  unsigned file_size;
-  unsigned checksum;
+  uint32_t file_size;
+  uint32_t checksum;
 } client_data;
 
 typedef struct st_banana {
-  int patch;
-  int plySockfd;
-  unsigned char peekbuf[8];
-  unsigned char rcvbuf [TCP_BUFFER_SIZE];
-  unsigned short rcvread;
-  unsigned short expect;
-  unsigned char decryptbuf [TCP_BUFFER_SIZE];
-  unsigned char sndbuf [TCP_BUFFER_SIZE];
-  unsigned char encryptbuf [TCP_BUFFER_SIZE];
-  int snddata,
+  int32_t patch;
+  int32_t plySockfd;
+  uint8_t peekbuf[8];
+  uint8_t rcvbuf [TCP_BUFFER_SIZE];
+  uint16_t rcvread;
+  uint16_t expect;
+  uint8_t decryptbuf [TCP_BUFFER_SIZE];
+  uint8_t sndbuf [TCP_BUFFER_SIZE];
+  uint8_t encryptbuf [TCP_BUFFER_SIZE];
+  int32_t snddata,
     sndwritten;
-  unsigned char packet [TCP_BUFFER_SIZE];
-  unsigned short packetdata;
-  unsigned short packetread;
-  int crypt_on;
+  uint8_t packet [TCP_BUFFER_SIZE];
+  uint16_t packetdata;
+  uint16_t packetread;
+  int32_t crypt_on;
   CRYPT_SETUP server_cipher, client_cipher;
   client_data p_data[MAX_PATCHES];
-  int sending_files;
-  unsigned files_to_send;
-  unsigned bytes_to_send;
-  unsigned s_data[MAX_PATCHES];
-  char username[17];
-  unsigned current_file;
-  unsigned cfile_index;
-  unsigned lastTick;    // The last second
-  unsigned toBytesSec;  // How many bytes per second the server sends to the client
-  unsigned fromBytesSec;  // How many bytes per second the server receives from the client
-  unsigned packetsSec;  // How many packets per second the server receives from the client
-  unsigned connected;
-  unsigned char sendCheck[MAX_SENDCHECK+2];
-  int todc;
-  char patch_folder[PATH_MAX];
-  unsigned patch_steps;
-  unsigned chunk;
-  unsigned char IP_Address[16];
-  unsigned connection_index;
+  int32_t sending_files;
+  uint32_t files_to_send;
+  uint32_t bytes_to_send;
+  uint32_t s_data[MAX_PATCHES];
+  int8_t username[17];
+  uint32_t current_file;
+  uint32_t cfile_index;
+  uint32_t lastTick;    // The last second
+  uint32_t toBytesSec;  // How many bytes per second the server sends to the client
+  uint32_t fromBytesSec;  // How many bytes per second the server receives from the client
+  uint32_t packetsSec;  // How many packets per second the server receives from the client
+  uint32_t connected;
+  uint8_t sendCheck[MAX_SENDCHECK+2];
+  int32_t todc;
+  int8_t patch_folder[PATH_MAX];
+  uint32_t patch_steps;
+  uint32_t chunk;
+  uint8_t IP_Address[16];
+  uint32_t connection_index;
 } BANANA;
 
 fd_set ReadFDs, WriteFDs, ExceptFDs;
 
 #define MAX_SIMULTANEOUS_CONNECTIONS 6
 
-unsigned char dp[TCP_BUFFER_SIZE*4];
-char PacketData[TCP_BUFFER_SIZE];
+uint8_t dp[TCP_BUFFER_SIZE*4];
+int8_t PacketData[TCP_BUFFER_SIZE];
 
-unsigned char patch_packet[TCP_BUFFER_SIZE];
-unsigned patch_size = 0;
+uint8_t patch_packet[TCP_BUFFER_SIZE];
+uint32_t patch_size = 0;
 patch_data s_data[MAX_PATCHES];
-unsigned serverNumPatches = 0;
+uint32_t serverNumPatches = 0;
 
-void decryptcopy ( void* dest, void* source, unsigned size );
-void encryptcopy ( BANANA* client, void* source, unsigned size );
+void decryptcopy ( void* dest, void* source, uint32_t size );
+void encryptcopy ( BANANA* client, void* source, uint32_t size );
 
 CRYPT_SETUP *cipher_ptr;
 
-void display_packet ( unsigned char* buf, int len )
+void display_packet ( uint8_t* buf, int32_t len )
 {
-  int c, c2, c3, c4;
+  int32_t c, c2, c3, c4;
 
   c = c2 = c3 = c4 = 0;
 
@@ -243,10 +244,10 @@ void display_packet ( unsigned char* buf, int len )
   printf ("%s\n\n", &dp[0]);
 }
 
-void convertIPString (char* IPData, unsigned IPLen, int fromConfig )
+void convertIPString (char* IPData, uint32_t IPLen, int32_t fromConfig )
 {
-  unsigned p,p2,p3;
-  char convert_buffer[5];
+  uint32_t p,p2,p3;
+  int8_t convert_buffer[5];
 
   p2 = 0;
   p3 = 0;
@@ -286,12 +287,12 @@ void convertIPString (char* IPData, unsigned IPLen, int fromConfig )
   }
 }
 
-long CalculateChecksum(void* data,unsigned long size)
+int32_t CalculateChecksum(void* data,uint32_t size)
 {
-    long offset,y,cs = 0xFFFFFFFF;
+    int32_t offset,y,cs = 0xFFFFFFFF;
     for (offset = 0; offset < (long)size; offset++)
     {
-        cs ^= *(unsigned char*)((long)data + offset);
+        cs ^= *(uint8_t*)((long)data + offset);
         for (y = 0; y < 8; y++)
         {
             if (!(cs & 1)) cs = (cs >> 1) & 0x7FFFFFFF;
@@ -304,9 +305,9 @@ long CalculateChecksum(void* data,unsigned long size)
 
 void load_config_file()
 {
-  int config_index = 0;
-  char config_data[255];
-  unsigned ch;
+  int32_t config_index = 0;
+  int8_t config_data[255];
+  uint32_t ch;
 
   FILE* fp;
 
@@ -356,8 +357,8 @@ void load_config_file()
             {
               struct sockaddr_in pn_in;
               struct hostent *pn_host;
-              int pn_sockfd, pn_len;
-              char pn_buf[512];
+              int32_t pn_sockfd, pn_len;
+              int8_t pn_buf[512];
               char* pn_ipdata;
 
               printf ("\n** Determining IP address ... ");
@@ -494,12 +495,12 @@ void load_config_file()
 BANANA * connections[PATCH_COMPILED_MAX_CONNECTIONS];
 BANANA * workConnect;
 
-const char serverName[] = { "T\0E\0T\0H\0E\0A\0L\0L\0A\0" };
+const int8_t serverName[] = { "T\0E\0T\0H\0E\0A\0L\0L\0A\0" };
 
 
-unsigned free_connection()
+uint32_t free_connection()
 {
-  unsigned fc;
+  uint32_t fc;
   BANANA* wc;
 
   for (fc=0;fc<serverMaxConnections;fc++)
@@ -514,7 +515,7 @@ unsigned free_connection()
 
 void initialize_connection (BANANA* connect)
 {
-  unsigned ch, ch2;
+  uint32_t ch, ch2;
 
   if (connect->plySockfd >= 0)
   {
@@ -536,7 +537,7 @@ void initialize_connection (BANANA* connect)
 
 void start_encryption(BANANA* connect)
 {
-  unsigned c, c3, c4, connectNum;
+  uint32_t c, c3, c4, connectNum;
   BANANA *workConnect, *c5;
 
   // Limit the number of connections from an IP address to MAX_SIMULTANEOUS_CONNECTIONS.
@@ -581,7 +582,7 @@ void start_encryption(BANANA* connect)
   }
   memcpy (&connect->sndbuf[0], &Packet02[0], sizeof (Packet02));
   for (c=0;c<8;c++)
-    connect->sndbuf[0x44+c] = (unsigned char) rand() % 255;
+    connect->sndbuf[0x44+c] = (uint8_t) rand() % 255;
   connect->snddata += sizeof (Packet02);
 
   memcpy (&c, &connect->sndbuf[0x44], 4);
@@ -597,7 +598,7 @@ void change_client_folder (unsigned patchNum, BANANA* client);
 
 void Send11 (BANANA* client)
 {
-  unsigned ch;
+  uint32_t ch;
 
   client->sendCheck[RECEIVE_PACKET_10] = 1;
 
@@ -654,8 +655,8 @@ void Send0B (BANANA* client)
 
 void Send13 (BANANA* client)
 {
-  unsigned short Welcome_Size;
-  unsigned char port[2];
+  uint16_t Welcome_Size;
+  uint8_t port[2];
 
   Welcome_Size = Welcome_Message_Size + 4;
   memcpy (&client->encryptbuf[0x04], &Welcome_Message[0], Welcome_Message_Size);
@@ -683,7 +684,7 @@ void Send13 (BANANA* client)
 
 void DataProcessPacket (BANANA* client)
 {
-  unsigned patch_index;
+  uint32_t patch_index;
 
   switch (client->decryptbuf[0x02])
   {
@@ -741,17 +742,17 @@ void PatchProcessPacket (BANANA* client)
   }
 }
 
-char patch_folder[PATH_MAX] = {0};
-unsigned patch_steps = 0;
-int now_folder = -1;
+int8_t patch_folder[PATH_MAX] = {0};
+uint32_t patch_steps = 0;
+int32_t now_folder = -1;
 
 // FIXME: Redo with linux stuff
 //int scandir(char *path, BOOL recursive);
-int fixpath(char *inpath, char *outpath);
+int32_t fixpath(char *inpath, int8_t *outpath);
 
 void change_client_folder (unsigned patchNum, BANANA* client)
 {
-  unsigned ch, ch2, ch3;
+  uint32_t ch, ch2, ch3;
 
   if (strcmp(&client->patch_folder[0], &s_data[patchNum].folder[0]) != 0)
   {
@@ -804,7 +805,7 @@ void change_client_folder (unsigned patchNum, BANANA* client)
 
 void change_patch_folder (unsigned patchNum)
 {
-  unsigned ch, ch2, ch3;
+  uint32_t ch, ch2, ch3;
 
   if (strcmp(&patch_folder[0], &s_data[patchNum].folder[0]) != 0)
   {
@@ -846,15 +847,15 @@ void change_patch_folder (unsigned patchNum)
 
 //TODO: Redo with linux stuff
 /*
-int scandir(char *_path,BOOL recursive)
+int32_t scandir(char *_path,BOOL recursive)
 {
   HANDLE fh;
-  char   path[PATH_MAX];
-  char   tmppath[PATH_MAX];
+  int8_t   path[PATH_MAX];
+  int8_t   tmppath[PATH_MAX];
   WIN32_FIND_DATA *fd;
   void *pd;
   FILE* pf;
-  unsigned f_size, f_checksum, ch, ch2, ch3;
+  uint32_t f_size, f_checksum, ch, ch2, ch3;
 
   now_folder ++;
 
@@ -955,9 +956,9 @@ int scandir(char *_path,BOOL recursive)
   return 1;
 }
 */
-int fixpath(char *inpath, char *outpath)
+int32_t fixpath(char *inpath, int8_t *outpath)
 {
-  int   n=0;
+  int32_t   n=0;
 
   strcpy(outpath,inpath);
 
@@ -979,27 +980,27 @@ int fixpath(char *inpath, char *outpath)
 **
 ********************************************************/
 
-int main( int argc, char * argv[] )
+int32_t main( int32_t argc, int8_t * argv[] )
 {
-  unsigned ch,ch2;
+  uint32_t ch,ch2;
   struct in_addr patch_in;
   struct in_addr data_in;
   struct sockaddr_in listen_in;
-  unsigned listen_length;
-  int patch_sockfd = -1, data_sockfd;
-  int pkt_len, pkt_c, bytes_sent;
-  unsigned short this_packet;
-  unsigned short *w;
-  unsigned short *w2;
-  unsigned num_sends = 0;
+  uint32_t listen_length;
+  int32_t patch_sockfd = -1, data_sockfd;
+  int32_t pkt_len, pkt_c, bytes_sent;
+  uint16_t this_packet;
+  uint16_t *w;
+  uint16_t *w2;
+  uint32_t num_sends = 0;
   patch_data *pd;
 
   FILE* fp;
   //int wserror;
-  unsigned char tmprcv[TCP_BUFFER_SIZE];
-  unsigned connectNum;
-  unsigned to_send, checksum;
-  int data_send, data_remaining;
+  uint8_t tmprcv[TCP_BUFFER_SIZE];
+  uint32_t connectNum;
+  uint32_t to_send, checksum;
+  int32_t data_send, data_remaining;
 
   dp[0] = 0;
 
@@ -1100,8 +1101,8 @@ int main( int argc, char * argv[] )
   fread (&PacketData[0], 1, ch, fp );
   fclose ( fp );
 
-  w  = (unsigned short*) &PacketData[0];
-  w2 = (unsigned short*) &Welcome_Message[0];
+  w  = (uint16_t*) &PacketData[0];
+  w2 = (uint16_t*) &Welcome_Message[0];
   Welcome_Message_Size = 0;
   for ( ch2 = 0; ch2 < ch; ch2 += 2 )
   {
@@ -1161,7 +1162,7 @@ int main( int argc, char * argv[] )
 
   for (;;)
   {
-    int nfds = 0;
+    int32_t nfds = 0;
 
     /* Ping pong?! */
 
@@ -1502,7 +1503,7 @@ int main( int argc, char * argv[] )
 
 void send_to_server(int sock, char* packet)
 {
- int pktlen;
+ int32_t pktlen;
 
  pktlen = strlen (packet);
 
@@ -1514,9 +1515,9 @@ void send_to_server(int sock, char* packet)
 
 }
 
-int receive_from_server(int sock, char* packet)
+int32_t receive_from_server(int sock, char* packet)
 {
- int pktlen;
+ int32_t pktlen;
 
   if ((pktlen = recv(sock, packet, TCP_BUFFER_SIZE - 1, 0)) <= 0)
   {
@@ -1536,9 +1537,9 @@ void tcp_listen (int sockfd)
   }
 }
 
-int tcp_accept (int sockfd, struct sockaddr *client_addr, int *addr_len )
+int32_t tcp_accept (int sockfd, struct sockaddr *client_addr, int32_t *addr_len )
 {
-  int fd;
+  int32_t fd;
 
   if ((fd = accept (sockfd, client_addr, addr_len)) < 0)
     debug_perror ("Could not accept connection");
@@ -1546,9 +1547,9 @@ int tcp_accept (int sockfd, struct sockaddr *client_addr, int *addr_len )
   return (fd);
 }
 
-int tcp_sock_connect(char* dest_addr, int port)
+int32_t tcp_sock_connect(char* dest_addr, int32_t port)
 {
-  int fd;
+  int32_t fd;
   struct sockaddr_in sa;
 
   /* Clear it out */
@@ -1565,7 +1566,7 @@ int tcp_sock_connect(char* dest_addr, int port)
     memset (&sa, 0, sizeof(sa));
     sa.sin_family = AF_INET;
     sa.sin_addr.s_addr = inet_addr (dest_addr);
-    sa.sin_port = htons((unsigned short) port);
+    sa.sin_port = htons((uint16_t) port);
 
     if (connect(fd, (struct sockaddr*) &sa, sizeof(sa)) < 0)
       debug_perror("Could not make TCP connection");
@@ -1576,9 +1577,9 @@ int tcp_sock_connect(char* dest_addr, int port)
 }
 
 /*****************************************************************************/
-int tcp_sock_open(struct in_addr ip, int port)
+int32_t tcp_sock_open(struct in_addr ip, int32_t port)
 {
-  int fd, turn_on_option_flag = 1, rcSockopt;
+  int32_t fd, turn_on_option_flag = 1, rcSockopt;
 
   struct sockaddr_in sa;
 
@@ -1595,7 +1596,7 @@ int tcp_sock_open(struct in_addr ip, int port)
 
   sa.sin_family = AF_INET;
   memcpy((void *)&sa.sin_addr, (void *)&ip, sizeof(struct in_addr));
-  sa.sin_port = htons((unsigned short) port);
+  sa.sin_port = htons((uint16_t) port);
 
   /* Reuse port (ICS?) */
 
@@ -1623,7 +1624,7 @@ void debug(char *fmt, ...)
 #define MAX_MESG_LEN 1024
 
   va_list args;
-  char text[ MAX_MESG_LEN ];
+  int8_t text[ MAX_MESG_LEN ];
 
   va_start (args, fmt);
   strcpy (text + vsprintf( text,fmt,args), "\r\n");
@@ -1635,7 +1636,7 @@ void debug(char *fmt, ...)
 
 void CRYPT_PC_MixKeys(CRYPT_SETUP* pc)
 {
-    unsigned long esi,edi,eax,ebp,edx;
+    uint32_t esi,edi,eax,ebp,edx;
     edi = 1;
     edx = 0x18;
     eax = edi;
@@ -1662,9 +1663,9 @@ void CRYPT_PC_MixKeys(CRYPT_SETUP* pc)
     }
 }
 
-void CRYPT_PC_CreateKeys(CRYPT_SETUP* pc,unsigned long val)
+void CRYPT_PC_CreateKeys(CRYPT_SETUP* pc,uint32_t val)
 {
-    unsigned long esi,ebx,edi,eax,edx,var1;
+    uint32_t esi,ebx,edi,eax,edx,var1;
     esi = 1;
     ebx = val;
     edi = 0x15;
@@ -1688,9 +1689,9 @@ void CRYPT_PC_CreateKeys(CRYPT_SETUP* pc,unsigned long val)
     pc->pc_posn = 56;
 }
 
-unsigned long CRYPT_PC_GetNextKey(CRYPT_SETUP* pc)
+uint32_t CRYPT_PC_GetNextKey(CRYPT_SETUP* pc)
 {
-    unsigned long re;
+    uint32_t re;
     if (pc->pc_posn == 56)
     {
         CRYPT_PC_MixKeys(pc);
@@ -1701,21 +1702,21 @@ unsigned long CRYPT_PC_GetNextKey(CRYPT_SETUP* pc)
     return re;
 }
 
-void CRYPT_PC_CryptData(CRYPT_SETUP* pc,void* data,unsigned long size)
+void CRYPT_PC_CryptData(CRYPT_SETUP* pc,void* data,uint32_t size)
 {
-    unsigned long x;
-    for (x = 0; x < size; x += 4) *(unsigned long*)((unsigned long)data + x) ^= CRYPT_PC_GetNextKey(pc);
+    uint32_t x;
+    for (x = 0; x < size; x += 4) *(uint32_t*)((uint32_t*)data + x) ^= CRYPT_PC_GetNextKey(pc);
 }
 
-void decryptcopy ( void* dest, void* source, unsigned size )
+void decryptcopy ( void* dest, void* source, uint32_t size )
 {
   CRYPT_PC_CryptData(cipher_ptr,source,size);
   memcpy (dest,source,size);
 }
 
-void encryptcopy ( BANANA* client, void* source, unsigned size )
+void encryptcopy ( BANANA* client, void* source, uint32_t size )
 {
-  unsigned char* dest;
+  uint8_t* dest;
 
   if (TCP_BUFFER_SIZE - client->snddata < ( (int) size + 7 ) )
     client->todc = 1;

@@ -72,6 +72,7 @@
 #define MALE_FLAG 64  // Bit 7
 #define FEMALE_FLAG 128 // Bit 8
 
+#include  <stdint.h>
 #include  <stdio.h>
 #include  <stdlib.h>
 #include  <string.h>
@@ -96,7 +97,7 @@
 #include  "def_structs.h" // Various structure definitions
 #include  "def_tables.h" // Various pre-made table definitions
 
-const unsigned char Message03[] = { "Tethealla Ship v.144" };
+const uint8_t Message03[] = { "Tethealla Ship v.144" };
 
 /* added stuff */
 
@@ -105,9 +106,9 @@ const unsigned char Message03[] = { "Tethealla Ship v.144" };
 void strupr(char * temp) {
 
   // Convert to upper case
-  char *s = temp;
+  int8_t *s = temp;
   while (*s) {
-    *s = toupper((unsigned char) *s);
+    *s = toupper((uint8_t) *s);
     s++;
   }
 
@@ -120,31 +121,31 @@ void strupr(char * temp) {
 
 /* function defintions */
 
-char* Unicode_to_ASCII (unsigned short* ucs);
+char* Unicode_to_ASCII (uint16_t* ucs);
 void WriteLog(char *fmt, ...);
 void WriteGM(char *fmt, ...);
-void ShipSend04 (unsigned char command, BANANA* client, ORANGE* ship);
+void ShipSend04 (uint8_t command, BANANA* client, ORANGE* ship);
 void ShipSend0E (ORANGE* ship);
-void Send01 (const char *text, BANANA* client);
-void ShowArrows (BANANA* client, int to_all);
-unsigned char* MakePacketEA15 (BANANA* client);
-void SendToLobby (LOBBY* l, unsigned max_send, unsigned char* src, unsigned short size, unsigned nosend );
+void Send01 (const int8_t *text, BANANA* client);
+void ShowArrows (BANANA* client, int32_t to_all);
+uint8_t* MakePacketEA15 (BANANA* client);
+void SendToLobby (LOBBY* l, uint32_t max_send, uint8_t* src, uint16_t size, uint32_t nosend );
 void removeClientFromLobby (BANANA* client);
 
 void debug(char *fmt, ...);
 void debug_perror(char * msg);
 void tcp_listen (int sockfd);
-int tcp_accept (int sockfd, struct sockaddr *client_addr, int *addr_len );
-int tcp_sock_connect(char* dest_addr, int port);
-int tcp_sock_open(struct in_addr ip, int port);
+int32_t tcp_accept (int sockfd, struct sockaddr *client_addr, int32_t *addr_len );
+int32_t tcp_sock_connect(char* dest_addr, int32_t port);
+int32_t tcp_sock_open(struct in_addr ip, int32_t port);
 
-void encryptcopy (BANANA* client, const unsigned char* src, unsigned size);
-void decryptcopy (unsigned char* dest, const unsigned char* src, unsigned size);
+void encryptcopy (BANANA* client, const uint8_t* src, uint32_t size);
+void decryptcopy (uint8_t* dest, const uint8_t* src, uint32_t size);
 
-void prepare_key(unsigned char *keydata, unsigned len, struct rc4_key *key);
-void compressShipPacket ( ORANGE* ship, unsigned char* src, unsigned long src_size );
-void decompressShipPacket ( ORANGE* ship, unsigned char* dest, unsigned char* src );
-int qflag (unsigned char* flag_data, unsigned flag, unsigned difficulty);
+void prepare_key(uint8_t *keydata, uint32_t len, struct rc4_key *key);
+void compressShipPacket ( ORANGE* ship, uint8_t* src, uint32_t src_size );
+void decompressShipPacket ( ORANGE* ship, uint8_t* dest, uint8_t* src );
+int32_t qflag (uint8_t* flag_data, uint32_t flag, uint32_t difficulty);
 
 /* variables */
 
@@ -152,17 +153,17 @@ FILE* debugfile;
 
 // Random drop rates
 
-unsigned WEAPON_DROP_RATE,
+uint32_t WEAPON_DROP_RATE,
 ARMOR_DROP_RATE,
 MAG_DROP_RATE,
 TOOL_DROP_RATE,
 MESETA_DROP_RATE,
 EXPERIENCE_RATE;
-unsigned common_rates[5] = { 0 };
+uint32_t common_rates[5] = { 0 };
 
 // Rare monster appearance rates
 
-unsigned  hildebear_rate,
+uint32_t  hildebear_rate,
       rappy_rate,
       lily_rate,
       slime_rate,
@@ -171,41 +172,41 @@ unsigned  hildebear_rate,
       dorphon_rate,
       kondrieu_rate = 0;
 
-unsigned common_counters[5] = {0};
+uint32_t common_counters[5] = {0};
 
-unsigned char common_table[100000];
+uint8_t common_table[100000];
 
-unsigned char PacketA0Data[0x4000] = {0};
-unsigned char Packet07Data[0x4000] = {0};
-unsigned short Packet07Size = 0;
-unsigned char PacketData[TCP_BUFFER_SIZE];
-unsigned char PacketData2[TCP_BUFFER_SIZE]; // Sometimes we need two...
-unsigned char tmprcv[PACKET_BUFFER_SIZE];
+uint8_t PacketA0Data[0x4000] = {0};
+uint8_t Packet07Data[0x4000] = {0};
+uint16_t Packet07Size = 0;
+uint8_t PacketData[TCP_BUFFER_SIZE];
+uint8_t PacketData2[TCP_BUFFER_SIZE]; // Sometimes we need two...
+uint8_t tmprcv[PACKET_BUFFER_SIZE];
 
 /* Populated by load_config_file(): */
 
-unsigned char serverIP[4] = {0};
-int autoIP = 0;
-unsigned char loginIP[4];
-unsigned short serverPort;
-unsigned short serverMaxConnections;
-int ship_support_extnpc = 0;
-unsigned serverNumConnections = 0;
-unsigned blockConnections = 0;
-unsigned blockTick = 0;
-unsigned serverConnectionList[SHIP_COMPILED_MAX_CONNECTIONS];
-unsigned short serverBlocks;
-unsigned char shipEvent;
-unsigned serverID = 0;
+uint8_t serverIP[4] = {0};
+int32_t autoIP = 0;
+uint8_t loginIP[4];
+uint16_t serverPort;
+uint16_t serverMaxConnections;
+int32_t ship_support_extnpc = 0;
+uint32_t serverNumConnections = 0;
+uint32_t blockConnections = 0;
+uint32_t blockTick = 0;
+uint32_t serverConnectionList[SHIP_COMPILED_MAX_CONNECTIONS];
+uint16_t serverBlocks;
+uint8_t shipEvent;
+uint32_t serverID = 0;
 time_t servertime;
-unsigned normalName = 0xFFFFFFFF;
-unsigned globalName = 0xFF1D94F7;
-unsigned localName = 0xFFB0C4DE;
+uint32_t normalName = 0xFFFFFFFF;
+uint32_t globalName = 0xFF1D94F7;
+uint32_t localName = 0xFFB0C4DE;
 
-unsigned short ship_banmasks[5000][4] = {0}; // IP address ban masks
+uint16_t ship_banmasks[5000][4] = {0}; // IP address ban masks
 BANDATA ship_bandata[5000];
-unsigned num_masks = 0;
-unsigned num_bans = 0;
+uint32_t num_masks = 0;
+uint32_t num_bans = 0;
 
 /* Common tables */
 
@@ -214,91 +215,91 @@ PTDATA pt_tables_ep2[10][4];
 
 // Episode I parsed PT data
 
-unsigned short weapon_drops_ep1[10][4][10][4096];
-unsigned char slots_ep1[10][4][4096];
-unsigned char tech_drops_ep1[10][4][10][4096];
-unsigned char tool_drops_ep1[10][4][10][4096];
-unsigned char power_patterns_ep1[10][4][4][4096];
-char percent_patterns_ep1[10][4][6][4096];
-unsigned char attachment_ep1[10][4][10][4096];
+uint16_t weapon_drops_ep1[10][4][10][4096];
+uint8_t slots_ep1[10][4][4096];
+uint8_t tech_drops_ep1[10][4][10][4096];
+uint8_t tool_drops_ep1[10][4][10][4096];
+uint8_t power_patterns_ep1[10][4][4][4096];
+int8_t percent_patterns_ep1[10][4][6][4096];
+uint8_t attachment_ep1[10][4][10][4096];
 
 // Episode II parsed PT data
 
-unsigned short weapon_drops_ep2[10][4][10][4096];
-unsigned char slots_ep2[10][4][4096];
-unsigned char tech_drops_ep2[10][4][10][4096];
-unsigned char tool_drops_ep2[10][4][10][4096];
-unsigned char power_patterns_ep2[10][4][4][4096];
-char percent_patterns_ep2[10][4][6][4096];
-unsigned char attachment_ep2[10][4][10][4096];
+uint16_t weapon_drops_ep2[10][4][10][4096];
+uint8_t slots_ep2[10][4][4096];
+uint8_t tech_drops_ep2[10][4][10][4096];
+uint8_t tool_drops_ep2[10][4][10][4096];
+uint8_t power_patterns_ep2[10][4][4][4096];
+int8_t percent_patterns_ep2[10][4][6][4096];
+uint8_t attachment_ep2[10][4][10][4096];
 
 
 /* Rare tables */
 
-unsigned rt_tables_ep1[0x200 * 10 * 4] = {0};
-unsigned rt_tables_ep2[0x200 * 10 * 4] = {0};
-unsigned rt_tables_ep4[0x200 * 10 * 4] = {0};
+uint32_t rt_tables_ep1[0x200 * 10 * 4] = {0};
+uint32_t rt_tables_ep2[0x200 * 10 * 4] = {0};
+uint32_t rt_tables_ep4[0x200 * 10 * 4] = {0};
 
-unsigned char startingData[12*14];
+uint8_t startingData[12*14];
 playerLevel playerLevelData[12][200];
 
 fd_set ReadFDs, WriteFDs, ExceptFDs;
 
 saveLobby savedlobbies[MAX_SAVED_LOBBIES];
-unsigned char dp[TCP_BUFFER_SIZE*4];
-unsigned ship_ignore_list[300] = {0};
-unsigned ship_ignore_count = 0;
-unsigned ship_gcsend_list[MAX_GCSEND*3] = {0};
-unsigned ship_gcsend_count = 0;
-char Ship_Name[255];
+uint8_t dp[TCP_BUFFER_SIZE*4];
+uint32_t ship_ignore_list[300] = {0};
+uint32_t ship_ignore_count = 0;
+uint32_t ship_gcsend_list[MAX_GCSEND*3] = {0};
+uint32_t ship_gcsend_count = 0;
+int8_t Ship_Name[255];
 SHIPLIST shipdata[200];
 BLOCK* blocks[10];
 QUEST quests[512];
 QUEST_MENU quest_menus[12];
 unsigned* quest_allow = 0; // the "allow" list for the 0x60CA command...
-unsigned quest_numallows;
-unsigned numQuests = 0;
-unsigned questsMemory = 0;
+uint32_t quest_numallows;
+uint32_t numQuests = 0;
+uint32_t questsMemory = 0;
 char* languageExts[10];
 char* languageNames[10];
-unsigned numLanguages = 0;
-unsigned totalShips = 0;
+uint32_t numLanguages = 0;
+uint32_t totalShips = 0;
 BATTLEPARAM ep1battle[374];
 BATTLEPARAM ep2battle[374];
 BATTLEPARAM ep4battle[332];
 BATTLEPARAM ep1battle_off[374];
 BATTLEPARAM ep2battle_off[374];
 BATTLEPARAM ep4battle_off[332];
-unsigned battle_count;
+uint32_t battle_count;
 SHOP shops[7000];
-unsigned shop_checksum;
-unsigned shopidx[200];
-unsigned ship_index;
-unsigned char ship_key[128];
+uint32_t shop_checksum;
+uint32_t shopidx[200];
+uint32_t ship_index;
+uint8_t ship_key[128];
 
 // New leet parameter tables!!!!111oneoneoneeleven
 
-unsigned char armor_equip_table[256] = {0};
-unsigned char barrier_equip_table[256] = {0};
-unsigned char armor_level_table[256] = {0};
-unsigned char barrier_level_table[256] = {0};
-unsigned char armor_dfpvar_table[256] = {0};
-unsigned char barrier_dfpvar_table[256] = {0};
-unsigned char armor_evpvar_table[256] = {0};
-unsigned char barrier_evpvar_table[256] = {0};
-unsigned char weapon_equip_table[256][256] = {0};
-unsigned short weapon_atpmax_table[256][256] = {0};
-unsigned char grind_table[256][256] = {0};
-unsigned char special_table[256][256] = {0};
-unsigned char stackable_table[256] = {0};
-unsigned equip_prices[2][13][24][80] = {0};
-char max_tech_level[19][12];
+uint8_t armor_equip_table[256] = {0};
+uint8_t barrier_equip_table[256] = {0};
+uint8_t armor_level_table[256] = {0};
+uint8_t barrier_level_table[256] = {0};
+uint8_t armor_dfpvar_table[256] = {0};
+uint8_t barrier_dfpvar_table[256] = {0};
+uint8_t armor_evpvar_table[256] = {0};
+uint8_t barrier_evpvar_table[256] = {0};
+uint8_t weapon_equip_table[256][256] = {0};
+uint16_t weapon_atpmax_table[256][256] = {0};
+uint8_t grind_table[256][256] = {0};
+uint8_t special_table[256][256] = {0};
+uint8_t stackable_table[256] = {0};
+uint32_t equip_prices[2][13][24][80] = {0};
+int8_t max_tech_level[19][12];
 
 PSO_CRYPT* cipher_ptr;
 
-unsigned wstrlen ( unsigned short* dest )
+uint32_t wstrlen ( uint16_t* dest )
 {
-  unsigned l = 0;
+  uint32_t l = 0;
   while (*dest != 0x0000)
   {
     l+= 2;
@@ -307,7 +308,7 @@ unsigned wstrlen ( unsigned short* dest )
   return l;
 }
 
-void wstrcpy ( unsigned short* dest, const unsigned short* src )
+void wstrcpy ( uint16_t* dest, const uint16_t* src )
 {
   while (*src != 0x0000)
     *(dest++) = *(src++);
@@ -325,9 +326,9 @@ void wstrcpy_char ( char* dest, const char* src )
   *(dest++) = 0x00;
 }
 
-void packet_to_text ( unsigned char* buf, int len )
+void packet_to_text ( uint8_t* buf, int32_t len )
 {
-  int c, c2, c3, c4;
+  int32_t c, c2, c3, c4;
 
   c = c2 = c3 = c4 = 0;
 
@@ -376,16 +377,16 @@ void packet_to_text ( unsigned char* buf, int len )
 }
 
 
-void display_packet ( unsigned char* buf, int len )
+void display_packet ( uint8_t* buf, int32_t len )
 {
   packet_to_text ( buf, len );
   printf ("%s\n\n", &dp[0]);
 }
 
-void convertIPString (char* IPData, unsigned IPLen, int fromConfig, unsigned char* IPStore )
+void convertIPString (char* IPData, uint32_t IPLen, int32_t fromConfig, uint8_t* IPStore )
 {
-  unsigned p,p2,p3;
-  char convert_buffer[5];
+  uint32_t p,p2,p3;
+  int8_t convert_buffer[5];
 
   p2 = 0;
   p3 = 0;
@@ -428,10 +429,10 @@ void convertIPString (char* IPData, unsigned IPLen, int fromConfig, unsigned cha
   }
 }
 
-void convertMask (char* IPData, unsigned IPLen, unsigned short* IPStore )
+void convertMask (char* IPData, uint32_t IPLen, uint16_t* IPStore )
 {
-  unsigned p,p2,p3;
-  char convert_buffer[5];
+  uint32_t p,p2,p3;
+  int8_t convert_buffer[5];
 
   p2 = 0;
   p3 = 0;
@@ -472,20 +473,20 @@ void convertMask (char* IPData, unsigned IPLen, unsigned short* IPStore )
 }
 
 
-unsigned char hexToByte ( char* hs )
+uint8_t hexToByte ( char* hs )
 {
-  unsigned b;
+  uint32_t b;
 
   if ( hs[0] < 58 ) b = (hs[0] - 48); else b = (hs[0] - 55);
   b *= 16;
   if ( hs[1] < 58 ) b += (hs[1] - 48); else b += (hs[1] - 55);
-  return (unsigned char) b;
+  return (uint8_t) b;
 }
 
 void load_mask_file()
 {
-  char mask_data[255];
-  unsigned ch = 0;
+  int8_t mask_data[255];
+  uint32_t ch = 0;
 
   FILE* fp;
 
@@ -512,9 +513,9 @@ void load_mask_file()
 void load_language_file()
 {
   FILE* fp;
-  char lang_data[256];
-  int langExt = 0;
-  unsigned ch;
+  int8_t lang_data[256];
+  int32_t langExt = 0;
+  uint32_t ch;
 
   for (ch=0;ch<10;ch++)
   {
@@ -564,9 +565,9 @@ void load_language_file()
 
 void load_config_file()
 {
-  int config_index = 0;
-  char config_data[255];
-  unsigned ch = 0;
+  int32_t config_index = 0;
+  int8_t config_data[255];
+  uint32_t ch = 0;
 
   FILE* fp;
 
@@ -641,8 +642,8 @@ void load_config_file()
         case 0x04:
           // Login server host name or IP
           {
-            unsigned p;
-            unsigned alpha;
+            uint32_t p;
+            uint32_t alpha;
             alpha = 0;
             for (p=0;p<ch;p++)
               if (((config_data[p] >= 65 ) && (config_data[p] <= 90)) ||
@@ -679,7 +680,7 @@ void load_config_file()
           break;
         case 0x06:
           // Event
-          shipEvent = (unsigned char) atoi (&config_data[0]);
+          shipEvent = (uint8_t) atoi (&config_data[0]);
           PacketDA[0x04] = shipEvent;
           break;
         case 0x07:
@@ -742,20 +743,20 @@ BANANA * connections[SHIP_COMPILED_MAX_CONNECTIONS];
 ORANGE * logon_connecion;
 BANANA * workConnect;
 ORANGE * logon;
-unsigned logon_tick = 0;
-unsigned logon_ready = 0;
+uint32_t logon_tick = 0;
+uint32_t logon_ready = 0;
 
-const char serverName[] = { "T\0E\0T\0H\0E\0A\0L\0L\0A\0" };
-const char shipSelectString[] = {"S\0h\0i\0p\0 \0S\0e\0l\0e\0c\0t\0"};
-const char blockString[] = {"B\0L\0O\0C\0K\0"};
+const int8_t serverName[] = { "T\0E\0T\0H\0E\0A\0L\0L\0A\0" };
+const int8_t shipSelectString[] = {"S\0h\0i\0p\0 \0S\0e\0l\0e\0c\0t\0"};
+const int8_t blockString[] = {"B\0L\0O\0C\0K\0"};
 
 void Send08(BANANA* client)
 {
   BLOCK* b;
-  unsigned ch,ch2,qNum;
-  unsigned char game_flags, total_games;
+  uint32_t ch,ch2,qNum;
+  uint8_t game_flags, total_games;
   LOBBY* l;
-  unsigned Offset;
+  uint32_t Offset;
   QUEST* q;
 
   if (client->block <= serverBlocks)
@@ -835,10 +836,10 @@ void Send08(BANANA* client)
         total_games++;
       }
     }
-    *(unsigned short*) &client->encryptbuf[0x00] = (unsigned short) Offset;
+    *(uint16_t*) &client->encryptbuf[0x00] = (uint16_t) Offset;
     memcpy (&client->encryptbuf[0x02], &Packet08[2], 0x32);
     client->encryptbuf[0x04] = total_games;
-    client->encryptbuf[0x08] = (unsigned char) client->lobbyNum;
+    client->encryptbuf[0x08] = (uint8_t) client->lobbyNum;
     if ( client->block == 10 )
     {
       client->encryptbuf[0x1C] = 0x31;
@@ -859,11 +860,11 @@ void Send08(BANANA* client)
 
 void ConstructBlockPacket()
 {
-  unsigned short Offset;
-  unsigned ch;
-  char tempName[255];
+  uint16_t Offset;
+  uint32_t ch;
+  int8_t tempName[255];
   char* tn;
-  unsigned BlockID;
+  uint32_t BlockID;
 
   memset (&Packet07Data[0], 0, 0x4000);
 
@@ -914,14 +915,14 @@ void ConstructBlockPacket()
   Offset += 0x2C;
   while (Offset % 8)
     Packet07Data[Offset++] = 0x00;
-  *(unsigned short*) &Packet07Data[0x00] = (unsigned short) Offset;
+  *(uint16_t*) &Packet07Data[0x00] = (uint16_t) Offset;
   Packet07Size = Offset;
 }
 
 
 void initialize_logon()
 {
-  unsigned ch;
+  uint32_t ch;
 
   logon_ready = 0;
   logon_tick = 0;
@@ -951,9 +952,9 @@ void reconnect_logon()
   }
 }
 
-unsigned free_connection()
+uint32_t free_connection()
 {
-  unsigned fc;
+  uint32_t fc;
   BANANA* wc;
 
   for (fc=0;fc<serverMaxConnections;fc++)
@@ -967,7 +968,7 @@ unsigned free_connection()
 
 void initialize_connection (BANANA* connect)
 {
-  unsigned ch, ch2;
+  uint32_t ch, ch2;
 
   // Free backup character memory
 
@@ -1021,7 +1022,7 @@ void initialize_connection (BANANA* connect)
 
 void start_encryption(BANANA* connect)
 {
-  unsigned c, c3, c4, connectNum;
+  uint32_t c, c3, c4, connectNum;
   BANANA *workConnect, *c5;
 
   // Limit the number of connections from an IP address to MAX_SIMULTANEOUS_CONNECTIONS.
@@ -1070,8 +1071,8 @@ void start_encryption(BANANA* connect)
   memcpy (&connect->sndbuf[0], &Packet03[0], sizeof (Packet03));
   for (c=0;c<0x30;c++)
   {
-    connect->sndbuf[0x68+c] = (unsigned char) rand() % 255;
-    connect->sndbuf[0x98+c] = (unsigned char) rand() % 255;
+    connect->sndbuf[0x68+c] = (uint8_t) rand() % 255;
+    connect->sndbuf[0x98+c] = (uint8_t) rand() % 255;
   }
   connect->snddata += sizeof (Packet03);
   cipher_ptr = &connect->server_cipher;
@@ -1083,9 +1084,9 @@ void start_encryption(BANANA* connect)
   connect->connected = connect->response = connect->savetime = (unsigned) servertime;
 }
 
-void SendToLobby (LOBBY* l, unsigned max_send, unsigned char* src, unsigned short size, unsigned nosend )
+void SendToLobby (LOBBY* l, uint32_t max_send, uint8_t* src, uint16_t size, uint32_t nosend )
 {
-  unsigned ch;
+  uint32_t ch;
 
   if (!l)
     return;
@@ -1103,7 +1104,7 @@ void SendToLobby (LOBBY* l, unsigned max_send, unsigned char* src, unsigned shor
 
 void removeClientFromLobby (BANANA* client)
 {
-  unsigned ch, maxch, lowestID;
+  uint32_t ch, maxch, lowestID;
 
   LOBBY* l;
 
@@ -1170,9 +1171,9 @@ void removeClientFromLobby (BANANA* client)
 }
 
 
-void Send1A (const char *mes, BANANA* client)
+void Send1A (const int8_t *mes, BANANA* client)
 {
-  unsigned short x1A_Len;
+  uint16_t x1A_Len;
 
   memcpy (&PacketData[0], &Packet1A[0], sizeof (Packet1A));
   x1A_Len = sizeof (Packet1A);
@@ -1189,14 +1190,14 @@ void Send1A (const char *mes, BANANA* client)
   while (x1A_Len % 8)
     PacketData[x1A_Len++] = 0x00;
 
-  *(unsigned short*) &PacketData[0] = x1A_Len;
+  *(uint16_t*) &PacketData[0] = x1A_Len;
   cipher_ptr = &client->server_cipher;
   encryptcopy (client, &PacketData[0], x1A_Len);
 }
 
 void Send1D (BANANA* client)
 {
-  unsigned num_minutes;
+  uint32_t num_minutes;
 
   if ((((unsigned) servertime - client->savetime) / 60L) >= 5)
   {
@@ -1225,9 +1226,9 @@ void Send83 (BANANA* client)
 
 }
 
-unsigned free_game (BANANA* client)
+uint32_t free_game (BANANA* client)
 {
-  unsigned ch;
+  uint32_t ch;
   LOBBY* l;
 
   for (ch=16;ch<(16+SHIP_COMPILED_MAX_GAMES);ch++)
@@ -1239,12 +1240,12 @@ unsigned free_game (BANANA* client)
   return 0;
 }
 
-void ParseMapData (LOBBY* l, MAP_MONSTER* mapData, int aMob, unsigned num_records)
+void ParseMapData (LOBBY* l, MAP_MONSTER* mapData, int32_t aMob, uint32_t num_records)
 {
   MAP_MONSTER* mm;
-  unsigned ch, ch2;
-  unsigned num_recons;
-  int r;
+  uint32_t ch, ch2;
+  uint32_t num_recons;
+  int32_t r;
 
   for (ch2=0;ch2<num_records;ch2++)
   {
@@ -1264,7 +1265,7 @@ void ParseMapData (LOBBY* l, MAP_MONSTER* mapData, int aMob, unsigned num_record
       else
         if ( ( l->rareIndex < 0x1E ) && ( rand() < hildebear_rate ) )
         {
-          *(unsigned short*) &l->rareData[l->rareIndex] = (unsigned short) l->mapIndex;
+          *(uint16_t*) &l->rareData[l->rareIndex] = (uint16_t) l->mapIndex;
           l->rareIndex += 2;
           r = 1;
         }
@@ -1287,7 +1288,7 @@ void ParseMapData (LOBBY* l, MAP_MONSTER* mapData, int aMob, unsigned num_record
       else
         if ( ( l->rareIndex < 0x1E ) && ( rand() < rappy_rate ) )
         {
-          *(unsigned short*) &l->rareData[l->rareIndex] = (unsigned short) l->mapIndex;
+          *(uint16_t*) &l->rareData[l->rareIndex] = (uint16_t) l->mapIndex;
           l->rareIndex += 2;
           r = 1;
         }
@@ -1415,7 +1416,7 @@ void ParseMapData (LOBBY* l, MAP_MONSTER* mapData, int aMob, unsigned num_record
       else
         if ( ( l->rareIndex < 0x1E ) && (rand() < lily_rate ) )
         {
-          *(unsigned short*) &l->rareData[l->rareIndex] = (unsigned short) l->mapIndex;
+          *(uint16_t*) &l->rareData[l->rareIndex] = (uint16_t) l->mapIndex;
           l->rareIndex += 2;
           r = 1;
         }
@@ -1469,7 +1470,7 @@ void ParseMapData (LOBBY* l, MAP_MONSTER* mapData, int aMob, unsigned num_record
       else
         if ( ( l->rareIndex < 0x1E ) && ( rand() < slime_rate ) )
         {
-          *(unsigned short*) &l->rareData[l->rareIndex] = (unsigned short) l->mapIndex;
+          *(uint16_t*) &l->rareData[l->rareIndex] = (uint16_t) l->mapIndex;
           l->rareIndex += 2;
           r = 1;
         }
@@ -1490,7 +1491,7 @@ void ParseMapData (LOBBY* l, MAP_MONSTER* mapData, int aMob, unsigned num_record
         r = 0;
         if ( ( l->rareIndex < 0x1E ) && ( rand() < slime_rate ) )
         {
-          *(unsigned short*) &l->rareData[l->rareIndex] = (unsigned short) l->mapIndex;
+          *(uint16_t*) &l->rareData[l->rareIndex] = (uint16_t) l->mapIndex;
           l->rareIndex += 2;
           r = 1;
         }
@@ -1889,7 +1890,7 @@ void ParseMapData (LOBBY* l, MAP_MONSTER* mapData, int aMob, unsigned num_record
       else
         if ( ( l->rareIndex < 0x1E ) && ( rand() < merissa_rate ) )
         {
-          *(unsigned short*) &l->rareData[l->rareIndex] = (unsigned short) l->mapIndex;
+          *(uint16_t*) &l->rareData[l->rareIndex] = (uint16_t) l->mapIndex;
           l->rareIndex += 2;
           r = 1;
         }
@@ -1917,7 +1918,7 @@ void ParseMapData (LOBBY* l, MAP_MONSTER* mapData, int aMob, unsigned num_record
       else
         if ( ( l->rareIndex < 0x1E ) && ( rand() < pazuzu_rate ) )
         {
-          *(unsigned short*) &l->rareData[l->rareIndex] = (unsigned short) l->mapIndex;
+          *(uint16_t*) &l->rareData[l->rareIndex] = (uint16_t) l->mapIndex;
           l->rareIndex += 2;
           r = 1;
         }
@@ -1975,7 +1976,7 @@ void ParseMapData (LOBBY* l, MAP_MONSTER* mapData, int aMob, unsigned num_record
       else
         if ( ( l->rareIndex < 0x1E ) && ( rand() < dorphon_rate ) )
         {
-          *(unsigned short*) &l->rareData[l->rareIndex] = (unsigned short) l->mapIndex;
+          *(uint16_t*) &l->rareData[l->rareIndex] = (uint16_t) l->mapIndex;
           l->rareIndex += 2;
           r = 1;
         }
@@ -2018,7 +2019,7 @@ void ParseMapData (LOBBY* l, MAP_MONSTER* mapData, int aMob, unsigned num_record
       else
         if ( ( l->rareIndex < 0x20 ) && ( rand() < kondrieu_rate ) )
         {
-          *(unsigned short*) &l->rareData[l->rareIndex] = (unsigned short) l->mapIndex;
+          *(uint16_t*) &l->rareData[l->rareIndex] = (uint16_t) l->mapIndex;
           l->rareIndex += 2;
           r = 1;
         }
@@ -2044,11 +2045,11 @@ void ParseMapData (LOBBY* l, MAP_MONSTER* mapData, int aMob, unsigned num_record
 }
 
 
-void LoadObjectData (LOBBY* l, int unused, const char* filename)
+void LoadObjectData (LOBBY* l, int32_t unused, const char* filename)
 {
   FILE* fp;
-  unsigned oldIndex, num_records, ch, ch2;
-  char new_file[256];
+  uint32_t oldIndex, num_records, ch, ch2;
+  int8_t new_file[256];
 
   if (!l)
     return;
@@ -2090,10 +2091,10 @@ void LoadObjectData (LOBBY* l, int unused, const char* filename)
   }
 };
 
-void LoadMapData (LOBBY* l, int aMob, const char* filename)
+void LoadMapData (LOBBY* l, int32_t aMob, const char* filename)
 {
   FILE* fp;
-  unsigned oldIndex, num_records;
+  uint32_t oldIndex, num_records;
 
   if (!l)
     return;
@@ -2119,7 +2120,7 @@ void LoadMapData (LOBBY* l, int aMob, const char* filename)
 void initialize_game (BANANA* client)
 {
   LOBBY* l;
-  unsigned ch;
+  uint32_t ch;
 
   if (!client->lobby)
     return;
@@ -2155,10 +2156,10 @@ void initialize_game (BANANA* client)
     memcpy (&l->gameName[0], &client->decryptbuf[0x14], 30);
     memcpy (&l->gamePassword[0], &client->decryptbuf[0x30], 32);
     l->in_use = 1;
-    l->gameMonster[0] = (unsigned char) rand() % 256;
-    l->gameMonster[1] = (unsigned char) rand() % 256;
-    l->gameMonster[2] = (unsigned char) rand() % 256;
-    l->gameMonster[3] = (unsigned char) rand() % 16;
+    l->gameMonster[0] = (uint8_t) rand() % 256;
+    l->gameMonster[1] = (uint8_t) rand() % 256;
+    l->gameMonster[2] = (uint8_t) rand() % 256;
+    l->gameMonster[3] = (uint8_t) rand() % 16;
     memset (&l->gameMap[0], 0, 128);
     l->playerItemID[0] = 0x10000;
     l->playerItemID[1] = 0x210000;
@@ -2187,51 +2188,51 @@ void initialize_game (BANANA* client)
         LoadMapData ( l, 0, "map/map_city00_00e.dat" );
         LoadObjectData ( l, 0, "map/map_city00_00o.dat" );
 
-        l->gameMap[12]=(unsigned char) rand() % 5; // Forest 1
+        l->gameMap[12]=(uint8_t) rand() % 5; // Forest 1
         LoadMapData ( l, 0, Forest1_Online_Maps [l->gameMap[12]] );
         LoadObjectData ( l, 0, Forest1_Online_Maps [l->gameMap[12]] );
 
-        l->gameMap[20]=(unsigned char) rand() % 5; // Forest 2
+        l->gameMap[20]=(uint8_t) rand() % 5; // Forest 2
         LoadMapData ( l, 0, Forest2_Online_Maps [l->gameMap[20]] );
         LoadObjectData ( l, 0, Forest2_Online_Maps [l->gameMap[20]] );
 
-        l->gameMap[24]=(unsigned char) rand() % 3; // Cave 1
-        l->gameMap[28]=(unsigned char) rand() % 2;
+        l->gameMap[24]=(uint8_t) rand() % 3; // Cave 1
+        l->gameMap[28]=(uint8_t) rand() % 2;
         LoadMapData ( l, 0, Cave1_Online_Maps [( l->gameMap[24] * 2 ) + l->gameMap[28]] );
         LoadObjectData ( l, 0, Cave1_Online_Maps [( l->gameMap[24] * 2 ) + l->gameMap[28]] );
 
-        l->gameMap[32]=(unsigned char) rand() % 3; // Cave 2
-        l->gameMap[36]=(unsigned char) rand() % 2;
+        l->gameMap[32]=(uint8_t) rand() % 3; // Cave 2
+        l->gameMap[36]=(uint8_t) rand() % 2;
         LoadMapData ( l, 0, Cave2_Online_Maps [( l->gameMap[32] * 2 ) + l->gameMap[36]] );
         LoadObjectData ( l, 0, Cave2_Online_Maps [( l->gameMap[32] * 2 ) + l->gameMap[36]] );
 
-        l->gameMap[40]=(unsigned char) rand() % 3; // Cave 3
-        l->gameMap[44]=(unsigned char) rand() % 2;
+        l->gameMap[40]=(uint8_t) rand() % 3; // Cave 3
+        l->gameMap[44]=(uint8_t) rand() % 2;
         LoadMapData ( l, 0, Cave3_Online_Maps [( l->gameMap[40] * 2 ) + l->gameMap[44]] );
         LoadObjectData ( l, 0, Cave3_Online_Maps [( l->gameMap[40] * 2 ) + l->gameMap[44]] );
 
-        l->gameMap[48]=(unsigned char) rand() % 3; // Mine 1
-        l->gameMap[52]=(unsigned char) rand() % 2;
+        l->gameMap[48]=(uint8_t) rand() % 3; // Mine 1
+        l->gameMap[52]=(uint8_t) rand() % 2;
         LoadMapData ( l, 0, Mine1_Online_Maps [( l->gameMap[48] * 2 ) + l->gameMap[52]] );
         LoadObjectData ( l, 0, Mine1_Online_Maps [( l->gameMap[48] * 2 ) + l->gameMap[52]] );
 
-        l->gameMap[56]=(unsigned char) rand() % 3; // Mine 2
-        l->gameMap[60]=(unsigned char) rand() % 2;
+        l->gameMap[56]=(uint8_t) rand() % 3; // Mine 2
+        l->gameMap[60]=(uint8_t) rand() % 2;
         LoadMapData ( l, 0, Mine2_Online_Maps [( l->gameMap[56] * 2 ) + l->gameMap[60]] );
         LoadObjectData ( l, 0, Mine2_Online_Maps [( l->gameMap[56] * 2 ) + l->gameMap[60]] );
 
-        l->gameMap[64]=(unsigned char) rand() % 3; // Ruins 1
-        l->gameMap[68]=(unsigned char) rand() % 2;
+        l->gameMap[64]=(uint8_t) rand() % 3; // Ruins 1
+        l->gameMap[68]=(uint8_t) rand() % 2;
         LoadMapData ( l, 0, Ruins1_Online_Maps [( l->gameMap[64] * 2 ) + l->gameMap[68]] );
         LoadObjectData ( l, 0, Ruins1_Online_Maps [( l->gameMap[64] * 2 ) + l->gameMap[68]] );
 
-        l->gameMap[72]=(unsigned char) rand() % 3; // Ruins 2
-        l->gameMap[76]=(unsigned char) rand() % 2;
+        l->gameMap[72]=(uint8_t) rand() % 3; // Ruins 2
+        l->gameMap[76]=(uint8_t) rand() % 2;
         LoadMapData ( l, 0, Ruins2_Online_Maps [( l->gameMap[72] * 2 ) + l->gameMap[76]] );
         LoadObjectData ( l, 0, Ruins2_Online_Maps [( l->gameMap[72] * 2 ) + l->gameMap[76]] );
 
-        l->gameMap[80]=(unsigned char) rand() % 3; // Ruins 3
-        l->gameMap[84]=(unsigned char) rand() % 2;
+        l->gameMap[80]=(uint8_t) rand() % 3; // Ruins 3
+        l->gameMap[84]=(uint8_t) rand() % 2;
         LoadMapData ( l, 0, Ruins3_Online_Maps [( l->gameMap[80] * 2 ) + l->gameMap[84]] );
         LoadObjectData ( l, 0, Ruins3_Online_Maps [( l->gameMap[80] * 2 ) + l->gameMap[84]] );
       }
@@ -2242,48 +2243,48 @@ void initialize_game (BANANA* client)
         LoadMapData ( l, 0, "map/map_city00_00e_s.dat");
         LoadObjectData ( l, 0, "map/map_city00_00o_s.dat");
 
-        l->gameMap[12]=(unsigned char) rand() % 3; // Forest 1
+        l->gameMap[12]=(uint8_t) rand() % 3; // Forest 1
         LoadMapData ( l, 0, Forest1_Offline_Maps [l->gameMap[12]] );
         LoadObjectData ( l, 0, Forest1_Offline_Objects [l->gameMap[12]] );
 
-        l->gameMap[20]=(unsigned char) rand() % 3; // Forest 2
+        l->gameMap[20]=(uint8_t) rand() % 3; // Forest 2
         LoadMapData ( l, 0, Forest2_Offline_Maps [l->gameMap[20]] );
         LoadObjectData ( l, 0, Forest2_Offline_Objects [l->gameMap[20]] );
 
-        l->gameMap[24]=(unsigned char) rand() % 3; // Cave 1
+        l->gameMap[24]=(uint8_t) rand() % 3; // Cave 1
         LoadMapData ( l, 0, Cave1_Offline_Maps [l->gameMap[24]]);
         LoadObjectData ( l, 0, Cave1_Offline_Objects [l->gameMap[24]]);
 
-        l->gameMap[32]=(unsigned char) rand() % 3; // Cave 2
+        l->gameMap[32]=(uint8_t) rand() % 3; // Cave 2
         LoadMapData ( l, 0, Cave2_Offline_Maps [l->gameMap[32]]);
         LoadObjectData ( l, 0, Cave2_Offline_Objects [l->gameMap[32]]);
 
-        l->gameMap[40]=(unsigned char) rand() % 3; // Cave 3
+        l->gameMap[40]=(uint8_t) rand() % 3; // Cave 3
         LoadMapData ( l, 0, Cave3_Offline_Maps [l->gameMap[40]]);
         LoadObjectData ( l, 0, Cave3_Offline_Objects [l->gameMap[40]]);
 
-        l->gameMap[48]=(unsigned char) rand() % 3; // Mine 1
-        l->gameMap[52]=(unsigned char) rand() % 2;
+        l->gameMap[48]=(uint8_t) rand() % 3; // Mine 1
+        l->gameMap[52]=(uint8_t) rand() % 2;
         LoadMapData ( l, 0, Mine1_Online_Maps [( l->gameMap[48] * 2 ) + l->gameMap[52]] );
         LoadObjectData ( l, 0, Mine1_Online_Maps [( l->gameMap[48] * 2 ) + l->gameMap[52]] );
 
-        l->gameMap[56]=(unsigned char) rand() % 3; // Mine 2
-        l->gameMap[60]=(unsigned char) rand() % 2;
+        l->gameMap[56]=(uint8_t) rand() % 3; // Mine 2
+        l->gameMap[60]=(uint8_t) rand() % 2;
         LoadMapData ( l, 0, Mine2_Online_Maps [( l->gameMap[56] * 2 ) + l->gameMap[60]] );
         LoadObjectData ( l, 0, Mine2_Online_Maps [( l->gameMap[56] * 2 ) + l->gameMap[60]] );
 
-        l->gameMap[64]=(unsigned char) rand() % 3; // Ruins 1
-        l->gameMap[68]=(unsigned char) rand() % 2;
+        l->gameMap[64]=(uint8_t) rand() % 3; // Ruins 1
+        l->gameMap[68]=(uint8_t) rand() % 2;
         LoadMapData ( l, 0, Ruins1_Online_Maps [( l->gameMap[64] * 2 ) + l->gameMap[68]] );
         LoadObjectData ( l, 0, Ruins1_Online_Maps [( l->gameMap[64] * 2 ) + l->gameMap[68]] );
 
-        l->gameMap[72]=(unsigned char) rand() % 3; // Ruins 2
-        l->gameMap[76]=(unsigned char) rand() % 2;
+        l->gameMap[72]=(uint8_t) rand() % 3; // Ruins 2
+        l->gameMap[76]=(uint8_t) rand() % 2;
         LoadMapData ( l, 0, Ruins2_Online_Maps [( l->gameMap[72] * 2 ) + l->gameMap[76]] );
         LoadObjectData ( l, 0, Ruins2_Online_Maps [( l->gameMap[72] * 2 ) + l->gameMap[76]] );
 
-        l->gameMap[80]=(unsigned char) rand() % 3; // Ruins 3
-        l->gameMap[84]=(unsigned char) rand() % 2;
+        l->gameMap[80]=(uint8_t) rand() % 3; // Ruins 3
+        l->gameMap[84]=(uint8_t) rand() % 2;
         LoadMapData ( l, 0, Ruins3_Online_Maps [( l->gameMap[80] * 2 ) + l->gameMap[84]] );
         LoadObjectData ( l, 0, Ruins3_Online_Maps [( l->gameMap[80] * 2 ) + l->gameMap[84]] );
       }
@@ -2307,58 +2308,58 @@ void initialize_game (BANANA* client)
         LoadMapData ( l, 0, "map/map_labo00_00e.dat");
         LoadObjectData ( l, 0, "map/map_labo00_00o.dat");
 
-        l->gameMap[8]  = (unsigned char) rand() % 2; // Temple 1
+        l->gameMap[8]  = (uint8_t) rand() % 2; // Temple 1
         l->gameMap[12] = 0x00;
         LoadMapData ( l, 0, Temple1_Online_Maps [l->gameMap[8]] );
         LoadObjectData ( l, 0, Temple1_Online_Maps [l->gameMap[8]] );
 
-        l->gameMap[16] = (unsigned char) rand() % 2; // Temple 2
+        l->gameMap[16] = (uint8_t) rand() % 2; // Temple 2
         l->gameMap[20] = 0x00;
         LoadMapData ( l, 0, Temple2_Online_Maps [l->gameMap[16]] );
         LoadObjectData ( l, 0, Temple2_Online_Maps [l->gameMap[16]] );
 
-        l->gameMap[24] = (unsigned char) rand() % 2; // Spaceship 1
+        l->gameMap[24] = (uint8_t) rand() % 2; // Spaceship 1
         l->gameMap[28] = 0x00;
         LoadMapData ( l, 0, Spaceship1_Online_Maps [l->gameMap[24]] );
         LoadObjectData ( l, 0, Spaceship1_Online_Maps [l->gameMap[24]] );
 
-        l->gameMap[32] = (unsigned char) rand() % 2; // Spaceship 2
+        l->gameMap[32] = (uint8_t) rand() % 2; // Spaceship 2
         l->gameMap[36] = 0x00;
         LoadMapData ( l, 0, Spaceship2_Online_Maps [l->gameMap[32]] );
         LoadObjectData ( l, 0, Spaceship2_Online_Maps [l->gameMap[32]] );
 
         l->gameMap[40] = 0x00;
-        l->gameMap[44] = (unsigned char) rand() % 3; // Jungle 1
+        l->gameMap[44] = (uint8_t) rand() % 3; // Jungle 1
         LoadMapData ( l, 0, Jungle1_Online_Maps [l->gameMap[44]] );
         LoadObjectData ( l, 0, Jungle1_Online_Maps [l->gameMap[44]] );
 
         l->gameMap[48] = 0x00;
-        l->gameMap[52] = (unsigned char) rand() % 3; // Jungle 2
+        l->gameMap[52] = (uint8_t) rand() % 3; // Jungle 2
         LoadMapData ( l, 0, Jungle2_Online_Maps [l->gameMap[52]] );
         LoadObjectData ( l, 0, Jungle2_Online_Maps [l->gameMap[52]] );
 
         l->gameMap[56] = 0x00;
-        l->gameMap[60] = (unsigned char) rand() % 3; // Jungle 3
+        l->gameMap[60] = (uint8_t) rand() % 3; // Jungle 3
         LoadMapData ( l, 0, Jungle3_Online_Maps [l->gameMap[60]] );
         LoadObjectData ( l, 0, Jungle3_Online_Maps [l->gameMap[60]] );
 
-        l->gameMap[64] = (unsigned char) rand() % 2; // Jungle 4
-        l->gameMap[68] = (unsigned char) rand() % 2;
+        l->gameMap[64] = (uint8_t) rand() % 2; // Jungle 4
+        l->gameMap[68] = (uint8_t) rand() % 2;
         LoadMapData ( l, 0, Jungle4_Online_Maps [(l->gameMap[64] * 2 ) + l->gameMap[68]] );
         LoadObjectData ( l, 0, Jungle4_Online_Maps [(l->gameMap[64] * 2 ) + l->gameMap[68]] );
 
         l->gameMap[72] = 0x00;
-        l->gameMap[76] = (unsigned char) rand() % 3; // Jungle 5
+        l->gameMap[76] = (uint8_t) rand() % 3; // Jungle 5
         LoadMapData ( l, 0, Jungle5_Online_Maps [l->gameMap[76]] );
         LoadObjectData ( l, 0, Jungle5_Online_Maps [l->gameMap[76]] );
 
-        l->gameMap[80] = (unsigned char) rand() % 2; // Seabed 1
-        l->gameMap[84] = (unsigned char) rand() % 2;
+        l->gameMap[80] = (uint8_t) rand() % 2; // Seabed 1
+        l->gameMap[84] = (uint8_t) rand() % 2;
         LoadMapData ( l, 0, Seabed1_Online_Maps [(l->gameMap[80] * 2 ) + l->gameMap[84]] );
         LoadObjectData ( l, 0, Seabed1_Online_Maps [(l->gameMap[80] * 2 ) + l->gameMap[84]] );
 
-        l->gameMap[88] = (unsigned char) rand() % 2; // Seabed 2
-        l->gameMap[92] = (unsigned char) rand() % 2;
+        l->gameMap[88] = (uint8_t) rand() % 2; // Seabed 2
+        l->gameMap[92] = (uint8_t) rand() % 2;
         LoadMapData ( l, 0, Seabed2_Online_Maps [(l->gameMap[88] * 2 ) + l->gameMap[92]] );
         LoadObjectData ( l, 0, Seabed2_Online_Maps [(l->gameMap[88] * 2 ) + l->gameMap[92]] );
       }
@@ -2368,56 +2369,56 @@ void initialize_game (BANANA* client)
         LoadMapData ( l, 0, "map/map_labo00_00e_s.dat");
         LoadObjectData ( l, 0, "map/map_labo00_00o_s.dat");
 
-        l->gameMap[8]  = (unsigned char) rand() % 2; // Temple 1
+        l->gameMap[8]  = (uint8_t) rand() % 2; // Temple 1
         l->gameMap[12] = 0x00;
         LoadMapData ( l, 0, Temple1_Offline_Maps [l->gameMap[8]] );
         LoadObjectData ( l, 0, Temple1_Offline_Maps [l->gameMap[8]] );
 
-        l->gameMap[16] = (unsigned char) rand() % 2; // Temple 2
+        l->gameMap[16] = (uint8_t) rand() % 2; // Temple 2
         l->gameMap[20] = 0x00;
         LoadMapData ( l, 0, Temple2_Offline_Maps [l->gameMap[16]] );
         LoadObjectData ( l, 0, Temple2_Offline_Maps [l->gameMap[16]] );
 
-        l->gameMap[24] = (unsigned char) rand() % 2; // Spaceship 1
+        l->gameMap[24] = (uint8_t) rand() % 2; // Spaceship 1
         l->gameMap[28] = 0x00;
         LoadMapData ( l, 0, Spaceship1_Offline_Maps [l->gameMap[24]] );
         LoadObjectData ( l, 0, Spaceship1_Offline_Maps [l->gameMap[24]] );
 
-        l->gameMap[32] = (unsigned char) rand() % 2; // Spaceship 2
+        l->gameMap[32] = (uint8_t) rand() % 2; // Spaceship 2
         l->gameMap[36] = 0x00;
         LoadMapData ( l, 0, Spaceship2_Offline_Maps [l->gameMap[32]] );
         LoadObjectData ( l, 0, Spaceship2_Offline_Maps [l->gameMap[32]] );
 
         l->gameMap[40] = 0x00;
-        l->gameMap[44] = (unsigned char) rand() % 3; // Jungle 1
+        l->gameMap[44] = (uint8_t) rand() % 3; // Jungle 1
         LoadMapData ( l, 0, Jungle1_Offline_Maps [l->gameMap[44]] );
         LoadObjectData ( l, 0, Jungle1_Offline_Maps [l->gameMap[44]] );
 
         l->gameMap[48] = 0x00;
-        l->gameMap[52] = (unsigned char) rand() % 3; // Jungle 2
+        l->gameMap[52] = (uint8_t) rand() % 3; // Jungle 2
         LoadMapData ( l, 0, Jungle2_Offline_Maps [l->gameMap[52]] );
         LoadObjectData ( l, 0, Jungle2_Offline_Maps [l->gameMap[52]] );
 
         l->gameMap[56] = 0x00;
-        l->gameMap[60] = (unsigned char) rand() % 3; // Jungle 3
+        l->gameMap[60] = (uint8_t) rand() % 3; // Jungle 3
         LoadMapData ( l, 0, Jungle3_Offline_Maps [l->gameMap[60]] );
         LoadObjectData ( l, 0, Jungle3_Offline_Maps [l->gameMap[60]] );
 
-        l->gameMap[64] = (unsigned char) rand() % 2; // Jungle 4
-        l->gameMap[68] = (unsigned char) rand() % 2;
+        l->gameMap[64] = (uint8_t) rand() % 2; // Jungle 4
+        l->gameMap[68] = (uint8_t) rand() % 2;
         LoadMapData ( l, 0, Jungle4_Offline_Maps [(l->gameMap[64] * 2 ) + l->gameMap[68]] );
         LoadObjectData ( l, 0, Jungle4_Offline_Maps [(l->gameMap[64] * 2 ) + l->gameMap[68]] );
 
         l->gameMap[72] = 0x00;
-        l->gameMap[76] = (unsigned char) rand() % 3; // Jungle 5
+        l->gameMap[76] = (uint8_t) rand() % 3; // Jungle 5
         LoadMapData ( l, 0, Jungle5_Offline_Maps [l->gameMap[76]] );
         LoadObjectData ( l, 0, Jungle5_Offline_Maps [l->gameMap[76]] );
 
-        l->gameMap[80] = (unsigned char) rand() % 2; // Seabed 1
+        l->gameMap[80] = (uint8_t) rand() % 2; // Seabed 1
         LoadMapData ( l, 0, Seabed1_Offline_Maps [l->gameMap[80]] );
         LoadObjectData ( l, 0, Seabed1_Offline_Maps [l->gameMap[80]] );
 
-        l->gameMap[88] = (unsigned char) rand() % 2; // Seabed 2
+        l->gameMap[88] = (uint8_t) rand() % 2; // Seabed 2
         LoadMapData ( l, 0, Seabed2_Offline_Maps [l->gameMap[88]] );
         LoadObjectData ( l, 0, Seabed2_Offline_Maps [l->gameMap[88]] );
       }
@@ -2455,35 +2456,35 @@ void initialize_game (BANANA* client)
         LoadObjectData (l, 0, "map/map_city02_00_00o_s.dat");
       }
 
-      l->gameMap[12] = (unsigned char) rand() % 3; // Crater East
+      l->gameMap[12] = (uint8_t) rand() % 3; // Crater East
       LoadMapData ( l, 0, Crater_East_Online_Maps [l->gameMap[12]] );
       LoadObjectData ( l, 0, Crater_East_Online_Maps [l->gameMap[12]] );
 
-      l->gameMap[20] = (unsigned char) rand() % 3; // Crater West
+      l->gameMap[20] = (uint8_t) rand() % 3; // Crater West
       LoadMapData ( l, 0, Crater_West_Online_Maps [l->gameMap[20]] );
       LoadObjectData ( l, 0, Crater_West_Online_Maps [l->gameMap[20]] );
 
-      l->gameMap[28] = (unsigned char) rand() % 3; // Crater South
+      l->gameMap[28] = (uint8_t) rand() % 3; // Crater South
       LoadMapData ( l, 0, Crater_South_Online_Maps [l->gameMap[28]] );
       LoadObjectData ( l, 0, Crater_South_Online_Maps [l->gameMap[28]] );
 
-      l->gameMap[36] = (unsigned char) rand() % 3; // Crater North
+      l->gameMap[36] = (uint8_t) rand() % 3; // Crater North
       LoadMapData ( l, 0, Crater_North_Online_Maps [l->gameMap[36]] );
       LoadObjectData ( l, 0, Crater_North_Online_Maps [l->gameMap[36]] );
 
-      l->gameMap[44] = (unsigned char) rand() % 3; // Crater Interior
+      l->gameMap[44] = (uint8_t) rand() % 3; // Crater Interior
       LoadMapData ( l, 0, Crater_Interior_Online_Maps [l->gameMap[44]] );
       LoadObjectData ( l, 0, Crater_Interior_Online_Maps [l->gameMap[44]] );
 
-      l->gameMap[48] = (unsigned char) rand() % 3; // Desert 1
+      l->gameMap[48] = (uint8_t) rand() % 3; // Desert 1
       LoadMapData ( l, 1, Desert1_Online_Maps [l->gameMap[48]] );
       LoadObjectData ( l, 1, Desert1_Online_Maps [l->gameMap[48]] );
 
-      l->gameMap[60] = (unsigned char) rand() % 3; // Desert 2
+      l->gameMap[60] = (uint8_t) rand() % 3; // Desert 2
       LoadMapData ( l, 1, Desert2_Online_Maps [l->gameMap[60]] );
       LoadObjectData ( l, 1, Desert2_Online_Maps [l->gameMap[60]] );
 
-      l->gameMap[64] = (unsigned char) rand() % 3; // Desert 3
+      l->gameMap[64] = (uint8_t) rand() % 3; // Desert 3
       LoadMapData ( l, 1, Desert3_Online_Maps [l->gameMap[64]] );
       LoadObjectData ( l, 1, Desert3_Online_Maps [l->gameMap[64]] );
 
@@ -2502,8 +2503,8 @@ void initialize_game (BANANA* client)
 void Send64 (BANANA* client)
 {
   LOBBY* l;
-  unsigned Offset;
-  unsigned ch;
+  uint32_t Offset;
+  uint32_t ch;
 
   if (!client->lobby)
     return;
@@ -2532,7 +2533,7 @@ void Send64 (BANANA* client)
   PacketData[0x00] = 0xA8;
   PacketData[0x01] = 0x01;
   PacketData[0x02] = 0x64;
-  PacketData[0x04] = (unsigned char) l->lobbyCount;
+  PacketData[0x04] = (uint8_t) l->lobbyCount;
   memcpy (&PacketData[0x08], &l->gameMap[0], 128 );
   Offset = 0x88;
   for (ch=0;ch<4;ch++)
@@ -2617,13 +2618,13 @@ void Send64 (BANANA* client)
   client->bursting = 1;
 }
 
-void Send67 (BANANA* client, unsigned char preferred)
+void Send67 (BANANA* client, uint8_t preferred)
 {
   BLOCK* b;
   BANANA* lClient;
   LOBBY* l;
-  unsigned Offset = 0, Offset2 = 0;
-  unsigned ch, ch2;
+  uint32_t Offset = 0, Offset2 = 0;
+  uint32_t ch, ch2;
 
   if (!client->lobbyOK)
     return;
@@ -2712,7 +2713,7 @@ void Send67 (BANANA* client, unsigned char preferred)
             }
           }
         }
-        *(unsigned short*) &PacketData[0] = (unsigned short) Offset;
+        *(uint16_t*) &PacketData[0] = (uint16_t) Offset;
         PacketData[2] = 0x67;
         break;
     }
@@ -2764,7 +2765,7 @@ void Send95 (BANANA* client)
   }
 }
 
-int qflag (unsigned char* flag_data, unsigned flag, unsigned difficulty)
+int32_t qflag (uint8_t* flag_data, uint32_t flag, uint32_t difficulty)
 {
   if (flag_data[(difficulty * 0x80) + ( flag >> 3 )] & (1 << (7 - ( flag & 0x07 ))))
     return 1;
@@ -2772,10 +2773,10 @@ int qflag (unsigned char* flag_data, unsigned flag, unsigned difficulty)
     return 0;
 }
 
-int qflag_ep1solo(unsigned char* flag_data, unsigned difficulty)
+int32_t qflag_ep1solo(uint8_t* flag_data, uint32_t difficulty)
 {
-  int i;
-  unsigned int quest_flag;
+  int32_t i;
+  uint32_t quest_flag;
 
   for(i=1;i<=25;i++)
   {
@@ -2785,18 +2786,18 @@ int qflag_ep1solo(unsigned char* flag_data, unsigned difficulty)
   return 1;
 }
 
-void SendA2 (unsigned char episode, unsigned char solo, unsigned char category, unsigned char gov, BANANA* client)
+void SendA2 (uint8_t episode, uint8_t solo, uint8_t category, uint8_t gov, BANANA* client)
 {
   QUEST_MENU* qm = 0;
   QUEST* q;
-  unsigned char qc = 0;
-  unsigned short Offset;
-  unsigned ch,ch2,ch3,show_quest,quest_flag;
-  unsigned char quest_count;
-  char quest_num[16];
-  int qn, tier1, ep1solo;
+  uint8_t qc = 0;
+  uint16_t Offset;
+  uint32_t ch,ch2,ch3,show_quest,quest_flag;
+  uint8_t quest_count;
+  int8_t quest_num[16];
+  int32_t qn, tier1, ep1solo;
   LOBBY* l;
-  unsigned char diff;
+  uint8_t diff;
 
   if (!client->lobby)
     return;
@@ -3064,7 +3065,7 @@ void SendA2 (unsigned char episode, unsigned char solo, unsigned char category, 
         PacketData[Offset]      = qc;
         PacketData[Offset+1]  = 0x01;
         PacketData[Offset+2]    = gov;
-        PacketData[Offset+3]    = ((unsigned char) qm->quest_indexes[category][ch]) + 1;
+        PacketData[Offset+3]    = ((uint8_t) qm->quest_indexes[category][ch]) + 1;
         PacketData[Offset+4]    = category;
         if ((client->character.lang < 10) && (q->ql[client->character.lang]))
           {
@@ -3081,8 +3082,8 @@ void SendA2 (unsigned char episode, unsigned char solo, unsigned char category, 
         {
           if (qn <= 26)
           {
-            *(unsigned short*) &PacketData[Offset+0x128] = ep1_unlocks[(qn-1)*2];
-            *(unsigned short*) &PacketData[Offset+0x12C] = ep1_unlocks[((qn-1)*2)+1];
+            *(uint16_t*) &PacketData[Offset+0x128] = ep1_unlocks[(qn-1)*2];
+            *(uint16_t*) &PacketData[Offset+0x12C] = ep1_unlocks[((qn-1)*2)+1];
             *(int*) &PacketData[Offset+0x130] = qn;
             if ( show_quest == 2 )
               PacketData[Offset + 0x138] = 1;
@@ -3094,7 +3095,7 @@ void SendA2 (unsigned char episode, unsigned char solo, unsigned char category, 
     }
     PacketData[0x04] = quest_count;
   }
-  *(unsigned short*) &PacketData[0] = (unsigned short) Offset;
+  *(uint16_t*) &PacketData[0] = (uint16_t) Offset;
   cipher_ptr = &client->server_cipher;
   encryptcopy (client, &PacketData[0], Offset);
 }
@@ -3102,20 +3103,20 @@ void SendA2 (unsigned char episode, unsigned char solo, unsigned char category, 
 void SendA0 (BANANA* client)
 {
   cipher_ptr = &client->server_cipher;
-  encryptcopy (client, &PacketA0Data[0], *(unsigned short *) &PacketA0Data[0]);
+  encryptcopy (client, &PacketA0Data[0], *(uint16_t *) &PacketA0Data[0]);
 }
 
 
 void Send07 (BANANA* client)
 {
   cipher_ptr = &client->server_cipher;
-  encryptcopy (client, &Packet07Data[0], *(unsigned short *) &Packet07Data[0]);
+  encryptcopy (client, &Packet07Data[0], *(uint16_t *) &Packet07Data[0]);
 }
 
 
-void SendB0 (const char *mes, BANANA* client)
+void SendB0 (const int8_t *mes, BANANA* client)
 {
-  unsigned short xB0_Len;
+  uint16_t xB0_Len;
 
   memcpy (&PacketData[0], &PacketB0[0], sizeof (PacketB0));
   xB0_Len = sizeof (PacketB0);
@@ -3131,24 +3132,24 @@ void SendB0 (const char *mes, BANANA* client)
 
   while (xB0_Len % 8)
     PacketData[xB0_Len++] = 0x00;
-  *(unsigned short*) &PacketData[0] = xB0_Len;
+  *(uint16_t*) &PacketData[0] = xB0_Len;
   cipher_ptr = &client->server_cipher;
   encryptcopy (client, &PacketData[0], xB0_Len);
 }
 
 
-void BroadcastToAll (unsigned short *mes, BANANA* client)
+void BroadcastToAll (uint16_t *mes, BANANA* client)
 {
-  unsigned short xEE_Len;
-  unsigned short *pd;
-  unsigned short *cname;
-  unsigned ch, connectNum;
+  uint16_t xEE_Len;
+  uint16_t *pd;
+  uint16_t *cname;
+  uint32_t ch, connectNum;
 
   memcpy (&PacketData[0], &PacketEE[0], sizeof (PacketEE));
   xEE_Len = sizeof (PacketEE);
 
-  pd = (unsigned short*) &PacketData[xEE_Len];
-  cname = (unsigned short*) &client->character.name[4];
+  pd = (uint16_t*) &PacketData[xEE_Len];
+  cname = (uint16_t*) &client->character.name[4];
 
   *(pd++) = 91;
   *(pd++) = 71;
@@ -3187,7 +3188,7 @@ void BroadcastToAll (unsigned short *mes, BANANA* client)
 
   while (xEE_Len % 8)
     PacketData[xEE_Len++] = 0x00;
-  *(unsigned short*) &PacketData[0] = xEE_Len;
+  *(uint16_t*) &PacketData[0] = xEE_Len;
   if (client->announce == 1)
   {
     // Local announcement
@@ -3217,16 +3218,16 @@ void BroadcastToAll (unsigned short *mes, BANANA* client)
   client->announce = 0;
 }
 
-void GlobalBroadcast (unsigned short *mes)
+void GlobalBroadcast (uint16_t *mes)
 {
-  unsigned short xEE_Len;
-  unsigned short *pd;
-  unsigned ch, connectNum;
+  uint16_t xEE_Len;
+  uint16_t *pd;
+  uint32_t ch, connectNum;
 
   memcpy (&PacketData[0], &PacketEE[0], sizeof (PacketEE));
   xEE_Len = sizeof (PacketEE);
 
-  pd = (unsigned short*) &PacketData[xEE_Len];
+  pd = (uint16_t*) &PacketData[xEE_Len];
 
   while (*mes != 0x0000)
   {
@@ -3239,7 +3240,7 @@ void GlobalBroadcast (unsigned short *mes)
 
   while (xEE_Len % 8)
     PacketData[xEE_Len++] = 0x00;
-  *(unsigned short*) &PacketData[0] = xEE_Len;
+  *(uint16_t*) &PacketData[0] = xEE_Len;
   for (ch=0;ch<serverNumConnections;ch++)
   {
     connectNum = serverConnectionList[ch];
@@ -3252,9 +3253,9 @@ void GlobalBroadcast (unsigned short *mes)
 }
 
 
-void SendEE (const char *mes, BANANA* client)
+void SendEE (const int8_t *mes, BANANA* client)
 {
-  unsigned short xEE_Len;
+  uint16_t xEE_Len;
 
   memcpy (&PacketData[0], &PacketEE[0], sizeof (PacketEE));
   xEE_Len = sizeof (PacketEE);
@@ -3270,24 +3271,24 @@ void SendEE (const char *mes, BANANA* client)
 
   while (xEE_Len % 8)
     PacketData[xEE_Len++] = 0x00;
-  *(unsigned short*) &PacketData[0] = xEE_Len;
+  *(uint16_t*) &PacketData[0] = xEE_Len;
   cipher_ptr = &client->server_cipher;
   encryptcopy (client, &PacketData[0], xEE_Len);
 }
 
-void Send19 (unsigned char ip1, unsigned char ip2, unsigned char ip3, unsigned char ip4, unsigned short ipp, BANANA* client)
+void Send19 (uint8_t ip1, uint8_t ip2, uint8_t ip3, uint8_t ip4, uint16_t ipp, BANANA* client)
 {
   memcpy ( &client->encryptbuf[0], &Packet19, sizeof (Packet19));
   client->encryptbuf[0x08] = ip1;
   client->encryptbuf[0x09] = ip2;
   client->encryptbuf[0x0A] = ip3;
   client->encryptbuf[0x0B] = ip4;
-  *(unsigned short*) &client->encryptbuf[0x0C] = ipp;
+  *(uint16_t*) &client->encryptbuf[0x0C] = ipp;
   cipher_ptr = &client->server_cipher;
   encryptcopy (client, &client->encryptbuf[0], sizeof (Packet19));
 }
 
-void SendEA (unsigned char command, BANANA* client)
+void SendEA (uint8_t command, BANANA* client)
 {
   switch (command)
   {
@@ -3348,7 +3349,7 @@ void SendEA (unsigned char command, BANANA* client)
     {
       *(unsigned *) &client->encryptbuf[0x0C] = client->guildcard;
       *(unsigned *) &client->encryptbuf[0x10] = client->character.teamID;
-      client->encryptbuf[0x1C] = (unsigned char) client->character.privilegeLevel;
+      client->encryptbuf[0x1C] = (uint8_t) client->character.privilegeLevel;
       memcpy (&client->encryptbuf[0x20], &client->character.teamName[0], 28);
       client->encryptbuf[0x3C] = 0x84;
       client->encryptbuf[0x3D] = 0x6C;
@@ -3367,7 +3368,7 @@ void SendEA (unsigned char command, BANANA* client)
     {
       LOBBY *l;
       BANANA *lClient;
-      unsigned ch, total_clients, EA15Offset, maxc;
+      uint32_t ch, total_clients, EA15Offset, maxc;
 
       if (!client->lobby)
         break;
@@ -3391,7 +3392,7 @@ void SendEA (unsigned char command, BANANA* client)
           EA15Offset += 0x04;
           memset(&client->encryptbuf[EA15Offset], 0, 8);
           EA15Offset += 0x08;
-          client->encryptbuf[EA15Offset] = (unsigned char) lClient->character.privilegeLevel;
+          client->encryptbuf[EA15Offset] = (uint8_t) lClient->character.privilegeLevel;
           EA15Offset += 4;
           memcpy(&client->encryptbuf[EA15Offset], &lClient->character.teamName[0], 28);
           EA15Offset += 28;
@@ -3421,7 +3422,7 @@ void SendEA (unsigned char command, BANANA* client)
           total_clients++;
         }
       }
-      *(unsigned short*) &client->encryptbuf[0x00] = (unsigned short) EA15Offset;
+      *(uint16_t*) &client->encryptbuf[0x00] = (uint16_t) EA15Offset;
       client->encryptbuf[0x02] = 0xEA;
       client->encryptbuf[0x03] = 0x13;
       *(unsigned*) &client->encryptbuf[0x04] = total_clients;
@@ -3436,7 +3437,7 @@ void SendEA (unsigned char command, BANANA* client)
     client->encryptbuf[0x03] = 0x18;
     client->encryptbuf[0x14] = 0x01;
     client->encryptbuf[0x18] = 0x01;
-    client->encryptbuf[0x1C] = (unsigned char) client->character.privilegeLevel;
+    client->encryptbuf[0x1C] = (uint8_t) client->character.privilegeLevel;
     *(unsigned *) &client->encryptbuf[0x20] = client->character.guildCard;
     memcpy (&client->encryptbuf[0x24], &client->character.name[0], 24);
     client->encryptbuf[0x48] = 0x02;
@@ -3472,13 +3473,13 @@ void SendEA (unsigned char command, BANANA* client)
   }
 }
 
-unsigned char* MakePacketEA15 (BANANA* client)
+uint8_t* MakePacketEA15 (BANANA* client)
 {
   sprintf (&PacketData[0x00], "\x64\x08\xEA\x15\x01");
   memset  (&PacketData[0x05], 0, 3);
   *(unsigned *) &PacketData[0x08] = client->guildcard;
   *(unsigned *) &PacketData[0x0C] = client->character.teamID;
-  PacketData [0x18] = (unsigned char) client->character.privilegeLevel;
+  PacketData [0x18] = (uint8_t) client->character.privilegeLevel;
   memcpy  (&PacketData [0x1C], &client->character.teamName[0], 28);
   sprintf (&PacketData[0x38], "\x84\x6C\x98");
   *(unsigned *) &PacketData[0x3C] = client->guildcard;
@@ -3488,9 +3489,9 @@ unsigned char* MakePacketEA15 (BANANA* client)
   return   &PacketData[0];
 }
 
-unsigned free_game_item (LOBBY* l)
+uint32_t free_game_item (LOBBY* l)
 {
-  unsigned ch, ch2, oldest_item;
+  uint32_t ch, ch2, oldest_item;
 
   ch2 = oldest_item = 0xFFFFFFFF;
 
@@ -3544,7 +3545,7 @@ void UpdateGameItem (BANANA* client)
   // Updates the game item list for all of the client's items...  (Used strictly when a client joins a game...)
 
   LOBBY* l;
-  unsigned ch;
+  uint32_t ch;
 
   memset (&client->tekked, 0, sizeof (INVENTORY_ITEM)); // Reset tekking data
 
@@ -3564,7 +3565,7 @@ BANK_ITEM bank_data[200];
 
 void SortClientItems (BANANA* client)
 {
-  unsigned ch, ch2, ch3, ch4, itemid;
+  uint32_t ch, ch2, ch3, ch4, itemid;
 
   ch2 = 0x0C;
 
@@ -3602,7 +3603,7 @@ void SortClientItems (BANANA* client)
 
 void CleanUpBank (BANANA* client)
 {
-  unsigned ch, ch2 = 0;
+  uint32_t ch, ch2 = 0;
 
   memset (&bank_data[0], 0, sizeof (BANK_ITEM) * 200);
 
@@ -3626,7 +3627,7 @@ void CleanUpBank (BANANA* client)
 
 void CleanUpInventory (BANANA* client)
 {
-  unsigned ch, ch2 = 0;
+  uint32_t ch, ch2 = 0;
 
   memset (&sort_data[0], 0, sizeof (INVENTORY_ITEM) * 30);
 
@@ -3646,7 +3647,7 @@ void CleanUpInventory (BANANA* client)
 
 void CleanUpGameInventory (LOBBY* l)
 {
-  unsigned ch, item_count;
+  uint32_t ch, item_count;
 
   ch = item_count = 0;
 
@@ -3668,15 +3669,15 @@ void CleanUpGameInventory (LOBBY* l)
   l->gameItemCount = item_count;
 }
 
-unsigned AddItemToClient (unsigned itemid, BANANA* client)
+uint32_t AddItemToClient (unsigned itemid, BANANA* client)
 {
-  unsigned ch, itemNum = 0;
-  int found_item = -1;
-  unsigned char stackable = 0;
-  unsigned count, stack_count;
-  unsigned compare_item1 = 0;
-  unsigned compare_item2 = 0;
-  unsigned item_added = 0;
+  uint32_t ch, itemNum = 0;
+  int32_t found_item = -1;
+  uint8_t stackable = 0;
+  uint32_t count, stack_count;
+  uint32_t compare_item1 = 0;
+  uint32_t compare_item2 = 0;
+  uint32_t item_added = 0;
   LOBBY* l;
 
   // Adds an item to the client's character data, but only if the item exists in the game item data
@@ -3735,7 +3736,7 @@ unsigned AddItemToClient (unsigned itemid, BANANA* client)
           else
           {
             // Add item to the client's current count...
-            client->character.inventory[ch].item.data[5] = (unsigned char) ( stack_count + count );
+            client->character.inventory[ch].item.data[5] = (uint8_t) ( stack_count + count );
             item_added = 1;
           }
           break;
@@ -3772,9 +3773,9 @@ unsigned AddItemToClient (unsigned itemid, BANANA* client)
   return item_added;
 }
 
-void DeleteMesetaFromClient (unsigned count, unsigned drop, BANANA* client)
+void DeleteMesetaFromClient (unsigned count, uint32_t drop, BANANA* client)
 {
-  unsigned stack_count, newItemNum;
+  uint32_t stack_count, newItemNum;
   LOBBY* l;
 
   if (!client->lobby)
@@ -3801,7 +3802,7 @@ void DeleteMesetaFromClient (unsigned count, unsigned drop, BANANA* client)
     PacketData[0x09] = 0x09;
     PacketData[0x0A] = client->clientID;
     *(unsigned *) &PacketData[0x0C] = client->drop_area;
-    *(long long *) &PacketData[0x10] = client->drop_coords;
+    *(int64_t *) &PacketData[0x10] = client->drop_coords;
     PacketData[0x18] = 0x04;
     PacketData[0x19] = 0x00;
     PacketData[0x1A] = 0x00;
@@ -3826,7 +3827,7 @@ void DeleteMesetaFromClient (unsigned count, unsigned drop, BANANA* client)
 
 void SendItemToEnd (unsigned itemid, BANANA* client)
 {
-  unsigned ch;
+  uint32_t ch;
   INVENTORY_ITEM i;
 
   for (ch=0;ch<client->character.inventoryUse;ch++)
@@ -3849,14 +3850,14 @@ void SendItemToEnd (unsigned itemid, BANANA* client)
 }
 
 
-void DeleteItemFromClient (unsigned itemid, unsigned count, unsigned drop, BANANA* client)
+void DeleteItemFromClient (unsigned itemid, uint32_t count, uint32_t drop, BANANA* client)
 {
-  unsigned ch, ch2, itemNum;
-  int found_item = -1;
+  uint32_t ch, ch2, itemNum;
+  int32_t found_item = -1;
   LOBBY* l;
-  unsigned char stackable = 0;
-  unsigned delete_item = 0;
-  unsigned stack_count;
+  uint8_t stackable = 0;
+  uint32_t delete_item = 0;
+  uint32_t stack_count;
 
   // Deletes an item from the client's character data.
 
@@ -3890,7 +3891,7 @@ void DeleteItemFromClient (unsigned itemid, unsigned count, unsigned drop, BANAN
         else
         {
           stack_count -= count;
-          client->character.inventory[ch].item.data[5] = (unsigned char) stack_count;
+          client->character.inventory[ch].item.data[5] = (uint8_t) stack_count;
 
           if ( !stack_count )
             delete_item = 1;
@@ -3906,9 +3907,9 @@ void DeleteItemFromClient (unsigned itemid, unsigned count, unsigned drop, BANAN
             PacketData[0x09] = 0x08;
             PacketData[0x0A] = client->clientID;
             *(unsigned *) &PacketData[0x0C] = client->drop_area;
-            *(long long *) &PacketData[0x10] = client->drop_coords;
+            *(int64_t *) &PacketData[0x10] = client->drop_coords;
             memcpy (&PacketData[0x18], &client->character.inventory[ch].item.data[0], 12);
-            PacketData[0x1D] = (unsigned char) count;
+            PacketData[0x1D] = (uint8_t) count;
             *(unsigned *) &PacketData[0x24] = l->playerItemID[client->clientID];
 
             SendToLobby (client->lobby, 4, &PacketData[0], 0x28, 0);
@@ -3971,16 +3972,16 @@ void DeleteItemFromClient (unsigned itemid, unsigned count, unsigned drop, BANAN
 
 }
 
-unsigned WithdrawFromBank (unsigned itemid, unsigned count, BANANA* client)
+uint32_t WithdrawFromBank (unsigned itemid, uint32_t count, BANANA* client)
 {
-  unsigned ch;
-  int found_item = -1;
-  unsigned char stackable = 0;
-  unsigned stack_count;
-  unsigned compare_item1 = 0;
-  unsigned compare_item2 = 0;
-  unsigned item_added = 0;
-  unsigned delete_item = 0;
+  uint32_t ch;
+  int32_t found_item = -1;
+  uint8_t stackable = 0;
+  uint32_t stack_count;
+  uint32_t compare_item1 = 0;
+  uint32_t compare_item2 = 0;
+  uint32_t item_added = 0;
+  uint32_t delete_item = 0;
   LOBBY* l;
 
   // Adds an item to the client's character from it's bank, if the item is really there...
@@ -4046,7 +4047,7 @@ unsigned WithdrawFromBank (unsigned itemid, unsigned count, BANANA* client)
             client->character.inventory[ch].item.data[5] = stackable;
           }
           else
-            client->character.inventory[ch].item.data[5] = (unsigned char) (stack_count + count);
+            client->character.inventory[ch].item.data[5] = (uint8_t) (stack_count + count);
           item_added = 1;
           break;
         }
@@ -4069,7 +4070,7 @@ unsigned WithdrawFromBank (unsigned itemid, unsigned count, BANANA* client)
         if ( stackable )
         {
           memset (&client->character.inventory[client->character.inventoryUse].item.data[4], 0, 4);
-          client->character.inventory[client->character.inventoryUse].item.data[5] = (unsigned char) count;
+          client->character.inventory[client->character.inventoryUse].item.data[5] = (uint8_t) count;
         }
         client->character.inventory[client->character.inventoryUse].item.itemid = l->itemID;
         client->character.inventoryUse++;
@@ -4113,10 +4114,10 @@ unsigned WithdrawFromBank (unsigned itemid, unsigned count, BANANA* client)
 
 void SortBankItems (BANANA* client)
 {
-  unsigned ch, ch2;
-  unsigned compare_item1 = 0;
-  unsigned compare_item2 = 0;
-  unsigned char swap_c;
+  uint32_t ch, ch2;
+  uint32_t compare_item1 = 0;
+  uint32_t compare_item2 = 0;
+  uint8_t swap_c;
   BANK_ITEM swap_item;
   BANK_ITEM b1;
   BANK_ITEM b2;
@@ -4149,17 +4150,17 @@ void SortBankItems (BANANA* client)
   }
 }
 
-void DepositIntoBank (unsigned itemid, unsigned count, BANANA* client)
+void DepositIntoBank (unsigned itemid, uint32_t count, BANANA* client)
 {
-  unsigned ch, ch2;
-  int found_item = -1;
+  uint32_t ch, ch2;
+  int32_t found_item = -1;
   LOBBY* l;
-  unsigned char stackable = 0;
-  unsigned compare_item1 = 0;
-  unsigned compare_item2 = 0;
-  unsigned deposit_item = 0, deposit_done = 0;
-  unsigned delete_item = 0;
-  unsigned stack_count;
+  uint8_t stackable = 0;
+  uint32_t compare_item1 = 0;
+  uint32_t compare_item2 = 0;
+  uint32_t deposit_item = 0, deposit_done = 0;
+  uint32_t delete_item = 0;
+  uint32_t stack_count;
 
   // Moves an item from the client's character to it's bank.
 
@@ -4195,7 +4196,7 @@ void DepositIntoBank (unsigned itemid, unsigned count, BANANA* client)
           deposit_item = 1;
 
           stack_count -= count;
-          client->character.inventory[ch].item.data[5] = (unsigned char) stack_count;
+          client->character.inventory[ch].item.data[5] = (uint8_t) stack_count;
 
           if ( !stack_count )
             delete_item = 1;
@@ -4283,17 +4284,17 @@ void DepositIntoBank (unsigned itemid, unsigned count, BANANA* client)
     CleanUpInventory (client);
 }
 
-void DeleteFromInventory (INVENTORY_ITEM* i, unsigned count, BANANA* client)
+void DeleteFromInventory (INVENTORY_ITEM* i, uint32_t count, BANANA* client)
 {
-  unsigned ch, ch2;
-  int found_item = -1;
+  uint32_t ch, ch2;
+  int32_t found_item = -1;
   LOBBY* l;
-  unsigned char stackable = 0;
-  unsigned delete_item = 0;
-  unsigned stack_count;
-  unsigned compare_item1 = 0;
-  unsigned compare_item2 = 0;
-  unsigned compare_id;
+  uint8_t stackable = 0;
+  uint32_t delete_item = 0;
+  uint32_t stack_count;
+  uint32_t compare_item1 = 0;
+  uint32_t compare_item2 = 0;
+  uint32_t compare_id;
 
   // Deletes an item from the client's character data.
 
@@ -4329,7 +4330,7 @@ void DeleteFromInventory (INVENTORY_ITEM* i, unsigned count, BANANA* client)
 
         stack_count -= count;
 
-        client->character.inventory[ch].item.data[5] = (unsigned char) stack_count;
+        client->character.inventory[ch].item.data[5] = (uint8_t) stack_count;
 
         if (!stack_count)
           delete_item = 1;
@@ -4344,7 +4345,7 @@ void DeleteFromInventory (INVENTORY_ITEM* i, unsigned count, BANANA* client)
       client->encryptbuf[0x09] = 0x05;
       client->encryptbuf[0x0A] = client->clientID;
       *(unsigned *) &client->encryptbuf[0x0C] =  client->character.inventory[ch].item.itemid;
-      client->encryptbuf[0x10] = (unsigned char) count;
+      client->encryptbuf[0x10] = (uint8_t) count;
 
       SendToLobby (l, 4, &client->encryptbuf[0x00], 0x14, 0);
 
@@ -4381,15 +4382,15 @@ void DeleteFromInventory (INVENTORY_ITEM* i, unsigned count, BANANA* client)
 
 }
 
-unsigned AddToInventory (INVENTORY_ITEM* i, unsigned count, int shop, BANANA* client)
+uint32_t AddToInventory (INVENTORY_ITEM* i, uint32_t count, int32_t shop, BANANA* client)
 {
-  unsigned ch;
-  unsigned char stackable = 0;
-  unsigned stack_count;
-  unsigned compare_item1 = 0;
-  unsigned compare_item2 = 0;
-  unsigned item_added = 0;
-  unsigned notsend;
+  uint32_t ch;
+  uint8_t stackable = 0;
+  uint32_t stack_count;
+  uint32_t compare_item1 = 0;
+  uint32_t compare_item2 = 0;
+  uint32_t item_added = 0;
+  uint32_t notsend;
   LOBBY* l;
 
   // Adds an item to the client's inventory... (out of thin air)
@@ -4436,7 +4437,7 @@ unsigned AddToInventory (INVENTORY_ITEM* i, unsigned count, int shop, BANANA* cl
             client->character.inventory[ch].item.data[5] = stackable;
           }
           else
-            client->character.inventory[ch].item.data[5] = (unsigned char) ( stack_count + count );
+            client->character.inventory[ch].item.data[5] = (uint8_t) ( stack_count + count );
           item_added = 1;
           break;
         }
@@ -4459,7 +4460,7 @@ unsigned AddToInventory (INVENTORY_ITEM* i, unsigned count, int shop, BANANA* cl
         if ( stackable )
         {
           memset (&client->character.inventory[client->character.inventoryUse].item.data[4], 0, 4);
-          client->character.inventory[client->character.inventoryUse].item.data[5] = (unsigned char) count;
+          client->character.inventory[client->character.inventoryUse].item.data[5] = (uint8_t) count;
         }
         client->character.inventoryUse++;
         item_added = 1;
@@ -4493,7 +4494,7 @@ unsigned AddToInventory (INVENTORY_ITEM* i, unsigned count, int shop, BANANA* cl
 }
 
 
-void ShipSend04 (unsigned char command, BANANA* client, ORANGE* ship)
+void ShipSend04 (uint8_t command, BANANA* client, ORANGE* ship)
 {
   //unsigned ch;
 
@@ -4504,7 +4505,7 @@ void ShipSend04 (unsigned char command, BANANA* client, ORANGE* ship)
     // Request character data from server
     ship->encryptbuf[0x01] = 0x00;
     *(unsigned *) &ship->encryptbuf[0x02] = client->guildcard;
-    *(unsigned short *) &ship->encryptbuf[0x06] = (unsigned short) client->slotnum;
+    *(uint16_t *) &ship->encryptbuf[0x06] = (uint16_t) client->slotnum;
     *(int *) &ship->encryptbuf[0x08] = client->plySockfd;
     *(unsigned *) &ship->encryptbuf[0x0C] = serverID;
     compressShipPacket ( ship, &ship->encryptbuf[0x00], 0x10 );
@@ -4515,7 +4516,7 @@ void ShipSend04 (unsigned char command, BANANA* client, ORANGE* ship)
     {
       ship->encryptbuf[0x01] = 0x02;
       *(unsigned *) &ship->encryptbuf[0x02] = client->guildcard;
-      *(unsigned short*) &ship->encryptbuf[0x06] = (unsigned short) client->slotnum;
+      *(uint16_t*) &ship->encryptbuf[0x06] = (uint16_t) client->slotnum;
       memcpy (&ship->encryptbuf[0x08], &client->character.packetSize, sizeof (CHARDATA));
       // Include character bank in packet
       memcpy (&ship->encryptbuf[0x08+0x700], &client->char_bank, sizeof (BANK));
@@ -4539,7 +4540,7 @@ void ShipSend0E (ORANGE* ship)
   }
 }
 
-void ShipSend0D (unsigned char command, BANANA* client, ORANGE* ship)
+void ShipSend0D (uint8_t command, BANANA* client, ORANGE* ship)
 {
   ship->encryptbuf[0x00] = 0x0D;
   switch (command)
@@ -4561,23 +4562,23 @@ void ShipSend0B (BANANA* client, ORANGE* ship)
   ship->encryptbuf[0x01] = 0x00;
   *(unsigned *) &ship->encryptbuf[0x02] = *(unsigned *) &client->decryptbuf[0x0C];
   *(unsigned *) &ship->encryptbuf[0x06] = *(unsigned *) &client->decryptbuf[0x18];
-  *(long long *) &ship->encryptbuf[0x0A] = *(long long*) &client->decryptbuf[0x8C];
-  *(long long *) &ship->encryptbuf[0x12] = *(long long*) &client->decryptbuf[0x94];
-  *(long long *) &ship->encryptbuf[0x1A] = *(long long*) &client->decryptbuf[0x9C];
-  *(long long *) &ship->encryptbuf[0x22] = *(long long*) &client->decryptbuf[0xA4];
-  *(long long *) &ship->encryptbuf[0x2A] = *(long long*) &client->decryptbuf[0xAC];
+  *(int64_t *) &ship->encryptbuf[0x0A] = *(int64_t*) &client->decryptbuf[0x8C];
+  *(int64_t *) &ship->encryptbuf[0x12] = *(int64_t*) &client->decryptbuf[0x94];
+  *(int64_t *) &ship->encryptbuf[0x1A] = *(int64_t*) &client->decryptbuf[0x9C];
+  *(int64_t *) &ship->encryptbuf[0x22] = *(int64_t*) &client->decryptbuf[0xA4];
+  *(int64_t *) &ship->encryptbuf[0x2A] = *(int64_t*) &client->decryptbuf[0xAC];
   compressShipPacket ( ship, &ship->encryptbuf[0x00], 0x32 );
 }
 
 void FixItem (ITEM* i )
 {
-  unsigned ch3;
+  uint32_t ch3;
 
   if (i->data[0] == 2) // Mag
   {
     MAG* m;
-    short mDefense, mPower, mDex, mMind;
-    int total_levels;
+    int16_t mDefense, mPower, mDex, mMind;
+    int32_t total_levels;
 
     m = (MAG*) &i->data[0];
 
@@ -4638,10 +4639,10 @@ void FixItem (ITEM* i )
 
   if (i->data[0] == 0) // Weapon
   {
-    signed char percent_table[6];
-    signed char percent;
-    unsigned max_percents, num_percents;
-    int srank;
+    int8_t percent_table[6];
+    int8_t percent;
+    uint32_t max_percents, num_percents;
+    int32_t srank;
 
     if ( ( i->data[1] == 0x33 ) ||  // SJS & Lame max 2 percents
        ( i->data[1] == 0xAB ) )
@@ -4689,7 +4690,7 @@ void FixItem (ITEM* i )
         if ( percent_table[ch3] )
         {
           i->data[6 + ( num_percents * 2 )] = ch3;
-          i->data[7 + ( num_percents * 2 )] = (unsigned char) percent_table[ch3];
+          i->data[7 + ( num_percents * 2 )] = (uint8_t) percent_table[ch3];
           num_percents ++;
           if ( num_percents == max_percents )
             break;
@@ -4699,14 +4700,14 @@ void FixItem (ITEM* i )
   }
 }
 
-const char lobbyString[] = { "L\0o\0b\0b\0y\0 \0" };
+const int8_t lobbyString[] = { "L\0o\0b\0b\0y\0 \0" };
 
 void LogonProcessPacket (ORANGE* ship)
 {
-  unsigned gcn, ch, ch2, connectNum;
-  unsigned char episode, part;
-  unsigned mob_rate;
-  long long mob_calc;
+  uint32_t gcn, ch, ch2, connectNum;
+  uint8_t episode, part;
+  uint32_t mob_rate;
+  int64_t mob_calc;
 
   switch (ship->decryptbuf[0x04])
   {
@@ -4728,7 +4729,7 @@ void LogonProcessPacket (ORANGE* ship)
     memcpy (&ship->encryptbuf[0x28], &Ship_Name[0], 12 );
     *(unsigned *) &ship->encryptbuf[0x34] = serverNumConnections;
     *(unsigned *) &ship->encryptbuf[0x38] = *(unsigned *) &serverIP[0];
-    *(unsigned short*) &ship->encryptbuf[0x3C] = (unsigned short) serverPort;
+    *(uint16_t*) &ship->encryptbuf[0x3C] = (uint16_t) serverPort;
     *(unsigned *) &ship->encryptbuf[0x3E] = shop_checksum;
     *(unsigned *) &ship->encryptbuf[0x42] = ship_index;
     memcpy (&ship->encryptbuf[0x46], &ship_key[0], 32);
@@ -4808,7 +4809,7 @@ void LogonProcessPacket (ORANGE* ship)
 
         for (ch2=0;ch2<128;ch2++)
           if (ship->key_change[ch2] != -1)
-            ship->user_key[ch2] = (unsigned char) ship->key_change[ch2]; // update the key
+            ship->user_key[ch2] = (uint8_t) ship->key_change[ch2]; // update the key
 
         prepare_key(&ship->user_key[0], sizeof(ship->user_key), &ship->cs_key);
         prepare_key(&ship->user_key[0], sizeof(ship->user_key), &ship->sc_key);
@@ -4836,10 +4837,10 @@ void LogonProcessPacket (ORANGE* ship)
         // Receive and store full player data here.
         //
         BANANA* client;
-        unsigned guildcard,ch,ch2,eq_weapon,eq_armor,eq_shield,eq_mag;
-        int sockfd;
-        unsigned short baseATP, baseMST, baseEVP, baseHP, baseDFP, baseATA;
-        unsigned char* cd;
+        uint32_t guildcard,ch,ch2,eq_weapon,eq_armor,eq_shield,eq_mag;
+        int32_t sockfd;
+        uint16_t baseATP, baseMST, baseEVP, baseHP, baseDFP, baseATA;
+        uint8_t* cd;
 
         guildcard = *(unsigned *) &ship->decryptbuf[0x06];
         sockfd = *(int *) &ship->decryptbuf[0x0C];
@@ -5033,12 +5034,12 @@ void LogonProcessPacket (ORANGE* ship)
             for (ch2=0;ch2<client->character.bankUse;ch2++)
               FixItem ( (ITEM*) &client->character.bankInventory[ch2] );
 
-            baseATP = *(unsigned short*) &startingData[(client->character._class*14)];
-            baseMST = *(unsigned short*) &startingData[(client->character._class*14)+2];
-            baseEVP = *(unsigned short*) &startingData[(client->character._class*14)+4];
-            baseHP  = *(unsigned short*) &startingData[(client->character._class*14)+6];
-            baseDFP = *(unsigned short*) &startingData[(client->character._class*14)+8];
-            baseATA = *(unsigned short*) &startingData[(client->character._class*14)+10];
+            baseATP = *(uint16_t*) &startingData[(client->character._class*14)];
+            baseMST = *(uint16_t*) &startingData[(client->character._class*14)+2];
+            baseEVP = *(uint16_t*) &startingData[(client->character._class*14)+4];
+            baseHP  = *(uint16_t*) &startingData[(client->character._class*14)+6];
+            baseDFP = *(uint16_t*) &startingData[(client->character._class*14)+8];
+            baseATA = *(uint16_t*) &startingData[(client->character._class*14)+10];
 
             for (ch2=0;ch2<client->character.level;ch2++)
             {
@@ -5058,7 +5059,7 @@ void LogonProcessPacket (ORANGE* ship)
 
             //client->character.lang = 0x00;
 
-            cd = (unsigned char*) &client->character.packetSize;
+            cd = (uint8_t*) &client->character.packetSize;
 
             cd[(8*28)+0x0F]  = client->matuse[0];
             cd[(9*28)+0x0F]  = client->matuse[1];
@@ -5066,7 +5067,7 @@ void LogonProcessPacket (ORANGE* ship)
             cd[(11*28)+0x0F] = client->matuse[3];
             cd[(12*28)+0x0F] = client->matuse[4];
 
-            encryptcopy (client, (unsigned char*) &client->character.packetSize, sizeof (CHARDATA) );
+            encryptcopy (client, (uint8_t*) &client->character.packetSize, sizeof (CHARDATA) );
             client->preferred_lobby = 0xFF;
 
             cd[(8*28)+0x0F]  = 0x00; // Clear this stuff out to not mess up our item procedures.
@@ -5088,9 +5089,9 @@ void LogonProcessPacket (ORANGE* ship)
             Send95 (client);
 
             if ( (client->isgm) || (isLocalGM(client->guildcard)) )
-              WriteGM ("GM %u (%s) has connected", client->guildcard, Unicode_to_ASCII ((unsigned short*) &client->character.name[4]));
+              WriteGM ("GM %u (%s) has connected", client->guildcard, Unicode_to_ASCII ((uint16_t*) &client->character.name[4]));
             else
-              WriteLog ("User %u (%s) has connected", client->guildcard, Unicode_to_ASCII ((unsigned short*) &client->character.name[4]));
+              WriteLog ("User %u (%s) has connected", client->guildcard, Unicode_to_ASCII ((uint16_t*) &client->character.name[4]));
             break;
           }
         }
@@ -5098,7 +5099,7 @@ void LogonProcessPacket (ORANGE* ship)
       break;
     case 0x03:
       {
-        unsigned guildcard;
+        uint32_t guildcard;
         BANANA* client;
 
         guildcard = *(unsigned *) &ship->decryptbuf[0x06];
@@ -5160,10 +5161,10 @@ void LogonProcessPacket (ORANGE* ship)
       {
         // Someone's doing a guild card search...   Check to see if that guild card is on our ship...
 
-        unsigned client_gcn, ch2;
-        unsigned char *n;
-        unsigned char *c;
-        unsigned short blockPort;
+        uint32_t client_gcn, ch2;
+        uint8_t *n;
+        uint8_t *c;
+        uint16_t blockPort;
 
         gcn = *(unsigned *) &ship->decryptbuf[0x06];
         client_gcn = *(unsigned *) &ship->decryptbuf[0x0A];
@@ -5201,7 +5202,7 @@ void LogonProcessPacket (ORANGE* ship)
             ship->encryptbuf[0x26] = 0x19;
             *(unsigned *) &ship->encryptbuf[0x2C] = *(unsigned *) &serverIP[0];
             blockPort = serverPort + connections[connectNum]->block;
-            *(unsigned short *) &ship->encryptbuf[0x30] = (unsigned short) blockPort;
+            *(uint16_t *) &ship->encryptbuf[0x30] = (uint16_t) blockPort;
             memcpy (&ship->encryptbuf[0x34], &lobbyString[0], 12 );
             if ( connections[connectNum]->lobbyNum < 0x10 )
             {
@@ -5246,15 +5247,15 @@ void LogonProcessPacket (ORANGE* ship)
               ship->encryptbuf[0x58] = 0x30 + ( serverID % 10 );
             }
             ship->encryptbuf[0x5A] = 0x3A;
-            n = (unsigned char*) &ship->encryptbuf[0x5C];
-            c = (unsigned char*) &Ship_Name[0];
+            n = (uint8_t*) &ship->encryptbuf[0x5C];
+            c = (uint8_t*) &Ship_Name[0];
             while (*c != 0x00)
             {
               *(n++) = *(c++);
               n++;
             }
             if ( connections[connectNum]->lobbyNum < 0x10 )
-            ship->encryptbuf[0xBC] = (unsigned char) connections[connectNum]->lobbyNum; else
+            ship->encryptbuf[0xBC] = (uint8_t) connections[connectNum]->lobbyNum; else
             ship->encryptbuf[0xBC] = 0x01;
             ship->encryptbuf[0xBE] = 0x1A;
             memcpy (&ship->encryptbuf[0x100], &connections[connectNum]->character.name[0], 24);
@@ -5311,7 +5312,7 @@ void LogonProcessPacket (ORANGE* ship)
     switch (ship->decryptbuf[0x05])
     {
       BANANA* client;
-      unsigned char CreateResult;
+      uint8_t CreateResult;
 
     case 0x00:
       CreateResult = ship->decryptbuf[0x06];
@@ -5356,7 +5357,7 @@ void LogonProcessPacket (ORANGE* ship)
     case 0x01:
       // Flag updated
       {
-        unsigned teamid;
+        uint32_t teamid;
         BANANA* tClient;
 
         teamid = *(unsigned *) &ship->decryptbuf[0x07];
@@ -5376,7 +5377,7 @@ void LogonProcessPacket (ORANGE* ship)
     case 0x02:
       // Team dissolved
       {
-        unsigned teamid;
+        uint32_t teamid;
         BANANA* tClient;
 
         teamid = *(unsigned *) &ship->decryptbuf[0x07];
@@ -5397,7 +5398,7 @@ void LogonProcessPacket (ORANGE* ship)
     case 0x04:
       // Team chat
       {
-        unsigned teamid, size;
+        uint32_t teamid, size;
         BANANA* tClient;
 
         size = *(unsigned *) &ship->decryptbuf[0x00];
@@ -5420,12 +5421,12 @@ void LogonProcessPacket (ORANGE* ship)
     case 0x05:
       // Request Team List
       {
-        unsigned gcn;
-        unsigned short size;
+        uint32_t gcn;
+        uint16_t size;
         BANANA* tClient;
 
         gcn = *(unsigned *) &ship->decryptbuf[0x0A];
-        size = *(unsigned short*) &ship->decryptbuf[0x0E];
+        size = *(uint16_t*) &ship->decryptbuf[0x0E];
 
         for (ch=0;ch<serverNumConnections;ch++)
         {
@@ -5466,7 +5467,7 @@ void LogonProcessPacket (ORANGE* ship)
           *(unsigned *) &client->encryptbuf[0x10] = gcn;
           client->guildcard = gcn;
           *(unsigned *) &client->encryptbuf[0x14] = *(unsigned*) &ship->decryptbuf[0x0C];
-          *(long long *) &client->encryptbuf[0x38] = *(long long*) &ship->decryptbuf[0x10];
+          *(int64_t *) &client->encryptbuf[0x38] = *(int64_t*) &ship->decryptbuf[0x10];
           if (client->decryptbuf[0x16] < 0x05)
           {
             Send1A ("Client/Server synchronization error.", client);
@@ -5521,14 +5522,14 @@ void LogonProcessPacket (ORANGE* ship)
     {
       case 0x01:
         {
-          unsigned char ch;
-          int sockfd;
-          unsigned short pOffset;
+          uint8_t ch;
+          int32_t sockfd;
+          uint16_t pOffset;
 
           // Retrieved ship list data.  Send to client...
 
           sockfd = *(int *) &ship->decryptbuf[0x06];
-          pOffset = *(unsigned short *) &ship->decryptbuf[0x0A];
+          pOffset = *(uint16_t *) &ship->decryptbuf[0x0A];
           memcpy (&PacketA0Data[0x00], &ship->decryptbuf[0x0A], pOffset);
           pOffset += 0x0A;
 
@@ -5540,7 +5541,7 @@ void LogonProcessPacket (ORANGE* ship)
             pOffset +=4;
             *(unsigned *) &shipdata[ch].ipaddr[0] = *(unsigned *) &ship->decryptbuf[pOffset];
             pOffset +=4;
-            shipdata[ch].port = *(unsigned short *) &ship->decryptbuf[pOffset];
+            shipdata[ch].port = *(uint16_t *) &ship->decryptbuf[pOffset];
             pOffset +=2;
             totalShips++;
           }
@@ -5599,7 +5600,7 @@ void LogonProcessPacket (ORANGE* ship)
     for (ch=0;ch<8;ch++)
     {
       mob_rate = *(unsigned *) &ship->decryptbuf[0x06 + (ch * 4)];
-      mob_calc = (long long)mob_rate * 0xFFFFFFFF / 100000;
+      mob_calc = (int64_t)mob_rate * 0xFFFFFFFF / 100000;
 /*
       times_won = 0;
       for (ch2=0;ch2<1000000;ch2++)
@@ -5657,8 +5658,8 @@ void LogonProcessPacket (ORANGE* ship)
   case 0x12:
     // Global announce
     gcn = *(unsigned *) &ship->decryptbuf[0x06];
-    GlobalBroadcast ((unsigned short*) &ship->decryptbuf[0x0A]);
-    WriteGM ("GM %u made a global announcement: %s", gcn, Unicode_to_ASCII ((unsigned short*) &ship->decryptbuf[0x0A]));
+    GlobalBroadcast ((uint16_t*) &ship->decryptbuf[0x0A]);
+    WriteGM ("GM %u made a global announcement: %s", gcn, Unicode_to_ASCII ((uint16_t*) &ship->decryptbuf[0x0A]));
     break;
   default:
     // Unknown
@@ -5666,11 +5667,11 @@ void LogonProcessPacket (ORANGE* ship)
   }
 }
 
-void AddPB ( unsigned char* flags, unsigned char* blasts, unsigned char pb )
+void AddPB ( uint8_t* flags, uint8_t* blasts, uint8_t pb )
 {
-  int pb_exists = 0;
-  unsigned char pbv;
-  unsigned pb_slot;
+  int32_t pb_exists = 0;
+  uint8_t pbv;
+  uint32_t pb_slot;
 
   if ( ( *flags & 0x01 ) == 0x01 )
   {
@@ -5722,9 +5723,9 @@ void AddPB ( unsigned char* flags, unsigned char* blasts, unsigned char pb )
 }
 
 
-int MagAlignment ( MAG* m )
+int32_t MagAlignment ( MAG* m )
 {
-  int v1, v2, v3, v4, v5, v6;
+  int32_t v1, v2, v3, v4, v5, v6;
 
   v4 = 0;
   v3 = m->power;
@@ -5762,10 +5763,10 @@ int MagAlignment ( MAG* m )
   return v4;
 }
 
-int MagSpecialEvolution ( MAG* m, unsigned char sectionID, unsigned char type, int EvolutionClass )
+int32_t MagSpecialEvolution ( MAG* m, uint8_t sectionID, uint8_t type, int32_t EvolutionClass )
 {
-  unsigned char oldType;
-  short mDefense, mPower, mDex, mMind;
+  uint8_t oldType;
+  int16_t mDefense, mPower, mDex, mMind;
 
   oldType = m->mtype;
 
@@ -5892,11 +5893,11 @@ int MagSpecialEvolution ( MAG* m, unsigned char sectionID, unsigned char type, i
   return (int)(oldType != m->mtype);
 }
 
-void MagLV50Evolution ( MAG* m, unsigned char sectionID, unsigned char type, int EvolutionClass )
+void MagLV50Evolution ( MAG* m, uint8_t sectionID, uint8_t type, int32_t EvolutionClass )
 {
-  int v10, v11, v12, v13;
+  int32_t v10, v11, v12, v13;
 
-  int Alignment = MagAlignment ( m );
+  int32_t Alignment = MagAlignment ( m );
 
   if ( EvolutionClass > 3 ) // Don't bother to check if a special mag.
     return;
@@ -6229,9 +6230,9 @@ void MagLV50Evolution ( MAG* m, unsigned char sectionID, unsigned char type, int
   }
 }
 
-void MagLV35Evolution ( MAG* m, unsigned char sectionID, unsigned char type, int EvolutionClass )
+void MagLV35Evolution ( MAG* m, uint8_t sectionID, uint8_t type, int32_t EvolutionClass )
 {
-  int Alignment = MagAlignment ( m );
+  int32_t Alignment = MagAlignment ( m );
 
   if ( EvolutionClass > 3 ) // Don't bother to check if a special mag.
     return;
@@ -6328,7 +6329,7 @@ void MagLV35Evolution ( MAG* m, unsigned char sectionID, unsigned char type, int
   }
 }
 
-void MagLV10Evolution ( MAG* m, unsigned char sectionID, unsigned char type, int EvolutionClass )
+void MagLV10Evolution ( MAG* m, uint8_t sectionID, uint8_t type, int32_t EvolutionClass )
 {
   switch ( type )
   {
@@ -6356,7 +6357,7 @@ void MagLV10Evolution ( MAG* m, unsigned char sectionID, unsigned char type, int
   }
 }
 
-void CheckMagEvolution ( MAG* m, unsigned char sectionID, unsigned char type, int EvolutionClass )
+void CheckMagEvolution ( MAG* m, uint8_t sectionID, uint8_t type, int32_t EvolutionClass )
 {
   if ( ( m->level < 10 ) || ( m->level >= 35 ) )
   {
@@ -6388,15 +6389,15 @@ void CheckMagEvolution ( MAG* m, unsigned char sectionID, unsigned char type, in
 }
 
 
-void FeedMag (unsigned magid, unsigned itemid, BANANA* client)
+void FeedMag (unsigned magid, uint32_t itemid, BANANA* client)
 {
-  int found_mag = -1;
-  int found_item = -1;
-  unsigned ch, ch2, mt_index;
-  int EvolutionClass = 0;
+  int32_t found_mag = -1;
+  int32_t found_item = -1;
+  uint32_t ch, ch2, mt_index;
+  int32_t EvolutionClass = 0;
   MAG* m;
-  unsigned short* ft;
-  short mIQ, mDefense, mPower, mDex, mMind;
+  uint16_t* ft;
+  int16_t mIQ, mDefense, mPower, mDex, mMind;
 
   for (ch=0;ch<client->character.inventoryUse;ch++)
   {
@@ -6559,7 +6560,7 @@ void FeedMag (unsigned magid, unsigned itemid, BANANA* client)
       mIQ = 0;
     if (mIQ > 200)
       mIQ = 200;
-    m->IQ = (unsigned char) mIQ;
+    m->IQ = (uint8_t) mIQ;
 
     // Add Defense
 
@@ -6652,12 +6653,12 @@ void CheckMaxGrind (INVENTORY_ITEM* i)
 
 void UseItem (unsigned itemid, BANANA* client)
 {
-  unsigned found_item = 0, ch, ch2;
+  uint32_t found_item = 0, ch, ch2;
   INVENTORY_ITEM i;
-  int eq_wep, eq_armor, eq_shield, eq_mag = -1;
+  int32_t eq_wep, eq_armor, eq_shield, eq_mag = -1;
   LOBBY* l;
-  unsigned new_item, TotalMatUse, HPMatUse, max_mat;
-  int mat_exceed;
+  uint32_t new_item, TotalMatUse, HPMatUse, max_mat;
+  int32_t mat_exceed;
 
   // Check item stuff here...  Like converting certain things to certain things...
   //
@@ -7416,10 +7417,10 @@ void UseItem (unsigned itemid, BANANA* client)
   }
 }
 
-int check_equip (unsigned char eq_flags, unsigned char cl_flags)
+int32_t check_equip (uint8_t eq_flags, uint8_t cl_flags)
 {
-  int eqOK = 1;
-  unsigned ch;
+  int32_t eqOK = 1;
+  uint32_t ch;
 
   for (ch=0;ch<8;ch++)
   {
@@ -7434,8 +7435,8 @@ int check_equip (unsigned char eq_flags, unsigned char cl_flags)
 
 void EquipItem (unsigned itemid, BANANA* client)
 {
-  unsigned ch, ch2, found_item, found_slot;
-  unsigned slot[4];
+  uint32_t ch, ch2, found_item, found_slot;
+  uint32_t slot[4];
 
   found_item = 0;
   found_slot = 0;
@@ -7531,7 +7532,7 @@ void EquipItem (unsigned itemid, BANANA* client)
             if (found_slot)
             {
               found_slot --;
-              client->character.inventory[ch].item.data[4] = (unsigned char)(found_slot);
+              client->character.inventory[ch].item.data[4] = (uint8_t)(found_slot);
             }
             else
             {
@@ -7564,7 +7565,7 @@ void EquipItem (unsigned itemid, BANANA* client)
 
 void DeequipItem (unsigned itemid, BANANA* client)
 {
-  unsigned ch, ch2, found_item = 0;
+  uint32_t ch, ch2, found_item = 0;
 
   for (ch=0;ch<client->character.inventoryUse;ch++)
   {
@@ -7630,11 +7631,11 @@ void DeequipItem (unsigned itemid, BANANA* client)
   }
 }
 
-unsigned GetShopPrice(INVENTORY_ITEM* ci)
+uint32_t GetShopPrice(INVENTORY_ITEM* ci)
 {
-  unsigned compare_item, ch;
-  int percent_add, price;
-  unsigned char variation;
+  uint32_t compare_item, ch;
+  int32_t percent_add, price;
+  uint8_t variation;
   float percent_calc;
   float price_calc;
 
@@ -7790,10 +7791,10 @@ unsigned GetShopPrice(INVENTORY_ITEM* ci)
   return (unsigned) price;
 }
 
-void SkipToLevel (unsigned short target_level, BANANA* client, int quiet)
+void SkipToLevel (uint16_t target_level, BANANA* client, int32_t quiet)
 {
   MAG* m;
-  unsigned short ch, finalDFP, finalATP, finalATA, finalMST;
+  uint16_t ch, finalDFP, finalATP, finalATA, finalMST;
 
   if (target_level > 199)
     target_level = 199;
@@ -7803,7 +7804,7 @@ void SkipToLevel (unsigned short target_level, BANANA* client, int quiet)
 
   if (!quiet)
   {
-    PacketBF[0x0A] = (unsigned char) client->clientID;
+    PacketBF[0x0A] = (uint8_t) client->clientID;
     *(unsigned *) &PacketBF[0x0C] = tnlxp [target_level - 1] - client->character.XP;
     SendToLobby (client->lobby, 4, &PacketBF[0], 0x10, 0);
   }
@@ -7843,14 +7844,14 @@ void SkipToLevel (unsigned short target_level, BANANA* client, int quiet)
 
   if (!quiet)
   {
-    *(unsigned short*) &Packet30[0x0C] = finalATP;
-    *(unsigned short*) &Packet30[0x0E] = finalMST;
-    *(unsigned short*) &Packet30[0x10] = client->character.EVP;
-    *(unsigned short*) &Packet30[0x12] = client->character.HP;
-    *(unsigned short*) &Packet30[0x14] = finalDFP;
-    *(unsigned short*) &Packet30[0x16] = finalATA;
-    *(unsigned short*) &Packet30[0x18] = client->character.level;
-    Packet30[0x0A] = (unsigned char) client->clientID;
+    *(uint16_t*) &Packet30[0x0C] = finalATP;
+    *(uint16_t*) &Packet30[0x0E] = finalMST;
+    *(uint16_t*) &Packet30[0x10] = client->character.EVP;
+    *(uint16_t*) &Packet30[0x12] = client->character.HP;
+    *(uint16_t*) &Packet30[0x14] = finalDFP;
+    *(uint16_t*) &Packet30[0x16] = finalATA;
+    *(uint16_t*) &Packet30[0x18] = client->character.level;
+    Packet30[0x0A] = (uint8_t) client->clientID;
     SendToLobby ( client->lobby, 4, &Packet30[0x00], 0x1C, 0);
   }
 }
@@ -7859,14 +7860,14 @@ void SkipToLevel (unsigned short target_level, BANANA* client, int quiet)
 void AddExp (unsigned XP, BANANA* client)
 {
   MAG* m;
-  unsigned short levelup, ch, finalDFP, finalATP, finalATA, finalMST;
+  uint16_t levelup, ch, finalDFP, finalATP, finalATA, finalMST;
 
   if (!client->lobby)
     return;
 
   client->character.XP += XP;
 
-  PacketBF[0x0A] = (unsigned char) client->clientID;
+  PacketBF[0x0A] = (uint8_t) client->clientID;
   *(unsigned *) &PacketBF[0x0C] = XP;
   SendToLobby (client->lobby, 4, &PacketBF[0], 0x10, 0);
   if (client->character.XP >= tnlxp[client->character.level])
@@ -7909,24 +7910,24 @@ void AddExp (unsigned XP, BANANA* client)
       }
     }
 
-    *(unsigned short*) &Packet30[0x0C] = finalATP;
-    *(unsigned short*) &Packet30[0x0E] = finalMST;
-    *(unsigned short*) &Packet30[0x10] = client->character.EVP;
-    *(unsigned short*) &Packet30[0x12] = client->character.HP;
-    *(unsigned short*) &Packet30[0x14] = finalDFP;
-    *(unsigned short*) &Packet30[0x16] = finalATA;
-    *(unsigned short*) &Packet30[0x18] = client->character.level;
-    Packet30[0x0A] = (unsigned char) client->clientID;
+    *(uint16_t*) &Packet30[0x0C] = finalATP;
+    *(uint16_t*) &Packet30[0x0E] = finalMST;
+    *(uint16_t*) &Packet30[0x10] = client->character.EVP;
+    *(uint16_t*) &Packet30[0x12] = client->character.HP;
+    *(uint16_t*) &Packet30[0x14] = finalDFP;
+    *(uint16_t*) &Packet30[0x16] = finalATA;
+    *(uint16_t*) &Packet30[0x18] = client->character.level;
+    Packet30[0x0A] = (uint8_t) client->clientID;
     SendToLobby ( client->lobby, 4, &Packet30[0x00], 0x1C, 0);
   }
 }
 
-void PrepGuildCard ( unsigned from, unsigned to )
+void PrepGuildCard ( uint32_t from, uint32_t to )
 {
-  int gc_present = 0;
-  unsigned hightime = 0xFFFFFFFF;
-  unsigned highidx = 0;
-  unsigned ch;
+  int32_t gc_present = 0;
+  uint32_t hightime = 0xFFFFFFFF;
+  uint32_t highidx = 0;
+  uint32_t ch;
 
   if (ship_gcsend_count < MAX_GCSEND)
   {
@@ -7962,10 +7963,10 @@ void PrepGuildCard ( unsigned from, unsigned to )
   ship_gcsend_list[highidx+2] = (unsigned) servertime;
 }
 
-int PreppedGuildCard ( unsigned from, unsigned to )
+int32_t PreppedGuildCard ( uint32_t from, uint32_t to )
 {
-  int gc_present = 0;
-  unsigned ch, ch2;
+  int32_t gc_present = 0;
+  uint32_t ch, ch2;
 
   for (ch=0;ch<(ship_gcsend_count*3);ch+=3)
   {
@@ -7999,10 +8000,10 @@ int PreppedGuildCard ( unsigned from, unsigned to )
   return gc_present;
 }
 
-int ban ( unsigned gc_num, unsigned* ipaddr, long long* hwinfo, unsigned type, BANANA* client )
+int32_t ban ( uint32_t gc_num, unsigned* ipaddr, int64_t* hwinfo, uint32_t type, BANANA* client )
 {
-  int banned = 1;
-  unsigned ch, ch2;
+  int32_t banned = 1;
+  uint32_t ch, ch2;
   FILE* fp;
 
   for (ch=0;ch<num_bans;ch++)
@@ -8060,10 +8061,10 @@ int ban ( unsigned gc_num, unsigned* ipaddr, long long* hwinfo, unsigned type, B
   return banned;
 }
 
-int stfu ( unsigned gc_num )
+int32_t stfu ( uint32_t gc_num )
 {
-  int result = 0;
-  unsigned ch;
+  int32_t result = 0;
+  uint32_t ch;
 
   for (ch=0;ch<ship_ignore_count;ch++)
   {
@@ -8077,10 +8078,10 @@ int stfu ( unsigned gc_num )
   return result;
 }
 
-int toggle_stfu ( unsigned gc_num, BANANA* client )
+int32_t toggle_stfu ( uint32_t gc_num, BANANA* client )
 {
-  int ignored = 1;
-  unsigned ch, ch2;
+  int32_t ignored = 1;
+  uint32_t ch, ch2;
 
   for (ch=0;ch<ship_ignore_count;ch++)
   {
@@ -8117,22 +8118,22 @@ int toggle_stfu ( unsigned gc_num, BANANA* client )
 
 void Send60 (BANANA* client)
 {
-  unsigned short size, size_check_index;
-  unsigned short sizecheck = 0;
-  int dont_send = 0;
+  uint16_t size, size_check_index;
+  uint16_t sizecheck = 0;
+  int32_t dont_send = 0;
   LOBBY* l;
-  int boss_floor = 0;
-  unsigned itemid, magid, count, drop;
-  unsigned short mid;
-  short mHP;
-  unsigned XP, ch, ch2, max_send, shop_price;
-  int mid_mismatch;
-  int ignored;
-  int ws_ok;
-  unsigned short ws_data, counter;
+  int32_t boss_floor = 0;
+  uint32_t itemid, magid, count, drop;
+  uint16_t mid;
+  int16_t mHP;
+  uint32_t XP, ch, ch2, max_send, shop_price;
+  int32_t mid_mismatch;
+  int32_t ignored;
+  int32_t ws_ok;
+  uint16_t ws_data, counter;
   BANANA* lClient;
 
-  size = *(unsigned short*) &client->decryptbuf[0x00];
+  size = *(uint16_t*) &client->decryptbuf[0x00];
   sizecheck = client->decryptbuf[0x09];
 
   sizecheck *= 4;
@@ -8240,7 +8241,7 @@ void Send60 (BANANA* client)
       if ( client->lobbyNum > 0x0F )
       {
         // Player hit a monster
-        mid = *(unsigned short*) &client->decryptbuf[0x0A];
+        mid = *(uint16_t*) &client->decryptbuf[0x0A];
         mid &= 0xFFF;
         if ( ( mid < 0xB50 ) && ( l->floor[client->clientID] != 0 ) )
         {
@@ -8444,17 +8445,17 @@ void Send60 (BANANA* client)
       {
         client->command_cooldown[0x74] = (unsigned) servertime;
         ws_ok = 1;
-        ws_data = *(unsigned short*) &client->decryptbuf[0x0C];
+        ws_data = *(uint16_t*) &client->decryptbuf[0x0C];
         if ( ( ws_data == 0 ) || ( ws_data > 3 ) )
           ws_ok = 0;
-        ws_data = *(unsigned short*) &client->decryptbuf[0x0E];
+        ws_data = *(uint16_t*) &client->decryptbuf[0x0E];
         if ( ( ws_data == 0 ) || ( ws_data > 3 ) )
           ws_ok = 0;
         if ( ws_ok )
         {
           for (ch=0;ch<client->decryptbuf[0x0C];ch++)
           {
-            ws_data = *(unsigned short*) &client->decryptbuf[0x10+(ch*2)];
+            ws_data = *(uint16_t*) &client->decryptbuf[0x10+(ch*2)];
             if ( ws_data > 0x685 )
             {
               if ( ws_data > 0x697 )
@@ -8469,7 +8470,7 @@ void Send60 (BANANA* client)
           }
           ws_data = 0xFFFF;
           for (ch=client->decryptbuf[0x0C];ch<8;ch++)
-            *(unsigned short*) &client->decryptbuf[0x10+(ch*2)] = ws_data;
+            *(uint16_t*) &client->decryptbuf[0x10+(ch*2)] = ws_data;
 
           if ( ws_ok )
           {
@@ -8507,11 +8508,11 @@ void Send60 (BANANA* client)
       {
         // Set player flag
 
-        unsigned short flag;
+        uint16_t flag;
 
         if (!client->decryptbuf[0x0E])
         {
-          flag = *(unsigned short*) &client->decryptbuf[0x0C];
+          flag = *(uint16_t*) &client->decryptbuf[0x0C];
           if ( flag < 1024 )
             client->character.quest_data1[((unsigned)l->difficulty * 0x80) + (flag >> 3)] |= 1 << (7 - ( flag & 0x07 ));
         }
@@ -8557,7 +8558,7 @@ void Send60 (BANANA* client)
       if ( ( client->lobbyNum > 0x0F ) && ( client->decryptbuf[0x0A] == client->clientID ) )
       {
         client->drop_area = *(unsigned *) &client->decryptbuf[0x0C];
-        client->drop_coords = *(long long*) &client->decryptbuf[0x10];
+        client->drop_coords = *(int64_t*) &client->decryptbuf[0x10];
         client->drop_item = *(unsigned *) &client->decryptbuf[0x18];
       }
       else
@@ -8588,11 +8589,11 @@ void Send60 (BANANA* client)
       // Steal Exp
       if ( client->lobbyNum > 0x0F )
       {
-        unsigned exp_percent = 0;
-        unsigned exp_to_add;
-        unsigned char special = 0;
+        uint32_t exp_percent = 0;
+        uint32_t exp_to_add;
+        uint8_t special = 0;
 
-        mid = *(unsigned short*) &client->decryptbuf[0x0C];
+        mid = *(uint16_t*) &client->decryptbuf[0x0C];
         mid &= 0xFFF;
         if (mid < 0xB50)
         {
@@ -8649,7 +8650,7 @@ void Send60 (BANANA* client)
       // Charge action
       if ( client->lobbyNum > 0x0F )
       {
-        int meseta;
+        int32_t meseta;
 
         meseta = *(int *) &client->decryptbuf[0x0C];
         if (meseta > 0)
@@ -8674,7 +8675,7 @@ void Send60 (BANANA* client)
       // Monster is dead
       if ( client->lobbyNum > 0x0F )
       {
-        mid = *(unsigned short*) &client->decryptbuf[0x0A];
+        mid = *(uint16_t*) &client->decryptbuf[0x0A];
         mid &= 0xFFF;
         if ( mid < 0xB50 )
         {
@@ -8795,11 +8796,11 @@ void Send60 (BANANA* client)
                 }
                 if (counter)
                 {
-                  counter = *(unsigned short*) &client->character.inventory[ch].item.data[10];
+                  counter = *(uint16_t*) &client->character.inventory[ch].item.data[10];
                   if (counter < 0x8000)
                     counter = 0x8000;
                   counter++;
-                  *(unsigned short*) &client->character.inventory[ch].item.data[10] = counter;
+                  *(uint16_t*) &client->character.inventory[ch].item.data[10] = counter;
                 }
               }
             }
@@ -8812,7 +8813,7 @@ void Send60 (BANANA* client)
     case 0xCC:
       // Exchange item for team points
       {
-        unsigned deleteid;
+        uint32_t deleteid;
 
         deleteid = *(unsigned*) &client->decryptbuf[0x0C];
         DeleteItemFromClient (deleteid, 1, 0, client);
@@ -8860,12 +8861,12 @@ void Send60 (BANANA* client)
               CleanUpInventory (lClient);
               lClient->character.level = 0;
               lClient->character.XP = 0;
-              lClient->character.ATP = *(unsigned short*) &startingData[(lClient->character._class*14)];
-              lClient->character.MST = *(unsigned short*) &startingData[(lClient->character._class*14)+2];
-              lClient->character.EVP = *(unsigned short*) &startingData[(lClient->character._class*14)+4];
-              lClient->character.HP  = *(unsigned short*) &startingData[(lClient->character._class*14)+6];
-              lClient->character.DFP = *(unsigned short*) &startingData[(lClient->character._class*14)+8];
-              lClient->character.ATA = *(unsigned short*) &startingData[(lClient->character._class*14)+10];
+              lClient->character.ATP = *(uint16_t*) &startingData[(lClient->character._class*14)];
+              lClient->character.MST = *(uint16_t*) &startingData[(lClient->character._class*14)+2];
+              lClient->character.EVP = *(uint16_t*) &startingData[(lClient->character._class*14)+4];
+              lClient->character.HP  = *(uint16_t*) &startingData[(lClient->character._class*14)+6];
+              lClient->character.DFP = *(uint16_t*) &startingData[(lClient->character._class*14)+8];
+              lClient->character.ATA = *(uint16_t*) &startingData[(lClient->character._class*14)+10];
               if (l->battle_level > 1)
                 SkipToLevel (l->battle_level - 1, lClient, 1);
               lClient->character.meseta = 0;
@@ -8886,7 +8887,7 @@ void Send60 (BANANA* client)
       dont_send = 1;
       if ( client->lobbyNum > 0x0F )
       {
-        unsigned qofs;
+        uint32_t qofs;
 
         qofs = *(unsigned *) &client->decryptbuf[0x0C];
         if (qofs < 23)
@@ -8909,7 +8910,7 @@ void Send60 (BANANA* client)
       if ( ( client->lobbyNum > 0x0F ) && ( client->decryptbuf[0x0A] == client->clientID ) )
       {
         INVENTORY_ITEM work_item;
-        unsigned compare_item = 0, ci;
+        uint32_t compare_item = 0, ci;
 
         memset (&work_item, 0, sizeof (INVENTORY_ITEM));
         memcpy (&work_item.item.data[0], &client->decryptbuf[0x0C], 3 );
@@ -8932,7 +8933,7 @@ void Send60 (BANANA* client)
               client->encryptbuf[0x02] = 0xAB;
               client->encryptbuf[0x03] = 0x01;
               // BLAH :)
-              *(unsigned short*) &client->encryptbuf[0x08] = *(unsigned short*) &client->decryptbuf[0x34];
+              *(uint16_t*) &client->encryptbuf[0x08] = *(uint16_t*) &client->decryptbuf[0x34];
               cipher_ptr = &client->server_cipher;
               encryptcopy (client, &client->encryptbuf[0x00], 0x0C);
               break;
@@ -8956,7 +8957,7 @@ void Send60 (BANANA* client)
       if ( ( client->lobbyNum > 0x0F ) && ( client->decryptbuf[0x0A] == client->clientID ) )
       {
         INVENTORY_ITEM work_item;
-        unsigned ci, compare_item = 0;
+        uint32_t ci, compare_item = 0;
 
         memset ( &work_item, 0, sizeof (INVENTORY_ITEM) );
         memcpy ( &compare_item, &client->decryptbuf[0x0C], 3 );
@@ -8986,7 +8987,7 @@ void Send60 (BANANA* client)
             client->encryptbuf[0x00] = 0x0C;
             client->encryptbuf[0x02] = 0xAB;
             client->encryptbuf[0x03] = 0x01;
-            *(unsigned short*) &client->encryptbuf[0x08] = *(unsigned short*) &client->decryptbuf[0x20];
+            *(uint16_t*) &client->encryptbuf[0x08] = *(uint16_t*) &client->decryptbuf[0x20];
             cipher_ptr = &client->server_cipher;
             encryptcopy (client, &client->encryptbuf[0x00], 0x0C);
           }
@@ -9011,8 +9012,8 @@ void Send60 (BANANA* client)
     case 0xD9:
       // Momoka Item Exchange
       {
-        unsigned compare_item, ci;
-        unsigned itemid = 0;
+        uint32_t compare_item, ci;
+        uint32_t itemid = 0;
         INVENTORY_ITEM add_item;
 
         dont_send = 1;
@@ -9098,9 +9099,9 @@ void Send60 (BANANA* client)
       if ( ( client->lobbyNum > 0x0F ) && ( client->decryptbuf[0x0A] == client->clientID ) )
       {
         INVENTORY_ITEM work_item, work_item2;
-        unsigned ci, ai,
+        uint32_t ci, ai,
           compare_itemid = 0, compare_item1 = 0, compare_item2 = 0, num_attribs = 0;
-        char attrib_add;
+        int8_t attrib_add;
 
         memcpy ( &compare_item1,  &client->decryptbuf[0x0C], 3);
         compare_itemid = *(unsigned *) &client->decryptbuf[0x20];
@@ -9195,7 +9196,7 @@ void Send60 (BANANA* client)
               client->encryptbuf[0x00] = 0x0C;
               client->encryptbuf[0x02] = 0xAB;
               client->encryptbuf[0x03] = 0x01;
-              *(unsigned short*) &client->encryptbuf[0x08] = *(unsigned short*) &client->decryptbuf[0x30];
+              *(uint16_t*) &client->encryptbuf[0x08] = *(uint16_t*) &client->decryptbuf[0x30];
               cipher_ptr = &client->server_cipher;
               encryptcopy (client, &client->encryptbuf[0x00], 0x0C);
             }
@@ -9215,8 +9216,8 @@ void Send60 (BANANA* client)
     case 0xDE:
       // Good Luck
       {
-        unsigned compare_item, ci;
-        unsigned itemid = 0;
+        uint32_t compare_item, ci;
+        uint32_t itemid = 0;
         INVENTORY_ITEM add_item;
 
         dont_send = 1;
@@ -9294,7 +9295,7 @@ void Send60 (BANANA* client)
         // Gallon's Plan opcode
 
         INVENTORY_ITEM work_item;
-        unsigned ch, compare_item1, compare_item2, pt_itemid;
+        uint32_t ch, compare_item1, compare_item2, pt_itemid;
 
         compare_item2 = 0;
         compare_item1 = 0x041003;
@@ -9423,21 +9424,21 @@ void Send60 (BANANA* client)
   }
 }
 
-unsigned long ExpandDropRate(unsigned char pc)
+uint32_t ExpandDropRate(uint8_t pc)
 {
-    long shift = ((pc >> 3) & 0x1F) - 4;
+    int32_t shift = ((pc >> 3) & 0x1F) - 4;
     if (shift < 0) shift = 0;
-    return ((2 << (unsigned long) shift) * ((pc & 7) + 7));
+    return ((2 << (uint32_t) shift) * ((pc & 7) + 7));
 }
 
-void GenerateRandomAttributes (unsigned char sid, GAME_ITEM* i, LOBBY* l, BANANA* client)
+void GenerateRandomAttributes (uint8_t sid, GAME_ITEM* i, LOBBY* l, BANANA* client)
 {
-  unsigned ch, num_percents, max_percent, meseta, do_area, r;
+  uint32_t ch, num_percents, max_percent, meseta, do_area, r;
   PTDATA* ptd;
-  int rare;
-  unsigned area;
-  unsigned did_area[6] = {0};
-  char percent;
+  int32_t rare;
+  uint32_t area;
+  uint32_t did_area[6] = {0};
+  int8_t percent;
 
   if ((!l) || (!i))
     return;
@@ -9552,7 +9553,7 @@ void GenerateRandomAttributes (unsigned char sid, GAME_ITEM* i, LOBBY* l, BANANA
       else
         ch = power_patterns_ep1[sid][l->difficulty][ptd->area_pattern[area]][rand() % 4096];
 
-      i->item.data[3] = (unsigned char) ch;
+      i->item.data[3] = (uint8_t) ch;
     }
     else
       i->item.data[4] |= 0x80; // rare
@@ -9574,7 +9575,7 @@ void GenerateRandomAttributes (unsigned char sid, GAME_ITEM* i, LOBBY* l, BANANA
       if ( ( do_area ) && ( !did_area[do_area] ) )
       {
         did_area[do_area] = 1;
-        i->item.data[6+(num_percents*2)] = (unsigned char) do_area;
+        i->item.data[6+(num_percents*2)] = (uint8_t) do_area;
         if ( l->episode == 0x02 )
           percent = percent_patterns_ep2[sid][l->difficulty][ptd->area_pattern[area]][rand() % 4096];
         else
@@ -9595,9 +9596,9 @@ void GenerateRandomAttributes (unsigned char sid, GAME_ITEM* i, LOBBY* l, BANANA
       if (r < 7)
       {
         if (armor_dfpvar_table[i->item.data[2]])
-          i->item.data[6] = (unsigned char) (rand() % (armor_dfpvar_table[i->item.data[2]] + 1));
+          i->item.data[6] = (uint8_t) (rand() % (armor_dfpvar_table[i->item.data[2]] + 1));
         if (armor_evpvar_table[i->item.data[2]])
-          i->item.data[8] = (unsigned char) (rand() % (armor_evpvar_table[i->item.data[2]] + 1));
+          i->item.data[8] = (uint8_t) (rand() % (armor_evpvar_table[i->item.data[2]] + 1));
       }
 
       // Slots
@@ -9612,9 +9613,9 @@ void GenerateRandomAttributes (unsigned char sid, GAME_ITEM* i, LOBBY* l, BANANA
       if (r < 2)
       {
         if (barrier_dfpvar_table[i->item.data[2]])
-          i->item.data[6] = (unsigned char) (rand() % (barrier_dfpvar_table[i->item.data[2]] + 1));
+          i->item.data[6] = (uint8_t) (rand() % (barrier_dfpvar_table[i->item.data[2]] + 1));
         if (barrier_evpvar_table[i->item.data[2]])
-          i->item.data[8] = (unsigned char) (rand() % (barrier_evpvar_table[i->item.data[2]] + 1));
+          i->item.data[8] = (uint8_t) (rand() % (barrier_evpvar_table[i->item.data[2]] + 1));
       }
       break;
     }
@@ -9633,9 +9634,9 @@ void GenerateRandomAttributes (unsigned char sid, GAME_ITEM* i, LOBBY* l, BANANA
         i->item.data[4] = tech_drops_ep2[sid][l->difficulty][area][rand() % 4096];
       else
         i->item.data[4] = tech_drops_ep1[sid][l->difficulty][area][rand() % 4096];
-      i->item.data[2] = (unsigned char) ptd->tech_levels[i->item.data[4]][area*2];
+      i->item.data[2] = (uint8_t) ptd->tech_levels[i->item.data[4]][area*2];
       if ( ptd->tech_levels[i->item.data[4]][(area*2)+1] > ptd->tech_levels[i->item.data[4]][area*2] )
-        i->item.data[2] += (unsigned char) rand() % ( ( ptd->tech_levels[i->item.data[4]][(area*2)+1] - ptd->tech_levels[i->item.data[4]][(area*2)] ) + 1 );
+        i->item.data[2] += (uint8_t) rand() % ( ( ptd->tech_levels[i->item.data[4]][(area*2)+1] - ptd->tech_levels[i->item.data[4]][(area*2)] ) + 1 );
     }
     if (stackable_table[i->item.data[1]])
       i->item.data[5] = 0x01;
@@ -9652,14 +9653,14 @@ void GenerateRandomAttributes (unsigned char sid, GAME_ITEM* i, LOBBY* l, BANANA
   }
 }
 
-void GenerateCommonItem (int item_type, int is_enemy, unsigned char sid, GAME_ITEM* i, LOBBY* l, BANANA* client)
+void GenerateCommonItem (int item_type, int32_t is_enemy, uint8_t sid, GAME_ITEM* i, LOBBY* l, BANANA* client)
 {
-  unsigned ch, num_percents, item_set, meseta, do_area, r, eq_type;
-  unsigned short ch2;
+  uint32_t ch, num_percents, item_set, meseta, do_area, r, eq_type;
+  uint16_t ch2;
   PTDATA* ptd;
-  unsigned area,fl;
-  unsigned did_area[6] = {0};
-  char percent;
+  uint32_t area,fl;
+  uint32_t did_area[6] = {0};
+  int8_t percent;
 
   if ((!l) || (!i))
     return;
@@ -9838,7 +9839,7 @@ void GenerateCommonItem (int item_type, int is_enemy, unsigned char sid, GAME_IT
       if ( ( do_area ) && ( !did_area[do_area] ) )
       {
         did_area[do_area] = 1;
-        i->item.data[6+(num_percents*2)] = (unsigned char) do_area;
+        i->item.data[6+(num_percents*2)] = (uint8_t) do_area;
         if ( l->episode == 0x02 )
           percent = percent_patterns_ep2[sid][l->difficulty][ptd->area_pattern[area]][rand() % 4096];
         else
@@ -9857,7 +9858,7 @@ void GenerateCommonItem (int item_type, int is_enemy, unsigned char sid, GAME_IT
     else
       ch = power_patterns_ep1[sid][l->difficulty][ptd->area_pattern[area]][rand() % 4096];
 
-    i->item.data[3] = (unsigned char) ch;
+    i->item.data[3] = (uint8_t) ch;
 
     break;
   case 0x01:
@@ -9882,16 +9883,16 @@ void GenerateCommonItem (int item_type, int is_enemy, unsigned char sid, GAME_IT
       // Armor
       i->item.data[0] = 0x01;
       i->item.data[1] = 0x01;
-      i->item.data[2] = (unsigned char) ( fl / 3L ) + ( 5 * l->difficulty ) + ( rand() % ( ( (unsigned char) fl / 2L ) + 2 ) );
+      i->item.data[2] = (uint8_t) ( fl / 3L ) + ( 5 * l->difficulty ) + ( rand() % ( ( (uint8_t) fl / 2L ) + 2 ) );
       if ( i->item.data[2] > 0x17 )
         i->item.data[2] = 0x17;
       r = rand() % 11;
       if (r < 7)
       {
         if (armor_dfpvar_table[i->item.data[2]])
-          i->item.data[6] = (unsigned char) (rand() % (armor_dfpvar_table[i->item.data[2]] + 1));
+          i->item.data[6] = (uint8_t) (rand() % (armor_dfpvar_table[i->item.data[2]] + 1));
         if (armor_evpvar_table[i->item.data[2]])
-          i->item.data[8] = (unsigned char) (rand() % (armor_evpvar_table[i->item.data[2]] + 1));
+          i->item.data[8] = (uint8_t) (rand() % (armor_evpvar_table[i->item.data[2]] + 1));
       }
 
       // Slots
@@ -9905,16 +9906,16 @@ void GenerateCommonItem (int item_type, int is_enemy, unsigned char sid, GAME_IT
       // Shield
       i->item.data[0] = 0x01;
       i->item.data[1] = 0x02;
-      i->item.data[2] = (unsigned char) ( fl / 3L ) + ( 4 * l->difficulty ) + ( rand() % ( ( (unsigned char) fl / 2L ) + 2 ) );
+      i->item.data[2] = (uint8_t) ( fl / 3L ) + ( 4 * l->difficulty ) + ( rand() % ( ( (uint8_t) fl / 2L ) + 2 ) );
       if ( i->item.data[2] > 0x14 )
         i->item.data[2] = 0x14;
       r = rand() % 11;
       if (r < 2)
       {
         if (barrier_dfpvar_table[i->item.data[2]])
-          i->item.data[6] = (unsigned char) (rand() % (barrier_dfpvar_table[i->item.data[2]] + 1));
+          i->item.data[6] = (uint8_t) (rand() % (barrier_dfpvar_table[i->item.data[2]] + 1));
         if (barrier_evpvar_table[i->item.data[2]])
-          i->item.data[8] = (unsigned char) (rand() % (barrier_evpvar_table[i->item.data[2]] + 1));
+          i->item.data[8] = (uint8_t) (rand() % (barrier_evpvar_table[i->item.data[2]] + 1));
       }
       break;
     case 0x03:
@@ -9956,9 +9957,9 @@ void GenerateCommonItem (int item_type, int is_enemy, unsigned char sid, GAME_IT
         i->item.data[4] = tech_drops_ep2[sid][l->difficulty][area][rand() % 4096];
       else
         i->item.data[4] = tech_drops_ep1[sid][l->difficulty][area][rand() % 4096];
-      i->item.data[2] = (unsigned char) ptd->tech_levels[i->item.data[4]][area*2];
+      i->item.data[2] = (uint8_t) ptd->tech_levels[i->item.data[4]][area*2];
       if ( ptd->tech_levels[i->item.data[4]][(area*2)+1] > ptd->tech_levels[i->item.data[4]][area*2] )
-        i->item.data[2] += (unsigned char) rand() % ( ( ptd->tech_levels[i->item.data[4]][(area*2)+1] - ptd->tech_levels[i->item.data[4]][(area*2)] ) + 1 );
+        i->item.data[2] += (uint8_t) rand() % ( ( ptd->tech_levels[i->item.data[4]][(area*2)+1] - ptd->tech_levels[i->item.data[4]][(area*2)] ) + 1 );
     }
     if (stackable_table[i->item.data[1]])
       i->item.data[5] = 0x01;
@@ -9980,22 +9981,22 @@ void GenerateCommonItem (int item_type, int is_enemy, unsigned char sid, GAME_IT
 void Send62 (BANANA* client)
 {
   BANANA* lClient;
-  unsigned bank_size, bank_use;
-  unsigned short size;
-  unsigned short sizecheck = 0;
-  unsigned char t,maxt;
-  unsigned itemid;
-  int dont_send = 1;
+  uint32_t bank_size, bank_use;
+  uint16_t size;
+  uint16_t sizecheck = 0;
+  uint8_t t,maxt;
+  uint32_t itemid;
+  int32_t dont_send = 1;
   LOBBY* l;
-  unsigned rt_index = 0;
-  unsigned rare_lookup, rare_rate, rare_item,
+  uint32_t rt_index = 0;
+  uint32_t rare_lookup, rare_rate, rare_item,
     rare_roll, box_rare, ch, itemNum;
-  unsigned short mid, count;
-  unsigned char* rt_table;
-  unsigned char* rt_table2;
-  unsigned meseta;
-  unsigned DAR;
-  unsigned floor_check = 0;
+  uint16_t mid, count;
+  uint8_t* rt_table;
+  uint8_t* rt_table2;
+  uint32_t meseta;
+  uint32_t DAR;
+  uint32_t floor_check = 0;
   SHOP* shopp;
   SHOP_ITEM* shopi;
   PTDATA* ptd;
@@ -10012,7 +10013,7 @@ void Send62 (BANANA* client)
   else
     maxt = 4;
 
-  size = *(unsigned short*) &client->decryptbuf[0x00];
+  size = *(uint16_t*) &client->decryptbuf[0x00];
   sizecheck = client->decryptbuf[0x09];
 
   sizecheck *= 4;
@@ -10064,9 +10065,9 @@ void Send62 (BANANA* client)
         PacketData[0x02] = 0x60;
         PacketData[0x08] = 0x59;
         PacketData[0x09] = 0x03;
-        PacketData[0x0A] = (unsigned char) client->clientID;
+        PacketData[0x0A] = (uint8_t) client->clientID;
         PacketData[0x0E] = client->decryptbuf[0x10];
-        PacketData[0x0C] = (unsigned char) client->clientID;
+        PacketData[0x0C] = (uint8_t) client->clientID;
         *(unsigned *) &PacketData[0x10] = itemid;
         SendToLobby ( client->lobby, 4, &PacketData[0x00], 0x14, 0);
       }
@@ -10080,7 +10081,7 @@ void Send62 (BANANA* client)
     {
       if ( !l->drops_disabled )
       {
-        mid = *(unsigned short*) &client->decryptbuf[0x0E];
+        mid = *(uint16_t*) &client->decryptbuf[0x0E];
         mid &= 0xFFF;
 
         if ( ( mid < 0xB50 ) && ( l->monsterData[mid].drop == 0 ) )
@@ -10235,7 +10236,7 @@ void Send62 (BANANA* client)
       if (!l->drops_disabled)
       {
         // box drop
-        mid = *(unsigned short*) &client->decryptbuf[0x0E];
+        mid = *(uint16_t*) &client->decryptbuf[0x0E];
         mid &= 0xFFF;
 
         if ( ( mid < 0xB50 ) && ( l->boxHit[mid] == 0 ) )
@@ -10304,13 +10305,13 @@ void Send62 (BANANA* client)
             switch (l->episode)
             {
             case 0x02:
-              rt_table = (unsigned char*) &rt_tables_ep2[0];
+              rt_table = (uint8_t*) &rt_tables_ep2[0];
               break;
             case 0x03:
-              rt_table = (unsigned char*) &rt_tables_ep4[0];
+              rt_table = (uint8_t*) &rt_tables_ep4[0];
               break;
             default:
-              rt_table = (unsigned char*) &rt_tables_ep1[0];
+              rt_table = (uint8_t*) &rt_tables_ep1[0];
               break;
             }
             rt_table += ( ( 0x5000 * l->difficulty ) + ( client->character.sectionID * 0x800 ) ) + 0x194;
@@ -10447,7 +10448,7 @@ void Send62 (BANANA* client)
         client->doneshop[client->decryptbuf[0x0C]] = shopidx[client->character.level] + ( 333 * ((unsigned)client->decryptbuf[0x0C]) ) + ( rand() % 333 ) ;
         shopp = &shops[client->doneshop[client->decryptbuf[0x0C]]];
         cipher_ptr = &client->server_cipher;
-        encryptcopy (client, (unsigned char*) &shopp->packet_length, shopp->packet_length);
+        encryptcopy (client, (uint8_t*) &shopp->packet_length, shopp->packet_length);
       }
     }
     else
@@ -10496,7 +10497,7 @@ void Send62 (BANANA* client)
     // Client is tekking a weapon.
     if ( client->lobbyNum > 0x0F )
     {
-      unsigned compare_item;
+      uint32_t compare_item;
 
       INVENTORY_ITEM* i;
 
@@ -10511,8 +10512,8 @@ void Send62 (BANANA* client)
           (client->character.inventory[ch].item.data[4] & 0x80) &&
           (client->character.meseta >= 100))
         {
-          char percent_mod;
-          unsigned attrib;
+          int8_t percent_mod;
+          uint32_t attrib;
 
           i = &client->character.inventory[ch];
           attrib = i->item.data[4] & ~(0x80);
@@ -10569,7 +10570,7 @@ void Send62 (BANANA* client)
     // Client accepting tekked version of weapon.
     if ( ( client->lobbyNum > 0x0F ) && ( client->tekked.item.itemid ) )
     {
-      unsigned ch2;
+      uint32_t ch2;
 
       for (ch=0;ch<4;ch++)
       {
@@ -10636,7 +10637,7 @@ void Send62 (BANANA* client)
         bank_size = 0x18 * (client->character.bankUse + 1);
         *(unsigned *) &client->encryptbuf[0x0C] = bank_size;
         bank_size += 4;
-        *(unsigned short *) &client->encryptbuf[0x00] = (unsigned short) bank_size;
+        *(uint16_t *) &client->encryptbuf[0x00] = (uint16_t) bank_size;
         bank_use = rand();
         *(unsigned *) &client->encryptbuf[0x10] = bank_use;
         bank_use = client->character.bankUse;
@@ -10744,7 +10745,7 @@ void Send62 (BANANA* client)
 
       if (client->decryptbuf[0x08] == 0xC2)
       {
-        unsigned gcn;
+        uint32_t gcn;
 
         gcn = *(unsigned *) &client->decryptbuf[0x0C];
         if ((client->decryptbuf[0x10] == 0x02) &&
@@ -10768,7 +10769,7 @@ void Send62 (BANANA* client)
     if ( client->lobbyNum > 0x0F )
     {
       INVENTORY_ITEM add_item;
-      int meseta;
+      int32_t meseta;
 
       if ( l->quest_loaded )
       {
@@ -10799,7 +10800,7 @@ void Send62 (BANANA* client)
 
       if ( l->quest_loaded )
       {
-        unsigned ci, compare_item = 0;
+        uint32_t ci, compare_item = 0;
 
         memset (&add_item, 0, sizeof (INVENTORY_ITEM));
         memcpy ( &compare_item, &client->decryptbuf[0x0C], 3 );
@@ -10836,7 +10837,7 @@ void Send62 (BANANA* client)
     {
       if ( ( client->decryptbuf[0x0A] < 4 ) && ( l->client[client->decryptbuf[0x0A]] ) )
       {
-        unsigned target_lv;
+        uint32_t target_lv;
 
         lClient = l->client[client->decryptbuf[0x0A]];
         target_lv = lClient->character.level;
@@ -10853,7 +10854,7 @@ void Send62 (BANANA* client)
     // Wrap an item
     if ( client->lobbyNum > 0x0F )
     {
-      unsigned wrap_id;
+      uint32_t wrap_id;
       INVENTORY_ITEM backup_item;
 
       memset (&backup_item, 0, sizeof (INVENTORY_ITEM));
@@ -10913,7 +10914,7 @@ void Send62 (BANANA* client)
     {
       if ( ( l->oneperson ) && ( l->quest_loaded ) && ( l->drops_disabled ) && ( !l->questE0 ) )
       {
-        unsigned bp, bpl, new_item;
+        uint32_t bp, bpl, new_item;
 
         if ( client->decryptbuf[0x0D] > 0x03 )
           bpl = 1;
@@ -11059,17 +11060,17 @@ void Send62 (BANANA* client)
 void Send6D (BANANA* client)
 {
   BANANA* lClient;
-  unsigned short size;
-  unsigned short sizecheck = 0;
-  unsigned char t;
-  int dont_send = 0;
+  uint16_t size;
+  uint16_t sizecheck = 0;
+  uint8_t t;
+  int32_t dont_send = 0;
   LOBBY* l;
 
   if (!client->lobby)
     return;
 
-  size = *(unsigned short*) &client->decryptbuf[0x00];
-  sizecheck = *(unsigned short*) &client->decryptbuf[0x0C];
+  size = *(uint16_t*) &client->decryptbuf[0x00];
+  sizecheck = *(uint16_t*) &client->decryptbuf[0x0C];
   sizecheck += 8;
 
   if (size != sizecheck)
@@ -11096,9 +11097,9 @@ void Send6D (BANANA* client)
         {
           if (l->client[t]->bursting == 1)
           {
-            unsigned ch;
+            uint32_t ch;
 
-            dont_send = 0; // It's cool to send them as long as this user is bursting.
+            dont_send = 0; // It's cool to send them as int32_t as this user is bursting.
 
             // Let's reconstruct the 0x70 as much as possible.
             //
@@ -11145,7 +11146,7 @@ void Send6D (BANANA* client)
           if ((l->slot_use[t]) && (l->client[t]))
           {
             if (l->client[t]->bursting == 1)
-              dont_send = 0; // It's cool to send them as long as this user is bursting and we're the leader.
+              dont_send = 0; // It's cool to send them as int32_t as this user is bursting and we're the leader.
           }
         }
       }
@@ -11165,10 +11166,10 @@ void Send6D (BANANA* client)
 }
 
 
-void Send01 (const char *text, BANANA* client)
+void Send01 (const int8_t *text, BANANA* client)
 {
-  unsigned short mesgOfs = 0x10;
-  unsigned ch;
+  uint16_t mesgOfs = 0x10;
+  uint32_t ch;
 
   memset(&PacketData[0], 0, 16);
   PacketData[mesgOfs++] = 0x09;
@@ -11184,20 +11185,20 @@ void Send01 (const char *text, BANANA* client)
   PacketData[mesgOfs++] = 0x00;
   while (mesgOfs % 8)
     PacketData[mesgOfs++] = 0x00;
-  *(unsigned short*) &PacketData[0] = mesgOfs;
+  *(uint16_t*) &PacketData[0] = mesgOfs;
   PacketData[0x02] = 0x01;
   cipher_ptr = &client->server_cipher;
   encryptcopy (client, &PacketData[0], mesgOfs);
 }
 
-unsigned char chatBuf[4000];
-unsigned char cmdBuf[4000];
+uint8_t chatBuf[4000];
+uint8_t cmdBuf[4000];
 char* myCommand;
 char* myArgs[64];
 
-char* Unicode_to_ASCII (unsigned short* ucs)
+char* Unicode_to_ASCII (uint16_t* ucs)
 {
-  char *s,c;
+  int8_t *s,c;
 
   s = (char*) &chatBuf[0];
   while (*ucs != 0x0000)
@@ -11218,7 +11219,7 @@ void WriteLog(char *fmt, ...)
 #define MAX_GM_MESG_LEN 4096
 
   va_list args;
-  char text[ MAX_GM_MESG_LEN ];
+  int8_t text[ MAX_GM_MESG_LEN ];
   //SYSTEMTIME rawtime;
 
   FILE *fp;
@@ -11249,7 +11250,7 @@ void WriteGM(char *fmt, ...)
 #define MAX_GM_MESG_LEN 4096
 
   va_list args;
-  char text[ MAX_GM_MESG_LEN ];
+  int8_t text[ MAX_GM_MESG_LEN ];
   //SYSTEMTIME rawtime;
 
   FILE *fp;
@@ -11274,22 +11275,22 @@ void WriteGM(char *fmt, ...)
 }
 
 
-char character_file[255];
+int8_t character_file[255];
 
 void Send06 (BANANA* client)
 {
   FILE* fp;
-  unsigned short chatsize;
-  unsigned pktsize;
-  unsigned ch, ch2;
-  unsigned char stackable, count;
-  unsigned short *n;
-  unsigned short target;
-  unsigned myCmdArgs, itemNum, connectNum, gc_num;
-  unsigned short npcID;
-  unsigned max_send;
+  uint16_t chatsize;
+  uint32_t pktsize;
+  uint32_t ch, ch2;
+  uint8_t stackable, count;
+  uint16_t *n;
+  uint16_t target;
+  uint32_t myCmdArgs, itemNum, connectNum, gc_num;
+  uint16_t npcID;
+  uint32_t max_send;
   BANANA* lClient;
-  int i, z, commandLen, ignored, found_ban, writeData;
+  int32_t i, z, commandLen, ignored, found_ban, writeData;
   LOBBY* l;
   INVENTORY_ITEM ii;
 
@@ -11301,7 +11302,7 @@ void Send06 (BANANA* client)
 
   l = client->lobby;
 
-  pktsize = *(unsigned short*) &client->decryptbuf[0x00];
+  pktsize = *(uint16_t*) &client->decryptbuf[0x00];
 
   if (pktsize > 0x100)
     return;
@@ -11312,12 +11313,12 @@ void Send06 (BANANA* client)
   chatBuf[0x0A] = client->clientID;
   *(unsigned *) &chatBuf[0x0C] = client->guildcard;
   chatsize = 0x10;
-  n = (unsigned short*) &client->character.name[4];
+  n = (uint16_t*) &client->character.name[4];
   for (ch=0;ch<10;ch++)
   {
     if (*n == 0x0000)
       break;
-    *(unsigned short*) &chatBuf[chatsize] = *n;
+    *(uint16_t*) &chatBuf[chatsize] = *n;
     chatsize += 2;
     n++;
   }
@@ -11325,7 +11326,7 @@ void Send06 (BANANA* client)
   chatBuf[chatsize++] = 0x00;
   chatBuf[chatsize++] = 0x09;
   chatBuf[chatsize++] = 0x00;
-  n = (unsigned short*) &client->decryptbuf[0x12];
+  n = (uint16_t*) &client->decryptbuf[0x12];
   if ((*(n+1) == 0x002F) && (*(n+2) != 0x002F))
   {
     commandLen = 0;
@@ -11415,7 +11416,7 @@ void Send06 (BANANA* client)
 
           npcID--;
 
-          client->character.lang = (unsigned char) npcID;
+          client->character.lang = (uint8_t) npcID;
 
           SendB0 ("Current language:\n", client);
           SendB0 (languageNames[npcID], client);
@@ -11726,7 +11727,7 @@ void Send06 (BANANA* client)
               SendB0 ("Warping past area 17 would probably crash your client...", client);
             else
             {
-              warp_packet[0x0C] = (unsigned char) atoi ( myArgs[0] );
+              warp_packet[0x0C] = (uint8_t) atoi ( myArgs[0] );
               cipher_ptr = &client->server_cipher;
               encryptcopy (client, &warp_packet[0], sizeof (warp_packet));
             }
@@ -11749,7 +11750,7 @@ void Send06 (BANANA* client)
                 SendB0 ("You may not disconnect this user.", client);
               else
               {
-                WriteGM ("GM %u has disconnected user %u (%s)", client->guildcard, gc_num, Unicode_to_ASCII ((unsigned short*) &connections[connectNum]->character.name[4]));
+                WriteGM ("GM %u has disconnected user %u (%s)", client->guildcard, gc_num, Unicode_to_ASCII ((uint16_t*) &connections[connectNum]->character.name[4]));
                 Send1A ("You've been disconnected by a GM.", connections[connectNum]);
                 connections[connectNum]->todc = 1;
                 break;
@@ -11794,7 +11795,7 @@ void Send06 (BANANA* client)
                   if ( ban ( gc_num, (unsigned*) &connections[connectNum]->ipaddr,
                     &connections[connectNum]->hwinfo, 1, client ) )
                   {
-                    WriteGM ("GM %u has banned user %u (%s)", client->guildcard, gc_num, Unicode_to_ASCII ((unsigned short*) &connections[connectNum]->character.name[4]));
+                    WriteGM ("GM %u has banned user %u (%s)", client->guildcard, gc_num, Unicode_to_ASCII ((uint16_t*) &connections[connectNum]->character.name[4]));
                     Send1A ("You've been banned by a GM.", connections[connectNum]);
                     SendB0 ("User has been banned.", client );
                     connections[connectNum]->todc = 1;
@@ -11842,7 +11843,7 @@ void Send06 (BANANA* client)
                   if ( ban ( gc_num, (unsigned*) &connections[connectNum]->ipaddr,
                     &connections[connectNum]->hwinfo, 2, client ) )
                   {
-                    WriteGM ("GM %u has IP banned user %u (%s)", client->guildcard, gc_num, Unicode_to_ASCII ((unsigned short*) &connections[connectNum]->character.name[4]));
+                    WriteGM ("GM %u has IP banned user %u (%s)", client->guildcard, gc_num, Unicode_to_ASCII ((uint16_t*) &connections[connectNum]->character.name[4]));
                     Send1A ("You've been banned by a GM.", connections[connectNum]);
                     SendB0 ("User has been IP banned.", client );
                     connections[connectNum]->todc = 1;
@@ -11890,7 +11891,7 @@ void Send06 (BANANA* client)
                   if ( ban ( gc_num, (unsigned*) &connections[connectNum]->ipaddr,
                     &connections[connectNum]->hwinfo, 3, client ) )
                   {
-                    WriteGM ("GM %u has HW banned user %u (%s)", client->guildcard, gc_num, Unicode_to_ASCII ((unsigned short*) &connections[connectNum]->character.name[4]));
+                    WriteGM ("GM %u has HW banned user %u (%s)", client->guildcard, gc_num, Unicode_to_ASCII ((uint16_t*) &connections[connectNum]->character.name[4]));
                     Send1A  ("You've been banned by a GM.", connections[connectNum]);
                     SendB0  ("User has been HW banned.", client );
                     connections[connectNum]->todc = 1;
@@ -12055,13 +12056,13 @@ void Send06 (BANANA* client)
               {
                 if (toggle_stfu(connections[connectNum]->guildcard, client))
                 {
-                  WriteGM ("GM %u has silenced user %u (%s)", client->guildcard, gc_num, Unicode_to_ASCII ((unsigned short*) &connections[connectNum]->character.name[4]));
+                  WriteGM ("GM %u has silenced user %u (%s)", client->guildcard, gc_num, Unicode_to_ASCII ((uint16_t*) &connections[connectNum]->character.name[4]));
                   SendB0  ("User has been silenced.", client);
                   SendB0  ("You've been silenced.", connections[connectNum]);
                 }
                 else
                 {
-                  WriteGM ("GM %u has removed silence from user %u (%s)", client->guildcard, gc_num, Unicode_to_ASCII ((unsigned short*) &connections[connectNum]->character.name[4]));
+                  WriteGM ("GM %u has removed silence from user %u (%s)", client->guildcard, gc_num, Unicode_to_ASCII ((uint16_t*) &connections[connectNum]->character.name[4]));
                   SendB0  ("User is now allowed to speak.", client);
                   SendB0  ("You may now speak freely.", connections[connectNum]);
                 }
@@ -12086,7 +12087,7 @@ void Send06 (BANANA* client)
               SendB0 ("Warping past area 17 would probably crash your client...", client);
             else
             {
-              warp_packet[0x0C] = (unsigned char) atoi ( myArgs[0] );
+              warp_packet[0x0C] = (uint8_t) atoi ( myArgs[0] );
               SendToLobby ( client->lobby, 4, &warp_packet[0], sizeof (warp_packet), 0 );
             }
           }
@@ -12101,7 +12102,7 @@ void Send06 (BANANA* client)
         break;
       if ((*n == 0x0009) || (*n == 0x000A))
         *n = 0x0020;
-      *(unsigned short*) &chatBuf[chatsize] = *n;
+      *(uint16_t*) &chatBuf[chatsize] = *n;
       chatsize += 2;
       n++;
     }
@@ -12109,7 +12110,7 @@ void Send06 (BANANA* client)
     chatBuf[chatsize++] = 0x00;
     while (chatsize % 8)
       chatBuf[chatsize++] = 0x00;
-    *(unsigned short*) &chatBuf[0x00] = chatsize;
+    *(uint16_t*) &chatBuf[0x00] = chatsize;
     if ( !stfu ( client->guildcard ) )
     {
       if ( client->lobbyNum < 0x10 )
@@ -12146,7 +12147,7 @@ void Send06 (BANANA* client)
     {
       client->debugged = 1;
       sprintf (&character_file[0], "%d", client->character.guildCard);
-      strcat (&character_file[0], Unicode_to_ASCII ((unsigned short*) &client->character.name[4]));
+      strcat (&character_file[0], Unicode_to_ASCII ((uint16_t*) &client->character.name[4]));
       strcat (&character_file[0], ".bbc");
       fp = fopen (&character_file[0], "wb");
       if (fp)
@@ -12154,7 +12155,7 @@ void Send06 (BANANA* client)
         fwrite (&client->character.packetSize, 1, sizeof (CHARDATA), fp);
         fclose (fp);
       }
-      WriteLog ("User %u (%s) has wrote character debug data.", client->guildcard, Unicode_to_ASCII ((unsigned short*) &client->character.name[4]) );
+      WriteLog ("User %u (%s) has wrote character debug data.", client->guildcard, Unicode_to_ASCII ((uint16_t*) &client->character.name[4]) );
       SendB0 ("Your debug data has been saved.", client);
     }
     else
@@ -12219,9 +12220,9 @@ void Command09(BANANA* client)
   QUEST* q;
   BANANA* c;
   LOBBY* l;
-  unsigned lobbyNum, Packet11_Length, ch;
-  char lb[10];
-  int num_hours, num_minutes;
+  uint32_t lobbyNum, Packet11_Length, ch;
+  int8_t lb[10];
+  int32_t num_hours, num_minutes;
 
   switch ( client->decryptbuf[0x0F] )
   {
@@ -12260,15 +12261,15 @@ void Command09(BANANA* client)
             if ((l->slot_use[ch]) && (l->client[ch]))
             {
               c = l->client[ch];
-              wstrcpy((unsigned short*) &PacketData[Packet11_Length], (unsigned short*) &c->character.name[0]);
-              Packet11_Length += wstrlen ((unsigned short*) &PacketData[Packet11_Length]);
+              wstrcpy((uint16_t*) &PacketData[Packet11_Length], (uint16_t*) &c->character.name[0]);
+              Packet11_Length += wstrlen ((uint16_t*) &PacketData[Packet11_Length]);
               PacketData[Packet11_Length++] = 0x20;
               PacketData[Packet11_Length++] = 0x00;
               PacketData[Packet11_Length++] = 0x4C;
               PacketData[Packet11_Length++] = 0x00;
               sprintf(&lb[0], "%d", l->client[ch]->character.level + 1);
               wstrcpy_char(&PacketData[Packet11_Length], &lb[0]);
-              Packet11_Length += wstrlen ((unsigned short*) &PacketData[Packet11_Length]);
+              Packet11_Length += wstrlen ((uint16_t*) &PacketData[Packet11_Length]);
               PacketData[Packet11_Length++] = 0x0A;
               PacketData[Packet11_Length++] = 0x00;
               PacketData[Packet11_Length++] = 0x20;
@@ -12317,7 +12318,7 @@ void Command09(BANANA* client)
                 wstrcpy_char (&PacketData[Packet11_Length], "Unknown");
                 break;
               }
-              Packet11_Length += wstrlen ((unsigned short*) &PacketData[Packet11_Length]);
+              Packet11_Length += wstrlen ((uint16_t*) &PacketData[Packet11_Length]);
               PacketData[Packet11_Length++] = 0x20;
               PacketData[Packet11_Length++] = 0x00;
               PacketData[Packet11_Length++] = 0x20;
@@ -12337,13 +12338,13 @@ void Command09(BANANA* client)
           client->team_info_request = lobbyNum;
           client->team_info_flag = 0;
           wstrcpy_char (&PacketData[Packet11_Length], "Time : ");
-          Packet11_Length += wstrlen ((unsigned short*) &PacketData[Packet11_Length]);
+          Packet11_Length += wstrlen ((uint16_t*) &PacketData[Packet11_Length]);
           num_minutes  = ((unsigned) servertime - l->start_time ) / 60L;
           num_hours    = num_minutes / 60L;
           num_minutes %= 60;
           sprintf(&lb[0], "%d", num_hours);
           wstrcpy_char (&PacketData[Packet11_Length], &lb[0]);
-          Packet11_Length += wstrlen ((unsigned short*) &PacketData[Packet11_Length]);
+          Packet11_Length += wstrlen ((uint16_t*) &PacketData[Packet11_Length]);
           PacketData[Packet11_Length++] = 0x3A;
           PacketData[Packet11_Length++] = 0x00;
           sprintf(&lb[0], "%d", num_minutes);
@@ -12354,13 +12355,13 @@ void Command09(BANANA* client)
             lb[2] = 0x00;
           }
           wstrcpy_char (&PacketData[Packet11_Length], &lb[0]);
-          Packet11_Length += wstrlen ((unsigned short*) &PacketData[Packet11_Length]);
+          Packet11_Length += wstrlen ((uint16_t*) &PacketData[Packet11_Length]);
           PacketData[Packet11_Length++] = 0x0A;
           PacketData[Packet11_Length++] = 0x00;
           if (l->quest_loaded)
           {
             wstrcpy_char (&PacketData[Packet11_Length], "Quest : ");
-            Packet11_Length += wstrlen ((unsigned short*) &PacketData[Packet11_Length]);
+            Packet11_Length += wstrlen ((uint16_t*) &PacketData[Packet11_Length]);
             PacketData[Packet11_Length++] = 0x0A;
             PacketData[Packet11_Length++] = 0x00;
             PacketData[Packet11_Length++] = 0x20;
@@ -12369,10 +12370,10 @@ void Command09(BANANA* client)
             PacketData[Packet11_Length++] = 0x00;
             q = &quests[l->quest_loaded - 1];
             if ((client->character.lang < 10) && (q->ql[client->character.lang]))
-              wstrcpy((unsigned short*) &PacketData[Packet11_Length], (unsigned short*) &q->ql[client->character.lang]->qname[0]);
+              wstrcpy((uint16_t*) &PacketData[Packet11_Length], (uint16_t*) &q->ql[client->character.lang]->qname[0]);
             else
-              wstrcpy((unsigned short*) &PacketData[Packet11_Length], (unsigned short*) &q->ql[0]->qname[0]);
-            Packet11_Length += wstrlen ((unsigned short*) &PacketData[Packet11_Length]);
+              wstrcpy((uint16_t*) &PacketData[Packet11_Length], (uint16_t*) &q->ql[0]->qname[0]);
+            Packet11_Length += wstrlen ((uint16_t*) &PacketData[Packet11_Length]);
           }
         }
       }
@@ -12383,7 +12384,7 @@ void Command09(BANANA* client)
       }
       PacketData[Packet11_Length++] = 0x00;
       PacketData[Packet11_Length++] = 0x00;
-      *(unsigned short*) &PacketData[0x00] = (unsigned short) Packet11_Length;
+      *(uint16_t*) &PacketData[0x00] = (uint16_t) Packet11_Length;
       cipher_ptr = &client->server_cipher;
       encryptcopy (client, &PacketData[0], Packet11_Length );
     }
@@ -12412,24 +12413,24 @@ void Command09(BANANA* client)
 
 void Command10(unsigned blockServer, BANANA* client)
 {
-  unsigned char select_type, selected;
-  unsigned full_select, ch, ch2, failed_to_join, lobbyNum, password_match, oldIndex;
+  uint8_t select_type, selected;
+  uint32_t full_select, ch, ch2, failed_to_join, lobbyNum, password_match, oldIndex;
   LOBBY* l;
-  unsigned short* p;
-  unsigned short* c;
-  unsigned short fqs, barule;
-  unsigned qm_length, qa, nr;
-  unsigned char* qmap;
+  uint16_t* p;
+  uint16_t* c;
+  uint16_t fqs, barule;
+  uint32_t qm_length, qa, nr;
+  uint8_t* qmap;
   QUEST* q;
-  char quest_num[16];
-  unsigned qn;
-  int do_quest;
-  unsigned quest_flag;
+  int8_t quest_num[16];
+  uint32_t qn;
+  int32_t do_quest;
+  uint32_t quest_flag;
 
   if (client->guildcard)
   {
-    select_type = (unsigned char) client->decryptbuf[0x0F];
-    selected = (unsigned char) client->decryptbuf[0x0C];
+    select_type = (uint8_t) client->decryptbuf[0x0F];
+    selected = (uint8_t) client->decryptbuf[0x0C];
     full_select = *(unsigned *) &client->decryptbuf[0x0C];
 
     switch (select_type)
@@ -12549,8 +12550,8 @@ void Command10(unsigned blockServer, BANANA* client)
           (!failed_to_join))
         {
           password_match = 1;
-          p = (unsigned short*) &l->gamePassword[0x00];
-          c = (unsigned short*) &client->decryptbuf[0x10];
+          p = (uint16_t*) &l->gamePassword[0x00];
+          c = (uint16_t*) &client->decryptbuf[0x10];
           while (*p != 0x00)
           {
             if (*p != *c)
@@ -12639,7 +12640,7 @@ void Command10(unsigned blockServer, BANANA* client)
           client->encryptbuf[0x02] = 0x60;
           client->encryptbuf[0x08] = 0xDD;
           client->encryptbuf[0x09] = 0x03;
-          client->encryptbuf[0x0A] = (unsigned char) EXPERIENCE_RATE;
+          client->encryptbuf[0x0A] = (uint8_t) EXPERIENCE_RATE;
           cipher_ptr = &client->server_cipher;
           encryptcopy (client, &client->encryptbuf[0x00], 0x0C);
           UpdateGameItem (client);
@@ -12825,12 +12826,12 @@ void Command10(unsigned blockServer, BANANA* client)
                           CleanUpInventory (l->client[ch]);
                           l->client[ch]->character.level = 0;
                           l->client[ch]->character.XP = 0;
-                          l->client[ch]->character.ATP = *(unsigned short*) &startingData[(l->client[ch]->character._class*14)];
-                          l->client[ch]->character.MST = *(unsigned short*) &startingData[(l->client[ch]->character._class*14)+2];
-                          l->client[ch]->character.EVP = *(unsigned short*) &startingData[(l->client[ch]->character._class*14)+4];
-                          l->client[ch]->character.HP  = *(unsigned short*) &startingData[(l->client[ch]->character._class*14)+6];
-                          l->client[ch]->character.DFP = *(unsigned short*) &startingData[(l->client[ch]->character._class*14)+8];
-                          l->client[ch]->character.ATA = *(unsigned short*) &startingData[(l->client[ch]->character._class*14)+10];
+                          l->client[ch]->character.ATP = *(uint16_t*) &startingData[(l->client[ch]->character._class*14)];
+                          l->client[ch]->character.MST = *(uint16_t*) &startingData[(l->client[ch]->character._class*14)+2];
+                          l->client[ch]->character.EVP = *(uint16_t*) &startingData[(l->client[ch]->character._class*14)+4];
+                          l->client[ch]->character.HP  = *(uint16_t*) &startingData[(l->client[ch]->character._class*14)+6];
+                          l->client[ch]->character.DFP = *(uint16_t*) &startingData[(l->client[ch]->character._class*14)+8];
+                          l->client[ch]->character.ATA = *(uint16_t*) &startingData[(l->client[ch]->character._class*14)+10];
                           if (l->battle_level > 1)
                             SkipToLevel (l->battle_level - 1, l->client[ch], 1);
                           l->client[ch]->character.meseta = 0;
@@ -12840,7 +12841,7 @@ void Command10(unsigned blockServer, BANANA* client)
                       if ((l->client[ch]->character.lang < 10) &&
                         (q->ql[l->client[ch]->character.lang]))
                       {
-                        fqs = *(unsigned short*) &q->ql[l->client[ch]->character.lang]->qdata[0];
+                        fqs = *(uint16_t*) &q->ql[l->client[ch]->character.lang]->qdata[0];
                         if (fqs % 8)
                           fqs += ( 8 - ( fqs % 8 ) );
                         cipher_ptr = &l->client[ch]->server_cipher;
@@ -12848,7 +12849,7 @@ void Command10(unsigned blockServer, BANANA* client)
                       }
                       else
                       {
-                        fqs = *(unsigned short*) &q->ql[0]->qdata[0];
+                        fqs = *(uint16_t*) &q->ql[0]->qdata[0];
                         if (fqs % 8)
                           fqs += ( 8 - ( fqs % 8 ) );
                         cipher_ptr = &l->client[ch]->server_cipher;
@@ -12911,7 +12912,7 @@ void Command10(unsigned blockServer, BANANA* client)
       {
         // Blocks
 
-        unsigned blockNum;
+        uint32_t blockNum;
 
         blockNum = 0x100 - selected;
 
@@ -12992,15 +12993,15 @@ void Command10(unsigned blockServer, BANANA* client)
 
 void CommandD9 (BANANA* client)
 {
-  unsigned short *n;
-  unsigned short *g;
-  unsigned short s = 2;
+  uint16_t *n;
+  uint16_t *g;
+  uint16_t s = 2;
 
 
   // Client writing to info board
 
-  n = (unsigned short*) &client->decryptbuf[0x0A];
-  g = (unsigned short*) &client->character.GCBoard[0];
+  n = (uint16_t*) &client->decryptbuf[0x0A];
+  g = (uint16_t*) &client->character.GCBoard[0];
 
   *(g++) = 0x0009;
 
@@ -13018,8 +13019,8 @@ void CommandD9 (BANANA* client)
 }
 
 
-void AddGuildCard (unsigned myGC, unsigned friendGC, unsigned char* friendName,
-           unsigned char* friendText, unsigned char friendSecID, unsigned char friendClass,
+void AddGuildCard (unsigned myGC, uint32_t friendGC, uint8_t* friendName,
+           uint8_t* friendText, uint8_t friendSecID, uint8_t friendClass,
            ORANGE* ship)
 {
   // Instruct the logon server to add the guild card
@@ -13035,7 +13036,7 @@ void AddGuildCard (unsigned myGC, unsigned friendGC, unsigned char* friendName,
   compressShipPacket ( ship, &ship->encryptbuf[0x00], 0xD4 );
 }
 
-void DeleteGuildCard (unsigned myGC, unsigned friendGC, ORANGE* ship)
+void DeleteGuildCard (unsigned myGC, uint32_t friendGC, ORANGE* ship)
 {
   // Instruct the logon server to delete the guild card
 
@@ -13046,10 +13047,10 @@ void DeleteGuildCard (unsigned myGC, unsigned friendGC, ORANGE* ship)
   compressShipPacket ( ship, &ship->encryptbuf[0x00], 0x0A );
 }
 
-void ModifyGuildCardComment (unsigned myGC, unsigned friendGC, unsigned short* n, ORANGE* ship)
+void ModifyGuildCardComment (unsigned myGC, uint32_t friendGC, uint16_t* n, ORANGE* ship)
 {
-  unsigned s = 1;
-  unsigned short* g;
+  uint32_t s = 1;
+  uint16_t* g;
 
   ship->encryptbuf[0x00] = 0x07;
   ship->encryptbuf[0x01] = 0x02;
@@ -13058,7 +13059,7 @@ void ModifyGuildCardComment (unsigned myGC, unsigned friendGC, unsigned short* n
 
   // Client writing to info board
 
-  g = (unsigned short*) &ship->encryptbuf[0x0A];
+  g = (uint16_t*) &ship->encryptbuf[0x0A];
 
   memset (g, 0, 0x44);
 
@@ -13091,7 +13092,7 @@ void SortGuildCard (BANANA* client, ORANGE* ship)
 
 void CommandE8 (BANANA* client)
 {
-  unsigned gcn;
+  uint32_t gcn;
 
 
   switch (client->decryptbuf[0x03])
@@ -13101,7 +13102,7 @@ void CommandE8 (BANANA* client)
       // Accepting sent guild card
       LOBBY* l;
       BANANA* lClient;
-      unsigned ch, maxch;
+      uint32_t ch, maxch;
 
       if (!client->lobby)
         break;
@@ -13135,14 +13136,14 @@ void CommandE8 (BANANA* client)
   case 0x06:
     // Setting guild card text
     {
-      unsigned short *n;
-      unsigned short *g;
-      unsigned short s = 2;
+      uint16_t *n;
+      uint16_t *g;
+      uint16_t s = 2;
 
       // Client writing to info board
 
-      n = (unsigned short*) &client->decryptbuf[0x5E];
-      g = (unsigned short*) &client->character.guildcard_text[0];
+      n = (uint16_t*) &client->decryptbuf[0x5E];
+      g = (uint16_t*) &client->character.guildcard_text[0];
 
       *(g++) = 0x0009;
 
@@ -13172,7 +13173,7 @@ void CommandE8 (BANANA* client)
     // E8 09 writing a comment on a user...  not sure were comment goes in the DC packet...
     // User @ 0x08 comment @ 0x0C
     gcn = *(unsigned*) &client->decryptbuf[0x08];
-    ModifyGuildCardComment (client->guildcard, gcn, (unsigned short*) &client->decryptbuf[0x0E], logon);
+    ModifyGuildCardComment (client->guildcard, gcn, (uint16_t*) &client->decryptbuf[0x0E], logon);
     break;
   case 0x0A:
     // Sort guild card
@@ -13184,9 +13185,9 @@ void CommandE8 (BANANA* client)
 
 void CommandD8 (BANANA* client)
 {
-  unsigned ch,maxch;
-  unsigned short D8Offset;
-  unsigned char totalClients = 0;
+  uint32_t ch,maxch;
+  uint16_t D8Offset;
+  uint8_t totalClients = 0;
   LOBBY* l;
   BANANA* lClient;
 
@@ -13218,21 +13219,21 @@ void CommandD8 (BANANA* client)
     }
   }
   PacketData[0x04] = totalClients;
-  *(unsigned short*) &PacketData[0x00] = (unsigned short) D8Offset;
+  *(uint16_t*) &PacketData[0x00] = (uint16_t) D8Offset;
   cipher_ptr = &client->server_cipher;
   encryptcopy (client, &PacketData[0], D8Offset);
 }
 
 void Command81 (BANANA* client, ORANGE* ship)
 {
-  unsigned short* n;
+  uint16_t* n;
 
   ship->encryptbuf[0x00] = 0x08;
   ship->encryptbuf[0x01] = 0x03;
   memcpy (&ship->encryptbuf[0x02], &client->decryptbuf[0x00], 0x45C);
   *(unsigned*) &ship->encryptbuf[0x0E] = client->guildcard;
   memcpy (&ship->encryptbuf[0x12], &client->character.name[0], 24);
-  n = (unsigned short*) &ship->encryptbuf[0x62];
+  n = (uint16_t*) &ship->encryptbuf[0x62];
   while (*n != 0x0000)
   {
     if ((*n == 0x0009) || (*n == 0x000A))
@@ -13245,17 +13246,17 @@ void Command81 (BANANA* client, ORANGE* ship)
 }
 
 
-void CreateTeam (unsigned short* teamname, unsigned guildcard, ORANGE* ship)
+void CreateTeam (uint16_t* teamname, uint32_t guildcard, ORANGE* ship)
 {
-  unsigned short *g;
-  unsigned n;
+  uint16_t *g;
+  uint32_t n;
 
   n = 0;
 
   ship->encryptbuf[0x00] = 0x09;
   ship->encryptbuf[0x01] = 0x00;
 
-  g = (unsigned short*) &ship->encryptbuf[0x02];
+  g = (uint16_t*) &ship->encryptbuf[0x02];
 
   memset (g, 0, 24);
   while ((*teamname != 0x0000) && (n<11))
@@ -13271,7 +13272,7 @@ void CreateTeam (unsigned short* teamname, unsigned guildcard, ORANGE* ship)
   compressShipPacket ( ship, &ship->encryptbuf[0x00], 0x1E );
 }
 
-void UpdateTeamFlag (unsigned char* flag, unsigned teamid, ORANGE* ship)
+void UpdateTeamFlag (uint8_t* flag, uint32_t teamid, ORANGE* ship)
 {
   ship->encryptbuf[0x00] = 0x09;
   ship->encryptbuf[0x01] = 0x01;
@@ -13288,7 +13289,7 @@ void DissolveTeam (unsigned teamid, ORANGE* ship)
   compressShipPacket ( ship, &ship->encryptbuf[0x00], 0x06 );
 }
 
-void RemoveTeamMember ( unsigned teamid, unsigned guildcard, ORANGE* ship )
+void RemoveTeamMember ( uint32_t teamid, uint32_t guildcard, ORANGE* ship )
 {
   ship->encryptbuf[0x00] = 0x09;
   ship->encryptbuf[0x01] = 0x03;
@@ -13297,9 +13298,9 @@ void RemoveTeamMember ( unsigned teamid, unsigned guildcard, ORANGE* ship )
   compressShipPacket ( ship, &ship->encryptbuf[0x00], 0x0A );
 }
 
-void TeamChat ( unsigned short* text, unsigned short chatsize, unsigned teamid, ORANGE* ship )
+void TeamChat ( uint16_t* text, uint16_t chatsize, uint32_t teamid, ORANGE* ship )
 {
-  unsigned size;
+  uint32_t size;
 
   ship->encryptbuf[0x00] = 0x09;
   ship->encryptbuf[0x01] = 0x04;
@@ -13312,7 +13313,7 @@ void TeamChat ( unsigned short* text, unsigned short chatsize, unsigned teamid, 
   compressShipPacket ( ship, &ship->encryptbuf[0x00], size );
 }
 
-void RequestTeamList ( unsigned teamid, unsigned guildcard, ORANGE* ship )
+void RequestTeamList ( uint32_t teamid, uint32_t guildcard, ORANGE* ship )
 {
   ship->encryptbuf[0x00] = 0x09;
   ship->encryptbuf[0x01] = 0x05;
@@ -13321,17 +13322,17 @@ void RequestTeamList ( unsigned teamid, unsigned guildcard, ORANGE* ship )
   compressShipPacket ( ship, &ship->encryptbuf[0x00], 0x0A );
 }
 
-void PromoteTeamMember ( unsigned teamid, unsigned guildcard, unsigned char newlevel, ORANGE* ship )
+void PromoteTeamMember ( uint32_t teamid, uint32_t guildcard, uint8_t newlevel, ORANGE* ship )
 {
   ship->encryptbuf[0x00] = 0x09;
   ship->encryptbuf[0x01] = 0x06;
   *(unsigned*) &ship->encryptbuf[0x02] = teamid;
   *(unsigned*) &ship->encryptbuf[0x06] = guildcard;
-  ship->encryptbuf[0x0A] = (unsigned char) newlevel;
+  ship->encryptbuf[0x0A] = (uint8_t) newlevel;
   compressShipPacket ( ship, &ship->encryptbuf[0x00], 0x0B );
 }
 
-void AddTeamMember ( unsigned teamid, unsigned guildcard, ORANGE* ship )
+void AddTeamMember ( uint32_t teamid, uint32_t guildcard, ORANGE* ship )
 {
   ship->encryptbuf[0x00] = 0x09;
   ship->encryptbuf[0x01] = 0x07;
@@ -13343,7 +13344,7 @@ void AddTeamMember ( unsigned teamid, unsigned guildcard, ORANGE* ship )
 
 void CommandEA (BANANA* client, ORANGE* ship)
 {
-  unsigned connectNum;
+  uint32_t connectNum;
 
   if ((client->decryptbuf[0x03] < 32) && ((unsigned) servertime - client->team_cooldown[client->decryptbuf[0x03]] >= 1))
   {
@@ -13353,13 +13354,13 @@ void CommandEA (BANANA* client, ORANGE* ship)
     case 0x01:
       // Create team
       if (client->character.teamID == 0)
-        CreateTeam ((unsigned short*) &client->decryptbuf[0x0C], client->guildcard, ship);
+        CreateTeam ((uint16_t*) &client->decryptbuf[0x0C], client->guildcard, ship);
       break;
     case 0x03:
       // Add a team member
       {
         BANANA* tClient;
-        unsigned gcn, ch;
+        uint32_t gcn, ch;
 
         if ((client->character.teamID != 0) && (client->character.privilegeLevel >= 0x30))
         {
@@ -13380,7 +13381,7 @@ void CommandEA (BANANA* client, ORANGE* ship)
                 tClient->character.unknown15 = client->character.unknown15;
                 memcpy ( &tClient->character.teamName[0], &client->character.teamName[0], 28 );
                 memcpy ( &tClient->character.teamFlag[0], &client->character.teamFlag[0], 2048 );
-                *(long long*) &tClient->character.teamRewards[0] = *(long long*) &client->character.teamRewards[0];
+                *(int64_t*) &tClient->character.teamRewards[0] = *(int64_t*) &client->character.teamRewards[0];
                 if ( tClient->lobbyNum < 0x10 )
                   SendToLobby ( tClient->lobby, 12, MakePacketEA15 ( tClient ), 2152, 0 );
                 else
@@ -13401,7 +13402,7 @@ void CommandEA (BANANA* client, ORANGE* ship)
       // Remove member from team
       if (client->character.teamID != 0)
       {
-        unsigned gcn,ch;
+        uint32_t gcn,ch;
         BANANA* tClient;
 
         gcn = *(unsigned*) &client->decryptbuf[0x08];
@@ -13472,21 +13473,21 @@ void CommandEA (BANANA* client, ORANGE* ship)
     case 0x07:
       if (client->character.teamID != 0)
       {
-        unsigned short size;
-        unsigned short *n;
+        uint16_t size;
+        uint16_t *n;
 
-        size = *(unsigned short*) &client->decryptbuf[0x00];
+        size = *(uint16_t*) &client->decryptbuf[0x00];
 
         if (size > 0x2B)
         {
-          n = (unsigned short*) &client->decryptbuf[0x2C];
+          n = (uint16_t*) &client->decryptbuf[0x2C];
           while (*n != 0x0000)
           {
             if ((*n == 0x0009) || (*n == 0x000A))
               *n = 0x0020;
             n++;
           }
-          TeamChat ((unsigned short*) &client->decryptbuf[0x00], size, client->character.teamID, ship);
+          TeamChat ((uint16_t*) &client->decryptbuf[0x00], size, client->character.teamID, ship);
         }
       }
       break;
@@ -13519,7 +13520,7 @@ void CommandEA (BANANA* client, ORANGE* ship)
       // Promote member
       if (client->character.teamID != 0)
       {
-        unsigned gcn, ch;
+        uint32_t gcn, ch;
         BANANA* tClient;
 
         gcn = *(unsigned*) &client->decryptbuf[0x08];
@@ -13590,10 +13591,10 @@ void CommandEA (BANANA* client, ORANGE* ship)
 }
 
 
-void ShowArrows (BANANA* client, int to_all)
+void ShowArrows (BANANA* client, int32_t to_all)
 {
   LOBBY *l;
-  unsigned ch, total_clients, Packet88Offset;
+  uint32_t ch, total_clients, Packet88Offset;
 
   total_clients = 0;
   memset (&PacketData[0x00], 0, 8);
@@ -13617,7 +13618,7 @@ void ShowArrows (BANANA* client, int to_all)
     }
   }
   *(unsigned*) &PacketData[0x04] = total_clients;
-  *(unsigned short*) &PacketData[0x00] = (unsigned short) Packet88Offset;
+  *(uint16_t*) &PacketData[0x00] = (uint16_t) Packet88Offset;
   if (to_all)
     SendToLobby (client->lobby, 12, &PacketData[0x00], Packet88Offset, 0);
   else
@@ -13674,13 +13675,13 @@ void BlockProcessPacket (BANANA* client)
     case 0x44:
       if ( ( client->lobbyNum > 0x0F ) && ( client->sending_quest != -1 ) )
       {
-        unsigned short qps;
+        uint16_t qps;
 
         if ((client->character.lang < 10) && (quests[client->sending_quest].ql[client->character.lang]))
         {
           if (client->qpos < quests[client->sending_quest].ql[client->character.lang]->qsize)
           {
-            qps = *(unsigned short*) &quests[client->sending_quest].ql[client->character.lang]->qdata[client->qpos];
+            qps = *(uint16_t*) &quests[client->sending_quest].ql[client->character.lang]->qdata[client->qpos];
             if ( qps % 8 )
               qps += ( 8 - ( qps % 8 ) );
             cipher_ptr = &client->server_cipher;
@@ -13694,7 +13695,7 @@ void BlockProcessPacket (BANANA* client)
         {
           if (client->qpos < quests[client->sending_quest].ql[0]->qsize)
           {
-            qps = *(unsigned short*) &quests[client->sending_quest].ql[0]->qdata[client->qpos];
+            qps = *(uint16_t*) &quests[client->sending_quest].ql[0]->qdata[client->qpos];
             if ( qps % 8 )
               qps += ( 8 - ( qps % 8 ) );
             cipher_ptr = &client->server_cipher;
@@ -13712,7 +13713,7 @@ void BlockProcessPacket (BANANA* client)
         // If a client has just appeared, send him the team information of everyone in the lobby
         if (client->guildcard)
         {
-          unsigned ch;
+          uint32_t ch;
           LOBBY* l;
 
           if (!client->lobby)
@@ -13750,7 +13751,7 @@ void BlockProcessPacket (BANANA* client)
       if ((client->lobbyNum > 0x0F) && (client->bursting))
       {
         LOBBY* l;
-        unsigned short fqs,ch;
+        uint16_t fqs,ch;
 
         if (!client->lobby)
           break;
@@ -13763,7 +13764,7 @@ void BlockProcessPacket (BANANA* client)
           client->bursting = 1;
           if ((client->character.lang < 10) && (quests[l->quest_loaded - 1].ql[client->character.lang]))
           {
-            fqs =  *(unsigned short*) &quests[l->quest_loaded - 1].ql[client->character.lang]->qdata[0];
+            fqs =  *(uint16_t*) &quests[l->quest_loaded - 1].ql[client->character.lang]->qdata[0];
             if (fqs % 8)
               fqs += ( 8 - ( fqs % 8 ) );
             client->sending_quest = l->quest_loaded - 1;
@@ -13773,7 +13774,7 @@ void BlockProcessPacket (BANANA* client)
           }
           else
           {
-            fqs =  *(unsigned short*) &quests[l->quest_loaded - 1].ql[0]->qdata[0];
+            fqs =  *(uint16_t*) &quests[l->quest_loaded - 1].ql[0]->qdata[0];
             if (fqs % 8)
               fqs += ( 8 - ( fqs % 8 ) );
             client->sending_quest = l->quest_loaded - 1;
@@ -13813,8 +13814,8 @@ void BlockProcessPacket (BANANA* client)
       if (client->announce)
       {
         if (client->announce == 1)
-          WriteGM ("GM %u made an announcement: %s", client->guildcard, Unicode_to_ASCII ((unsigned short*) &client->decryptbuf[0x60]));
-        BroadcastToAll ((unsigned short*) &client->decryptbuf[0x60], client);
+          WriteGM ("GM %u made an announcement: %s", client->guildcard, Unicode_to_ASCII ((uint16_t*) &client->decryptbuf[0x60]));
+        BroadcastToAll ((uint16_t*) &client->decryptbuf[0x60], client);
       }
       else
       {
@@ -13921,8 +13922,8 @@ void BlockProcessPacket (BANANA* client)
       if (client->lobbyNum > 0x0F)
       {
         LOBBY* l;
-        int all_quest;
-        unsigned ch;
+        int32_t all_quest;
+        uint32_t ch;
 
         if (!client->lobby)
           break;
@@ -13969,7 +13970,7 @@ void BlockProcessPacket (BANANA* client)
           Send1A ("Challenge games are NOT supported right now.\nCheck back later.\n\n- Sodaboy", client);
         else
               {
-                unsigned lNum, failed_to_create;
+                uint32_t lNum, failed_to_create;
 
                 failed_to_create = 0;
 
@@ -14046,7 +14047,7 @@ void BlockProcessPacket (BANANA* client)
                   if (lNum)
                   {
                     removeClientFromLobby (client);
-                    client->lobbyNum = (unsigned short) lNum + 1;
+                    client->lobbyNum = (uint16_t) lNum + 1;
                     client->lobby = &blocks[client->block - 1]->lobbies[lNum];
                     initialize_game (client);
                     Send64 (client);
@@ -14055,7 +14056,7 @@ void BlockProcessPacket (BANANA* client)
                     client->encryptbuf[0x02] = 0x60;
                     client->encryptbuf[0x08] = 0xDD;
                     client->encryptbuf[0x09] = 0x03;
-                    client->encryptbuf[0x0A] = (unsigned char) EXPERIENCE_RATE;
+                    client->encryptbuf[0x0A] = (uint8_t) EXPERIENCE_RATE;
                     cipher_ptr = &client->server_cipher;
                     encryptcopy (client, &client->encryptbuf[0x00], 0x0C);
                     UpdateGameItem (client);
@@ -14083,9 +14084,9 @@ void BlockProcessPacket (BANANA* client)
       if ( client->guildcard )
       {
         if ( (client->isgm) || (isLocalGM(client->guildcard)) )
-          WriteGM ("GM %u (%s) has disconnected", client->guildcard, Unicode_to_ASCII ((unsigned short*) &client->character.name[4]) );
+          WriteGM ("GM %u (%s) has disconnected", client->guildcard, Unicode_to_ASCII ((uint16_t*) &client->character.name[4]) );
         else
-          WriteLog ("User %u (%s) has disconnected", client->guildcard, Unicode_to_ASCII ((unsigned short*) &client->character.name[4]) );
+          WriteLog ("User %u (%s) has disconnected", client->guildcard, Unicode_to_ASCII ((uint16_t*) &client->character.name[4]) );
         client->todc = 1;
       }
       break;
@@ -14115,11 +14116,11 @@ void BlockProcessPacket (BANANA* client)
       break;
     case 0x93:
       {
-        unsigned ch,ch2,ipaddr;
-        int banned = 0, match;
+        uint32_t ch,ch2,ipaddr;
+        int32_t banned = 0, match;
 
         client->temp_guildcard = *(unsigned*) &client->decryptbuf[0x0C];
-        client->hwinfo = *(long long*) &client->decryptbuf[0x84];
+        client->hwinfo = *(int64_t*) &client->decryptbuf[0x84];
         ipaddr = *(unsigned*) &client->ipaddr[0];
         for (ch=0;ch<num_bans;ch++)
         {
@@ -14146,7 +14147,7 @@ void BlockProcessPacket (BANANA* client)
           for (ch2=0;ch2<4;ch2++)
           {
             if ((ship_banmasks[ch][ch2] != 0x8000) &&
-                ((unsigned char) ship_banmasks[ch][ch2] != client->ipaddr[ch2]))
+                ((uint8_t) ship_banmasks[ch][ch2] != client->ipaddr[ch2]))
               match = 0;
           }
           if ( match )
@@ -14192,11 +14193,11 @@ void ShipProcessPacket (BANANA* client)
     break;
   case 0x93:
     {
-      unsigned ch,ch2,ipaddr;
-      int banned = 0, match;
+      uint32_t ch,ch2,ipaddr;
+      int32_t banned = 0, match;
 
       client->temp_guildcard = *(unsigned*) &client->decryptbuf[0x0C];
-      client->hwinfo = *(long long*) &client->decryptbuf[0x84];
+      client->hwinfo = *(int64_t*) &client->decryptbuf[0x84];
       ipaddr = *(unsigned*) &client->ipaddr[0];
 
       for (ch=0;ch<num_bans;ch++)
@@ -14224,7 +14225,7 @@ void ShipProcessPacket (BANANA* client)
         for (ch2=0;ch2<4;ch2++)
         {
           if ((ship_banmasks[ch][ch2] != 0x8000) &&
-            ((unsigned char) ship_banmasks[ch][ch2] != client->ipaddr[ch2]))
+            ((uint8_t) ship_banmasks[ch][ch2] != client->ipaddr[ch2]))
             match = 0;
         }
         if ( match )
@@ -14252,12 +14253,12 @@ void ShipProcessPacket (BANANA* client)
   }
 }
 
-long CalculateChecksum(void* data,unsigned long size)
+int32_t CalculateChecksum(void* data,uint32_t size)
 {
-    long offset,y,cs = 0xFFFFFFFF;
+    int32_t offset,y,cs = 0xFFFFFFFF;
     for (offset = 0; offset < (long)size; offset++)
     {
-        cs ^= *(unsigned char*)((long)data + offset);
+        cs ^= *(uint8_t*)((long)data + offset);
         for (y = 0; y < 8; y++)
         {
             if (!(cs & 1)) cs = (cs >> 1) & 0x7FFFFFFF;
@@ -14268,10 +14269,10 @@ long CalculateChecksum(void* data,unsigned long size)
 }
 
 
-void LoadBattleParam (BATTLEPARAM* dest, const char* filename, unsigned num_records, long expected_checksum)
+void LoadBattleParam (BATTLEPARAM* dest, const char* filename, uint32_t num_records, int32_t expected_checksum)
 {
   FILE* fp;
-  long battle_checksum;
+  int32_t battle_checksum;
 
   printf ("Loading %s ... ", filename);
   fp = fopen ( filename, "rb");
@@ -14297,42 +14298,42 @@ void LoadBattleParam (BATTLEPARAM* dest, const char* filename, unsigned num_reco
 
   if ( battle_checksum != expected_checksum )
   {
-    printf ("Checksum of file: %08lx\n", battle_checksum );
+    printf ("Checksum of file: %08x\n", battle_checksum );
     printf ("WARNING: Battle parameter file has been modified.\n");
   }
 }
 
-unsigned char qpd_buffer  [PRS_BUFFER];
-unsigned char qpdc_buffer [PRS_BUFFER];
+uint8_t qpd_buffer  [PRS_BUFFER];
+uint8_t qpdc_buffer [PRS_BUFFER];
 //LOBBY fakelobby;
 
-void LoadQuests (const char* filename, unsigned category)
+void LoadQuests (const char* filename, uint32_t category)
 {
   /*unsigned oldIndex;
-  unsigned qm_length, qa, nr;
-  unsigned char* qmap;
+  uint32_t qm_length, qa, nr;
+  uint8_t* qmap;
   LOBBY *l;*/
   FILE* fp;
   FILE* qf;
   FILE* qd;
-  unsigned qs;
-  char qfile[256];
-  char qfile2[256];
-  char qfile3[256];
-  char qfile4[256];
-  char qname[256];
-  unsigned qnl = 0;
+  uint32_t qs;
+  int8_t qfile[256];
+  int8_t qfile2[256];
+  int8_t qfile3[256];
+  int8_t qfile4[256];
+  int8_t qname[256];
+  uint32_t qnl = 0;
   QUEST* q;
-  unsigned ch, ch2, ch3, ch4, ch5, qf2l;
-  unsigned short qps, qpc;
-  unsigned qps2;
+  uint32_t ch, ch2, ch3, ch4, ch5, qf2l;
+  uint16_t qps, qpc;
+  uint32_t qps2;
   QUEST_MENU* qm;
   unsigned* ed;
-  unsigned ed_size, ed_ofs;
-  unsigned num_records, num_objects, qm_ofs = 0, qb_ofs = 0;
-  char true_filename[16];
+  uint32_t ed_size, ed_ofs;
+  uint32_t num_records, num_objects, qm_ofs = 0, qb_ofs = 0;
+  int8_t true_filename[16];
   QDETAILS* ql;
-  int extf;
+  int32_t extf;
 
   qm = &quest_menus[category];
   printf ("Loading quest list from %s ... \n", filename);
@@ -14479,7 +14480,7 @@ void LoadQuests (const char* filename, unsigned category)
           ch2 = 0;
           while (ch < qs)
           {
-            qpc = *(unsigned short*) &ql->qdata[ch+2];
+            qpc = *(uint16_t*) &ql->qdata[ch+2];
             if ( (qpc == 0x13) && (strstr(&ql->qdata[ch+8], ".bin")) && (ch2 < PRS_BUFFER))
             {
               memcpy ( &true_filename[0], &ql->qdata[ch+8], 16 );
@@ -14495,7 +14496,7 @@ void LoadQuests (const char* filename, unsigned category)
                 fgets(&dp[0],1,stdin);
                 exit (1);
               }
-              qps = *(unsigned short*) &ql->qdata[ch];
+              qps = *(uint16_t*) &ql->qdata[ch];
               if (qps % 8)
                 qps += ( 8 - ( qps % 8 ) );
               ch += qps;
@@ -14516,7 +14517,7 @@ void LoadQuests (const char* filename, unsigned category)
           qnl = 0;
           for (ch2=0x18;ch2<0x48;ch2+=2)
           {
-            if ( *(unsigned short *) &qpdc_buffer[ch2] != 0x0000 )
+            if ( *(uint16_t *) &qpdc_buffer[ch2] != 0x0000 )
             {
               qname[qnl] = qpdc_buffer[ch2];
               if (qname[qnl] < 32)
@@ -14542,7 +14543,7 @@ void LoadQuests (const char* filename, unsigned category)
 
             while (ch < qs)
             {
-              qpc = *(unsigned short*) &ql->qdata[ch+2];
+              qpc = *(uint16_t*) &ql->qdata[ch+2];
               if ( (qpc == 0x13) && (strstr(&ql->qdata[ch+8], ".dat")) && (ch2 < PRS_BUFFER))
               {
                 qps2 = *(unsigned *) &ql->qdata[ch+0x418];
@@ -14558,7 +14559,7 @@ void LoadQuests (const char* filename, unsigned category)
                   exit (1);
                 }
 
-                qps = *(unsigned short*) &ql->qdata[ch];
+                qps = *(uint16_t*) &ql->qdata[ch];
                 if (qps % 8)
                   qps += ( 8 - ( qps % 8 ) );
                 ch += qps;
@@ -14642,7 +14643,7 @@ void LoadQuests (const char* filename, unsigned category)
               ch2 = 0;
               while (ch2 < qb_ofs)
               {
-                unsigned qa;
+                uint32_t qa;
 
                 qa = *(unsigned *) &qpd_buffer[ch2];
                 num_records = *(unsigned *) &qpd_buffer[ch2+4];
@@ -14668,7 +14669,7 @@ void LoadQuests (const char* filename, unsigned category)
               ch2 = 0;
               while (ch2 < ( qm_ofs - 4 ))
               {
-                unsigned qa;
+                uint32_t qa;
 
                 qa = *(unsigned *) &dp[ch2];
                 num_records = *(unsigned *) &dp[ch2+4];
@@ -14749,14 +14750,14 @@ void LoadQuests (const char* filename, unsigned category)
   fclose (fp);
 }
 
-unsigned csv_lines = 0;
+uint32_t csv_lines = 0;
 char* csv_params[1024][64]; // 1024 lines which can carry 64 parameters each
 
 // Release RAM from loaded CSV
 
 void FreeCSV()
 {
-  unsigned ch, ch2;
+  uint32_t ch, ch2;
 
   for (ch=0;ch<csv_lines;ch++)
   {
@@ -14772,10 +14773,10 @@ void FreeCSV()
 void LoadCSV(const char* filename)
 {
   FILE* fp;
-  char csv_data[1024];
-  unsigned ch, ch2, ch3 = 0;
+  int8_t csv_data[1024];
+  uint32_t ch, ch2, ch3 = 0;
   //unsigned ch4;
-  int open_quote = 0;
+  int32_t open_quote = 0;
   char* csv_param;
 
   csv_lines = 0;
@@ -14841,16 +14842,16 @@ void LoadCSV(const char* filename)
 
 void LoadArmorParam()
 {
-  unsigned ch,wi1;
+  uint32_t ch,wi1;
 
   LoadCSV ("param//armorpmt.ini");
   for (ch=0;ch<csv_lines;ch++)
   {
     wi1 = hexToByte (&csv_params[ch][0][6]);
-    armor_dfpvar_table[wi1] = (unsigned char) atoi (csv_params[ch][17]);
-    armor_evpvar_table[wi1] = (unsigned char) atoi (csv_params[ch][18]);
-    armor_equip_table[wi1] = (unsigned char) atoi (csv_params[ch][10]);
-    armor_level_table[wi1] = (unsigned char) atoi (csv_params[ch][11]);
+    armor_dfpvar_table[wi1] = (uint8_t) atoi (csv_params[ch][17]);
+    armor_evpvar_table[wi1] = (uint8_t) atoi (csv_params[ch][18]);
+    armor_equip_table[wi1] = (uint8_t) atoi (csv_params[ch][10]);
+    armor_level_table[wi1] = (uint8_t) atoi (csv_params[ch][11]);
     //printf ("armor index %02x, dfp: %u, evp: %u, eq: %u, lv: %u \n", wi1, armor_dfpvar_table[wi1], armor_evpvar_table[wi1], armor_equip_table[wi1], armor_level_table[wi1]);
   }
   FreeCSV ();
@@ -14858,10 +14859,10 @@ void LoadArmorParam()
   for (ch=0;ch<csv_lines;ch++)
   {
     wi1 = hexToByte (&csv_params[ch][0][6]);
-    barrier_dfpvar_table[wi1] = (unsigned char) atoi (csv_params[ch][17]);
-    barrier_evpvar_table[wi1] = (unsigned char) atoi (csv_params[ch][18]);
-    barrier_equip_table[wi1] = (unsigned char) atoi (csv_params[ch][10]);
-    barrier_level_table[wi1] = (unsigned char) atoi (csv_params[ch][11]);
+    barrier_dfpvar_table[wi1] = (uint8_t) atoi (csv_params[ch][17]);
+    barrier_evpvar_table[wi1] = (uint8_t) atoi (csv_params[ch][18]);
+    barrier_equip_table[wi1] = (uint8_t) atoi (csv_params[ch][10]);
+    barrier_level_table[wi1] = (uint8_t) atoi (csv_params[ch][11]);
     //printf ("barrier index %02x, dfp: %u, evp: %u, eq: %u, lv: %u \n", wi1, barrier_dfpvar_table[wi1], barrier_evpvar_table[wi1], barrier_equip_table[wi1], barrier_level_table[wi1]);
   }
   FreeCSV ();
@@ -14877,7 +14878,7 @@ void LoadArmorParam()
 
 void LoadWeaponParam()
 {
-  unsigned ch,wi1,wi2;
+  uint32_t ch,wi1,wi2;
 
   LoadCSV ("param/weaponpmt.ini");
   for (ch=0;ch<csv_lines;ch++)
@@ -14885,14 +14886,14 @@ void LoadWeaponParam()
     wi1 = hexToByte (&csv_params[ch][0][4]);
     wi2 = hexToByte (&csv_params[ch][0][6]);
     weapon_equip_table[wi1][wi2] = (unsigned) atoi (csv_params[ch][6]);
-    *(unsigned short*) &weapon_atpmax_table[wi1][wi2] = (unsigned) atoi (csv_params[ch][8]);
-    grind_table[wi1][wi2] = (unsigned char) atoi (csv_params[ch][14]);
+    *(uint16_t*) &weapon_atpmax_table[wi1][wi2] = (unsigned) atoi (csv_params[ch][8]);
+    grind_table[wi1][wi2] = (uint8_t) atoi (csv_params[ch][14]);
     if (( ((wi1 >= 0x70) && (wi1 <= 0x88)) ||
         ((wi1 >= 0xA5) && (wi1 <= 0xA9)) ) &&
         (wi2 == 0x10))
       special_table[wi1][wi2] = 0x0B; // Fix-up S-Rank King's special
     else
-      special_table[wi1][wi2] = (unsigned char) atoi (csv_params[ch][16]);
+      special_table[wi1][wi2] = (uint8_t) atoi (csv_params[ch][16]);
     //printf ("weapon index %02x%02x, eq: %u, grind: %u, atpmax: %u, special: %u \n", wi1, wi2, weapon_equip_table[wi1][wi2], grind_table[wi1][wi2], weapon_atpmax_table[wi1][wi2], special_table[wi1][wi2] );
   }
   FreeCSV ();
@@ -14900,7 +14901,7 @@ void LoadWeaponParam()
 
 void LoadTechParam()
 {
-  unsigned ch,ch2;
+  uint32_t ch,ch2;
 
   LoadCSV ("param/tech.ini");
   if (csv_lines != 19)
@@ -14949,29 +14950,29 @@ void LoadShopData2()
 **
 ********************************************************/
 
-int main()
+int32_t main()
 {
-  unsigned ch,ch2,ch3,ch4,ch5,connectNum;
-  int wep_rank;
+  uint32_t ch,ch2,ch3,ch4,ch5,connectNum;
+  int32_t wep_rank;
   PTDATA ptd;
-  unsigned wep_counters[24] = {0};
-  unsigned tool_counters[28] = {0};
-  unsigned tech_counters[19] = {0};
+  uint32_t wep_counters[24] = {0};
+  uint32_t tool_counters[28] = {0};
+  uint32_t tech_counters[19] = {0};
   struct in_addr ship_in;
   struct sockaddr_in listen_in;
-  unsigned listen_length;
-  int block_sockfd[10] = {-1};
+  uint32_t listen_length;
+  int32_t block_sockfd[10] = {-1};
   struct in_addr block_in[10];
-  int ship_sockfd = -1;
-  int pkt_len, pkt_c, bytes_sent;
-  int wserror;
+  int32_t ship_sockfd = -1;
+  int32_t pkt_len, pkt_c, bytes_sent;
+  int32_t wserror;
   FILE* fp;
-  unsigned char* connectionChunk;
-  unsigned char* connectionPtr;
-  unsigned char* blockPtr;
-  unsigned char* blockChunk;
-  //unsigned short this_packet;
-  unsigned long logon_this_packet;
+  uint8_t* connectionChunk;
+  uint8_t* connectionPtr;
+  uint8_t* blockPtr;
+  uint8_t* blockChunk;
+  //uint16_t this_packet;
+  uint32_t logon_this_packet;
   ch = 0;
 
   dp[0] = 0;
@@ -15077,7 +15078,7 @@ int main()
       common_counters[ch2]++;
       if ((common_counters[ch2] >= common_rates[ch2]) && (ch<100000))
       {
-        common_table[ch++] = (unsigned char) ch2;
+        common_table[ch++] = (uint8_t) ch2;
         common_counters[ch2] = 0;
       }
     }
@@ -15160,7 +15161,7 @@ int main()
               wep_rank += ptd.area_pattern[ch5];
               if ( wep_rank >= 0 )
               {
-                weapon_drops_ep1[ch][ch2][ch5][ch3++] = ( ch4 + 1 ) + ( (unsigned char) wep_rank << 8 );
+                weapon_drops_ep1[ch][ch2][ch5][ch3++] = ( ch4 + 1 ) + ( (uint8_t) wep_rank << 8 );
                 wep_counters[ch4] = 0;
               }
             }
@@ -15357,7 +15358,7 @@ int main()
               wep_rank += ptd.area_pattern[ch5];
               if ( wep_rank >= 0 )
               {
-                weapon_drops_ep2[ch][ch2][ch5][ch3++] = ( ch4 + 1 ) + ( (unsigned char) wep_rank << 8 );
+                weapon_drops_ep2[ch][ch2][ch5][ch3++] = ( ch4 + 1 ) + ( (uint8_t) wep_rank << 8 );
                 wep_counters[ch4] = 0;
               }
             }
@@ -15716,7 +15717,7 @@ int main()
 
   for (;;)
   {
-    int nfds = 0;
+    int32_t nfds = 0;
 
     /* Ping pong?! */
 
@@ -15983,7 +15984,7 @@ int main()
 
                   // Make sure we're expecting a multiple of 8 bytes.
 
-                  workConnect->expect = *(unsigned short*) &workConnect->decryptbuf[0];
+                  workConnect->expect = *(uint16_t*) &workConnect->decryptbuf[0];
 
                   if ( workConnect->expect % 8 )
                     workConnect->expect += ( 8 - ( workConnect->expect % 8 ) );
@@ -16140,9 +16141,9 @@ void tcp_listen (int sockfd)
   }
 }
 
-int tcp_accept (int sockfd, struct sockaddr *client_addr, int *addr_len )
+int32_t tcp_accept (int sockfd, struct sockaddr *client_addr, int32_t *addr_len )
 {
-  int fd;
+  int32_t fd;
 
   if ((fd = accept (sockfd, client_addr, addr_len)) < 0)
     debug_perror ("Could not accept connection");
@@ -16150,9 +16151,9 @@ int tcp_accept (int sockfd, struct sockaddr *client_addr, int *addr_len )
   return (fd);
 }
 
-int tcp_sock_connect(char* dest_addr, int port)
+int32_t tcp_sock_connect(char* dest_addr, int32_t port)
 {
-  int fd;
+  int32_t fd;
   struct sockaddr_in sa;
 
   /* Clear it out */
@@ -16169,7 +16170,7 @@ int tcp_sock_connect(char* dest_addr, int port)
     memset (&sa, 0, sizeof(sa));
     sa.sin_family = AF_INET;
     sa.sin_addr.s_addr = inet_addr (dest_addr);
-    sa.sin_port = htons((unsigned short) port);
+    sa.sin_port = htons((uint16_t) port);
 
     if (connect(fd, (struct sockaddr*) &sa, sizeof(sa)) < 0)
     {
@@ -16181,9 +16182,9 @@ int tcp_sock_connect(char* dest_addr, int port)
 }
 
 /*****************************************************************************/
-int tcp_sock_open(struct in_addr ip, int port)
+int32_t tcp_sock_open(struct in_addr ip, int32_t port)
 {
-  int fd, turn_on_option_flag = 1, rcSockopt;
+  int32_t fd, turn_on_option_flag = 1, rcSockopt;
 
   struct sockaddr_in sa;
 
@@ -16202,7 +16203,7 @@ int tcp_sock_open(struct in_addr ip, int port)
 
   sa.sin_family = AF_INET;
   memcpy((void *)&sa.sin_addr, (void *)&ip, sizeof(struct in_addr));
-  sa.sin_port = htons((unsigned short) port);
+  sa.sin_port = htons((uint16_t) port);
 
   /* Reuse port */
 
@@ -16232,7 +16233,7 @@ void debug(char *fmt, ...)
 #define MAX_MESG_LEN 1024
 
   va_list args;
-  char text[ MAX_MESG_LEN ];
+  int8_t text[ MAX_MESG_LEN ];
 
   va_start (args, fmt);
   strcpy (text + vsprintf( text,fmt,args), "\r\n");
@@ -16243,9 +16244,9 @@ void debug(char *fmt, ...)
 
 /* Blue Burst encryption routines */
 
-static void pso_crypt_init_key_bb(unsigned char *data)
+static void pso_crypt_init_key_bb(uint8_t *data)
 {
-  unsigned x;
+  uint32_t x;
   for (x = 0; x < 48; x += 3)
   {
     data[x] ^= 0x19;
@@ -16255,22 +16256,22 @@ static void pso_crypt_init_key_bb(unsigned char *data)
 }
 
 
-void pso_crypt_decrypt_bb(PSO_CRYPT *pcry, unsigned char *data, unsigned
+void pso_crypt_decrypt_bb(PSO_CRYPT *pcry, uint8_t *data, unsigned
               length)
 {
-  unsigned eax, ecx, edx, ebx, ebp, esi, edi;
+  uint32_t eax, ecx, edx, ebx, ebp, esi, edi;
 
   edx = 0;
   ecx = 0;
   eax = 0;
   while (edx < length)
   {
-    ebx = *(unsigned long *) &data[edx];
+    ebx = *(uint32_t *) &data[edx];
     ebx = ebx ^ pcry->tbl[5];
     ebp = ((pcry->tbl[(ebx >> 0x18) + 0x12]+pcry->tbl[((ebx >> 0x10)& 0xff) + 0x112])
       ^ pcry->tbl[((ebx >> 0x8)& 0xff) + 0x212]) + pcry->tbl[(ebx & 0xff) + 0x312];
     ebp = ebp ^ pcry->tbl[4];
-    ebp ^= *(unsigned long *) &data[edx+4];
+    ebp ^= *(uint32_t *) &data[edx+4];
     edi = ((pcry->tbl[(ebp >> 0x18) + 0x12]+pcry->tbl[((ebp >> 0x10)& 0xff) + 0x112])
       ^ pcry->tbl[((ebp >> 0x8)& 0xff) + 0x212]) + pcry->tbl[(ebp & 0xff) + 0x312];
     edi = edi ^ pcry->tbl[3];
@@ -16283,29 +16284,29 @@ void pso_crypt_decrypt_bb(PSO_CRYPT *pcry, unsigned char *data, unsigned
     edi = edi ^ pcry->tbl[1];
     ebp = ebp ^ pcry->tbl[0];
     ebx = ebx ^ edi;
-    *(unsigned long *) &data[edx] = ebp;
-    *(unsigned long *) &data[edx+4] = ebx;
+    *(uint32_t *) &data[edx] = ebp;
+    *(uint32_t *) &data[edx+4] = ebx;
     edx = edx+8;
   }
 }
 
 
-void pso_crypt_encrypt_bb(PSO_CRYPT *pcry, unsigned char *data, unsigned
+void pso_crypt_encrypt_bb(PSO_CRYPT *pcry, uint8_t *data, unsigned
               length)
 {
-  unsigned eax, ecx, edx, ebx, ebp, esi, edi;
+  uint32_t eax, ecx, edx, ebx, ebp, esi, edi;
 
   edx = 0;
   ecx = 0;
   eax = 0;
   while (edx < length)
   {
-    ebx = *(unsigned long *) &data[edx];
+    ebx = *(uint32_t *) &data[edx];
     ebx = ebx ^ pcry->tbl[0];
     ebp = ((pcry->tbl[(ebx >> 0x18) + 0x12]+pcry->tbl[((ebx >> 0x10)& 0xff) + 0x112])
       ^ pcry->tbl[((ebx >> 0x8)& 0xff) + 0x212]) + pcry->tbl[(ebx & 0xff) + 0x312];
     ebp = ebp ^ pcry->tbl[1];
-    ebp ^= *(unsigned long *) &data[edx+4];
+    ebp ^= *(uint32_t *) &data[edx+4];
     edi = ((pcry->tbl[(ebp >> 0x18) + 0x12]+pcry->tbl[((ebp >> 0x10)& 0xff) + 0x112])
       ^ pcry->tbl[((ebp >> 0x8)& 0xff) + 0x212]) + pcry->tbl[(ebp & 0xff) + 0x312];
     edi = edi ^ pcry->tbl[2];
@@ -16318,15 +16319,15 @@ void pso_crypt_encrypt_bb(PSO_CRYPT *pcry, unsigned char *data, unsigned
     edi = edi ^ pcry->tbl[4];
     ebp = ebp ^ pcry->tbl[5];
     ebx = ebx ^ edi;
-    *(unsigned long *) &data[edx] = ebp;
-    *(unsigned long *) &data[edx+4] = ebx;
+    *(uint32_t *) &data[edx] = ebp;
+    *(uint32_t *) &data[edx+4] = ebx;
     edx = edx+8;
   }
 }
 
-void encryptcopy (BANANA* client, const unsigned char* src, unsigned size)
+void encryptcopy (BANANA* client, const uint8_t* src, uint32_t size)
 {
-  unsigned char* dest;
+  uint8_t* dest;
 
   // Bad pointer check...
   if ( (client < connections[0]) ||
@@ -16346,20 +16347,20 @@ void encryptcopy (BANANA* client, const unsigned char* src, unsigned size)
 }
 
 
-void decryptcopy (unsigned char* dest, const unsigned char* src, unsigned size)
+void decryptcopy (uint8_t* dest, const uint8_t* src, uint32_t size)
 {
   memcpy (dest,src,size);
   pso_crypt_decrypt_bb(cipher_ptr,dest,size);
 }
 
 
-void pso_crypt_table_init_bb(PSO_CRYPT *pcry, const unsigned char *salt)
+void pso_crypt_table_init_bb(PSO_CRYPT *pcry, const uint8_t *salt)
 {
-  unsigned long eax, ecx, edx, ebx, ebp, esi, edi, ou, x;
-  unsigned char s[48];
-  unsigned short* pcryp;
-  unsigned short* bbtbl;
-  unsigned short dx;
+  uint32_t eax, ecx, edx, ebx, ebp, esi, edi, ou, x;
+  uint8_t s[48];
+  uint16_t* pcryp;
+  uint16_t* bbtbl;
+  uint16_t dx;
 
   pcry->cur = 0;
   pcry->mangle = NULL;
@@ -16368,8 +16369,8 @@ void pso_crypt_table_init_bb(PSO_CRYPT *pcry, const unsigned char *salt)
   memcpy(s, salt, sizeof(s));
   pso_crypt_init_key_bb(s);
 
-  bbtbl = (unsigned short*) &bbtable[0];
-  pcryp = (unsigned short*) &pcry->tbl[0];
+  bbtbl = (uint16_t*) &bbtable[0];
+  pcryp = (uint16_t*) &pcry->tbl[0];
 
   eax = 0;
   ebx = 0;
@@ -16415,19 +16416,19 @@ void pso_crypt_table_init_bb(PSO_CRYPT *pcry, const unsigned char *salt)
   while (ebx < 0x12)
   {
     //in a loop
-    ebp=((unsigned long) (s[ecx])) << 0x18;
+    ebp=((uint32_t) (s[ecx])) << 0x18;
     eax=ecx+1;
     edx=eax-((eax / 48)*48);
-    eax=(((unsigned long) (s[edx])) << 0x10) & 0xFF0000;
+    eax=(((uint32_t) (s[edx])) << 0x10) & 0xFF0000;
     ebp=(ebp | eax) & 0xffff00ff;
     eax=ecx+2;
     edx=eax-((eax / 48)*48);
-    eax=(((unsigned long) (s[edx])) << 0x8) & 0xFF00;
+    eax=(((uint32_t) (s[edx])) << 0x8) & 0xFF00;
     ebp=(ebp | eax) & 0xffffff00;
     eax=ecx+3;
     ecx=ecx+4;
     edx=eax-((eax / 48)*48);
-    eax=(unsigned long) (s[edx]);
+    eax=(uint32_t) (s[edx]);
     ebp=ebp | eax;
     eax=ecx;
     edx=eax-((eax / 48)*48);
@@ -16601,11 +16602,11 @@ void pso_crypt_table_init_bb(PSO_CRYPT *pcry, const unsigned char *salt)
   }
 }
 
-unsigned RleEncode(unsigned char *src, unsigned char *dest, unsigned src_size)
+uint32_t RleEncode(uint8_t *src, uint8_t *dest, uint32_t src_size)
 {
-  unsigned char currChar, prevChar;             /* current and previous characters */
-  unsigned short count;                /* number of characters in a run */
-  unsigned char *src_end, *dest_start;
+  uint8_t currChar, prevChar;             /* current and previous characters */
+  uint16_t count;                /* number of characters in a run */
+  uint8_t *src_end, *dest_start;
 
   dest_start = dest;
   src_end = src + src_size;
@@ -16634,13 +16635,13 @@ unsigned RleEncode(unsigned char *src, unsigned char *dest, unsigned src_size)
             src++;
             if ( src == src_end )
             {
-              *(unsigned short*) dest = count;
+              *(uint16_t*) dest = count;
               dest += 2;
             }
           }
           else
           {
-            *(unsigned short*) dest = count;
+            *(uint16_t*) dest = count;
             dest += 2;
             prevChar = 0xFF - *src;
             break;
@@ -16654,17 +16655,17 @@ unsigned RleEncode(unsigned char *src, unsigned char *dest, unsigned src_size)
   return dest - dest_start;
 }
 
-void RleDecode(unsigned char *src, unsigned char *dest, unsigned src_size)
+void RleDecode(uint8_t *src, uint8_t *dest, uint32_t src_size)
 {
-    unsigned char currChar, prevChar;             /* current and previous characters */
-    unsigned short count;                /* number of characters in a run */
-  unsigned char *src_end;
+    uint8_t currChar, prevChar;             /* current and previous characters */
+    uint16_t count;                /* number of characters in a run */
+  uint8_t *src_end;
 
   src_end = src + src_size;
 
     /* decode */
 
-    prevChar = 0xFF - *src;     /* force next char to be different */
+    prevChar = 0xFF - *src;     /* force next int8_t to be different */
 
     /* read input until there's nothing left */
 
@@ -16678,7 +16679,7 @@ void RleDecode(unsigned char *src, unsigned char *dest, unsigned src_size)
         if (currChar == prevChar)
         {
             /* we have a run.  write it out. */
-      count = *(unsigned short*) src;
+      count = *(uint16_t*) src;
       src += 2;
             while (count > 0)
             {
@@ -16686,7 +16687,7 @@ void RleDecode(unsigned char *src, unsigned char *dest, unsigned src_size)
                 count--;
             }
 
-            prevChar = 0xFF - *src;     /* force next char to be different */
+            prevChar = 0xFF - *src;     /* force next int8_t to be different */
         }
         else
         {
@@ -16698,15 +16699,15 @@ void RleDecode(unsigned char *src, unsigned char *dest, unsigned src_size)
 
 /* expand a key (makes a rc4_key) */
 
-void prepare_key(unsigned char *keydata, unsigned len, struct rc4_key *key)
+void prepare_key(uint8_t *keydata, uint32_t len, struct rc4_key *key)
 {
-    unsigned index1, index2, counter;
-    unsigned char *state;
+    uint32_t index1, index2, counter;
+    uint8_t *state;
 
     state = key->state;
 
     for (counter = 0; counter < 256; counter++)
-        state[counter] = (unsigned char) counter;
+        state[counter] = (uint8_t) counter;
 
     key->x = key->y = index1 = index2 = 0;
 
@@ -16724,10 +16725,10 @@ void prepare_key(unsigned char *keydata, unsigned len, struct rc4_key *key)
 
 /* reversible encryption, will encode a buffer updating the key */
 
-void rc4(unsigned char *buffer, unsigned len, struct rc4_key *key)
+void rc4(uint8_t *buffer, uint32_t len, struct rc4_key *key)
 {
-    unsigned x, y, xorIndex, counter;
-    unsigned char *state;
+    uint32_t x, y, xorIndex, counter;
+    uint8_t *state;
 
     /* get local copies */
     x = key->x; y = key->y;
@@ -16750,10 +16751,10 @@ void rc4(unsigned char *buffer, unsigned len, struct rc4_key *key)
     key->x = x; key->y = y;
 }
 
-void compressShipPacket ( ORANGE* ship, unsigned char* src, unsigned long src_size )
+void compressShipPacket ( ORANGE* ship, uint8_t* src, uint32_t src_size )
 {
-  unsigned char* dest;
-  unsigned long result;
+  uint8_t* dest;
+  uint32_t result;
 
   if (ship->sockfd >= 0)
   {
@@ -16780,10 +16781,10 @@ void compressShipPacket ( ORANGE* ship, unsigned char* src, unsigned long src_si
   }
 }
 
-void decompressShipPacket ( ORANGE* ship, unsigned char* dest, unsigned char* src )
+void decompressShipPacket ( ORANGE* ship, uint8_t* dest, uint8_t* src )
 {
-  unsigned src_size, dest_size;
-  unsigned char *srccpy;
+  uint32_t src_size, dest_size;
+  uint8_t *srccpy;
 
   if (ship->crypt_on)
   {

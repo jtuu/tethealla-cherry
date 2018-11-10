@@ -2,7 +2,7 @@
 
 //  SPSOF's old size_check table for lobbies.
 
-unsigned short size_check_table [] =
+uint16_t size_check_table [] =
 {
   0x00, 0x00,
   0x01, 0x00,
@@ -264,7 +264,7 @@ unsigned short size_check_table [] =
 
 //  New table for blocking specific 0x60 packets in-game.
 
-unsigned char dont_send_60[256*2] =
+uint8_t dont_send_60[256*2] =
 {
   0x00, 1,
   0x01, 0,
