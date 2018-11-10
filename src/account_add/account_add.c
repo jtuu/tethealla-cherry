@@ -13,9 +13,9 @@
 #include  <stdlib.h>
 #include  <string.h>
 #include  <time.h>
+#include  <openssl/md5.h>
 
 #include  <mysql/mysql.h>
-#include  "src/md5/include/md5.h"
 
 /* Computes the message digest for string inString.
    Prints out message digest, a space, the string (in quotes) and a
@@ -25,18 +25,7 @@ void MDString (inString, outString)
 int8_t *inString;
 int8_t *outString;
 {
-  uint8_t c;
-  MD5_CTX mdContext;
-  uint32_t len = strlen (inString);
-
-  MD5Init (&mdContext);
-  MD5Update (&mdContext, inString, len);
-  MD5Final (&mdContext);
-  for (c=0;c<16;c++)
-  {
-    *outString = mdContext.digest[c];
-    outString++;
-  }
+  MD5(inString, strlen(inString), outString);
 }
 
 void UpdateDataFile ( const char* filename, uint32_t count, void* data, uint32_t record_size, int32_t new_record )

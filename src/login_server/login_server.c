@@ -40,7 +40,7 @@
 #ifndef NO_SQL
 #include  <mysql/mysql.h>
 #endif
-#include  <src/md5/include/md5.h>
+#include  <openssl/md5.h>
 
 #include  "pso_crypt.h"
 #include  "bbtable.h"
@@ -768,18 +768,7 @@ void MDString (inString, outString)
 int8_t *inString;
 int8_t *outString;
 {
-  uint8_t c;
-  MD5_CTX mdContext;
-  uint32_t len = strlen (inString);
-
-  MD5Init (&mdContext);
-  MD5Update (&mdContext, inString, len);
-  MD5Final (&mdContext);
-  for (c=0;c<16;c++)
-  {
-    *outString = mdContext.digest[c];
-    outString++;
-  }
+  MD5 (inString, strlen(inString), outString);
 }
 
 void convertIPString (char* IPData, uint32_t IPLen, int32_t fromConfig )
