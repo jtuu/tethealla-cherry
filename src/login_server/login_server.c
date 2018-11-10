@@ -55,7 +55,7 @@
 #define MAX_DRESS_FLAGS 500
 #define DRESS_FLAG_EXPIRY 7200
 
-const int8_t *PSO_CLIENT_VER_STRING = "TethVer12510";
+const int8_t *PSO_CLIENT_VER_STRING = "TethVer12513";
 #define PSO_CLIENT_VER 0x41
 
 //#define USEADDR_ANY
