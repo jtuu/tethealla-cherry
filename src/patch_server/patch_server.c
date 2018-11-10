@@ -15,6 +15,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************/
 
+#include  <stdbool.h>
 #include  <stdint.h>
 #include  <stdarg.h>
 #include  <stdio.h>
@@ -30,6 +31,7 @@
 #include  <linux/limits.h>
 #include  <ctype.h>
 #include  <time.h>
+#include  <dirent.h>
 
 // Encryption data struct
 typedef struct {
@@ -66,6 +68,17 @@ void strupr(char * temp) {
   int8_t *s = temp;
   while (*s) {
     *s = toupper((uint8_t) *s);
+    s++;
+  }
+
+}
+
+void strlwr(char * temp) {
+
+  // Convert to upper case
+  int8_t *s = temp;
+  while (*s) {
+    *s = tolower((uint8_t) *s);
     s++;
   }
 
@@ -746,8 +759,7 @@ int8_t patch_folder[PATH_MAX] = {0};
 uint32_t patch_steps = 0;
 int32_t now_folder = -1;
 
-// FIXME: Redo with linux stuff
-//int scandir(char *path, BOOL recursive);
+void scanpatches(char *path, bool recursive);
 int32_t fixpath(char *inpath, int8_t *outpath);
 
 void change_client_folder (unsigned patchNum, BANANA* client)
@@ -810,7 +822,6 @@ void change_patch_folder (unsigned patchNum)
   if (strcmp(&patch_folder[0], &s_data[patchNum].folder[0]) != 0)
   {
     // Not in the right folder...
-
     while (patch_steps)
     {
       patch_packet[patch_size++] = 0x04;
@@ -845,64 +856,54 @@ void change_patch_folder (unsigned patchNum)
   }
 }
 
-//TODO: Redo with linux stuff
-/*
-int32_t scandir(char *_path,BOOL recursive)
-{
-  HANDLE fh;
-  int8_t   path[PATH_MAX];
-  int8_t   tmppath[PATH_MAX];
-  WIN32_FIND_DATA *fd;
-  void *pd;
-  FILE* pf;
-  uint32_t f_size, f_checksum, ch, ch2, ch3;
+void scanpatches(char *_path, bool recursive) {
+  DIR *dir;
+  struct dirent *entry;
+  int8_t tmppath[PATH_MAX];
+  FILE *pf;
+  uint64_t f_size;
+  uint32_t f_checksum;
+  uint8_t *pd;
+  uint32_t ch, ch2, ch3;
 
-  now_folder ++;
+  if(!(dir = opendir(_path))) return;
 
-  fd = malloc(sizeof(WIN32_FIND_DATA));
+  now_folder++;
 
-  fixpath(_path,path);
-  strcat(path,"*");
-
-  printf("Scanning: %s\n",path);
-
-  fh = FindFirstFile((LPCSTR) path,fd);
-
-  if(fh != INVALID_HANDLE_VALUE)
-  {
-    do
-    {
-      if(fd->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-      {
-        if((0 != strcmp(fd->cFileName,".")) && (0 != strcmp(fd->cFileName,"..")))
-        {
-          fixpath(_path,tmppath);
-          strcat(tmppath,fd->cFileName);
-          fixpath(tmppath,tmppath);
-          if(recursive)
-            scandir(tmppath,recursive);
-        }
+  while((entry = readdir(dir)) != NULL) {
+    if(entry->d_type == DT_DIR) {
+      if(recursive) {
+        char path[1024];
+        if(strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) continue;
+        snprintf(path, sizeof(path), "%s/%s", _path, entry->d_name);
+        scanpatches(path, true);
       }
-      else
-      {
-        fixpath(_path,tmppath);
-        s_data[serverNumPatches].full_file_name[0] = 0;
-        strcat (&s_data[serverNumPatches].full_file_name[0],&tmppath[0]);
-        strcat (&s_data[serverNumPatches].full_file_name[0],fd->cFileName);
-        f_size = ((fd->nFileSizeHigh * MAXDWORD)+fd->nFileSizeLow);
+    } else {
+        snprintf(
+            s_data[serverNumPatches].full_file_name,
+            sizeof(s_data[serverNumPatches].full_file_name),
+            "%s/%s", _path, entry->d_name);
+
+        pf = fopen (s_data[serverNumPatches].full_file_name, "rb");
+        fseek(pf, 0L, SEEK_END);
+        f_size = ftell(pf);
+        rewind(pf);
+
         pd = malloc (f_size);
-        pf = fopen (&s_data[serverNumPatches].full_file_name[0], "rb");
         fread ( pd, 1, f_size, pf );
         fclose ( pf );
+
         f_checksum = CalculateChecksum ( pd, f_size );
         free ( pd );
-        printf ("%s  Bytes: %u  Checksum: %08x\n", fd->cFileName, f_size, f_checksum );
+        printf ("%s  Bytes: %lu  Checksum: %08x\n",s_data[serverNumPatches].full_file_name , f_size, f_checksum );
         s_data[serverNumPatches].file_size  = f_size;
         s_data[serverNumPatches].checksum = f_checksum;
-        s_data[serverNumPatches].file_name[0] = 0;
-        strcat (&s_data[serverNumPatches].file_name[0],fd->cFileName);
-        s_data[serverNumPatches].folder[0] = 0;
-        strcat (&s_data[serverNumPatches].folder[0],&tmppath[0]);
+        strcpy(s_data[serverNumPatches].file_name, entry->d_name);
+        snprintf(
+            s_data[serverNumPatches].folder,
+            sizeof(s_data[serverNumPatches].full_file_name),
+            "%s/", _path);
+
         ch2 = 0;
         ch3 = 0;
         if (now_folder)
@@ -914,7 +915,7 @@ int32_t scandir(char *_path,BOOL recursive)
             else
             {
               s_data[serverNumPatches].patch_folders[ch2++] = 0;
-              _strlwr (&s_data[serverNumPatches].patch_folders[ch3]);
+              strlwr (&s_data[serverNumPatches].patch_folders[ch3]);
               if (strcmp(&s_data[serverNumPatches].patch_folders[ch3],"patches") == 0)
               {
                 ch2 = ch3;
@@ -938,24 +939,16 @@ int32_t scandir(char *_path,BOOL recursive)
         ch = serverNumPatches - 1;
         memset (&patch_packet[patch_size], 0, 0x28);
         memcpy (&patch_packet[patch_size+4], &ch, 4);
-        strcat (&patch_packet[patch_size+8], fd->cFileName);
+        strcat (&patch_packet[patch_size+8], entry->d_name);
         patch_packet[patch_size]   = 0x28;
         patch_packet[patch_size+2] = 0x0C;
         patch_size += 0x28;
       }
-    }
-    while(FindNextFile(fh,fd));
   }
 
-  FindClose(fh);
-
-  free (fd);
-
   now_folder--;
-
-  return 1;
 }
-*/
+
 int32_t fixpath(char *inpath, int8_t *outpath)
 {
   int32_t   n=0;
@@ -964,9 +957,9 @@ int32_t fixpath(char *inpath, int8_t *outpath)
 
   while(inpath[n]) n++;
 
-  if(inpath[n-1] != '\\')
+  if(inpath[n-1] != '/')
   {
-    strcat(outpath,"\\");
+    strcat(outpath,"/");
     return 1;
   }
 
@@ -1018,7 +1011,6 @@ int32_t main( int32_t argc, int8_t * argv[] )
   for (ch=0;ch<5;ch++)
   {
     printf (".");
-    sleep (1);
   }
   printf ("\n\n");
 
@@ -1065,8 +1057,7 @@ int32_t main( int32_t argc, int8_t * argv[] )
   patch_packet[patch_size+0x02] = 0x09;
   patch_packet[patch_size+0x04] = 0x2E;
   patch_size += 0x44;
-  //FIXME Reimplement this function using linux stuff
-  //scandir ("patches",1);
+  scanpatches ("patches",1);
   patch_packet[patch_size++] = 0x04;
   patch_packet[patch_size++] = 0x00;
   patch_packet[patch_size++] = 0x0A;
