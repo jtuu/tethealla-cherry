@@ -1696,7 +1696,7 @@ uint32_t CRYPT_PC_GetNextKey(CRYPT_SETUP* pc)
 void CRYPT_PC_CryptData(CRYPT_SETUP* pc,void* data,uint32_t size)
 {
     uint32_t x;
-    for (x = 0; x < size; x += 4) *(uint32_t*)((uint32_t*)data + x) ^= CRYPT_PC_GetNextKey(pc);
+    for (x = 0; x < size; x += 4) *(uint32_t*)((intptr_t)data + x) ^= CRYPT_PC_GetNextKey(pc);
 }
 
 void decryptcopy ( void* dest, void* source, uint32_t size )
