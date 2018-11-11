@@ -5498,7 +5498,7 @@ void LoadDataFile ( const char* filename, unsigned* count, void** data, uint32_t
 ********************************************************/
 
 int
-main( int32_t argc, int8_t * argv[] )
+main( int32_t argc, char * argv[] )
 {
   uint32_t ch,ch2;
   struct in_addr login_in;

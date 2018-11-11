@@ -1,5 +1,5 @@
-CC=gcc
-CFLAGS=-I. -L/usr/lib/mysql -lmysqlclient -lcrypto -march=native
+CC=clang
+CFLAGS=-I. -L/usr/lib/mysql -lmysqlclient -lcrypto -march=native -O3
 
 %.o: %.c
 	$(CC) -c -o $@ $< $(CFLAGS)

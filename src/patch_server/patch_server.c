@@ -973,7 +973,7 @@ int32_t fixpath(char *inpath, int8_t *outpath)
 **
 ********************************************************/
 
-int32_t main( int32_t argc, int8_t * argv[] )
+int32_t main( int32_t argc, char * argv[] )
 {
   uint32_t ch,ch2;
   struct in_addr patch_in;

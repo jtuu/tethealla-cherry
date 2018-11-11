@@ -24,7 +24,7 @@
 ********************************************************/
 
 int
-main( int32_t argc, int8_t * argv[] )
+main( int32_t argc, char * argv[] )
 {
   int8_t inputstr[255] = {0};
   MYSQL * myData;

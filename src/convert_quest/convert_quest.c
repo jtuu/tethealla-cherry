@@ -12,7 +12,7 @@ uint32_t quest_packet_size;
 int32_t readOK;
 int8_t packet_buffer [2048];
 
-int32_t main(int argc, int8_t *argv[])
+int32_t main(int argc, char *argv[])
 {
   printf ("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
   printf ("Blue Burst .RAW Quest conversion tool v .123 written by Sodaboy\n");

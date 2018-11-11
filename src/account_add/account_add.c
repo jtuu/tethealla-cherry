@@ -95,7 +95,7 @@ void LoadDataFile ( const char* filename, unsigned* count, void** data, uint32_t
 ********************************************************/
 
 int
-main( int32_t argc, int8_t * argv[] )
+main( int32_t argc, char * argv[] )
 {
   int8_t inputstr[255] = {0};
   int8_t username[17];
