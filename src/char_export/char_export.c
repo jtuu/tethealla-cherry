@@ -26,21 +26,21 @@
 int
 main( int32_t argc, char * argv[] )
 {
-  int8_t inputstr[255] = {0};
+  char inputstr[255] = {0};
   MYSQL * myData;
-  int8_t myQuery[255] = {0};
+  char myQuery[255] = {0};
   MYSQL_ROW myRow ;
   MYSQL_RES * myResult;
   int32_t num_rows;
   uint32_t gc_num, slot;
 
-  int8_t mySQL_Host[255] = {0};
-  int8_t mySQL_Username[255] = {0};
-  int8_t mySQL_Password[255] = {0};
-  int8_t mySQL_Database[255] = {0};
+  char mySQL_Host[255] = {0};
+  char mySQL_Username[255] = {0};
+  char mySQL_Password[255] = {0};
+  char mySQL_Database[255] = {0};
   uint32_t mySQL_Port;
   int32_t config_index = 0;
-  int8_t config_data[255];
+  char config_data[255];
   uint32_t ch;
 
   FILE* fp;
@@ -52,13 +52,14 @@ main( int32_t argc, char * argv[] )
     return 1;
   }
   else
-    while (fgets (&config_data[0], 255, fp) != NULL)
+  {
+    while (fgets (config_data, 255, fp) != NULL)
     {
       if (config_data[0] != 0x23)
       {
         if (config_index < 0x04)
         {
-          ch = strlen (&config_data[0]);
+          ch = strlen (config_data);
           if (config_data[ch-1] == 0x0A)
             config_data[ch--]  = 0x00;
           config_data[ch] = 0;
@@ -67,23 +68,23 @@ main( int32_t argc, char * argv[] )
         {
         case 0x00:
           // MySQL Host
-          memcpy (&mySQL_Host[0], &config_data[0], ch+1);
+          memcpy (mySQL_Host, config_data, ch+1);
           break;
         case 0x01:
           // MySQL Username
-          memcpy (&mySQL_Username[0], &config_data[0], ch+1);
+          memcpy (mySQL_Username, config_data, ch+1);
           break;
         case 0x02:
           // MySQL Password
-          memcpy (&mySQL_Password[0], &config_data[0], ch+1);
+          memcpy (mySQL_Password, config_data, ch+1);
           break;
         case 0x03:
           // MySQL Database
-          memcpy (&mySQL_Database[0], &config_data[0], ch+1);
+          memcpy (mySQL_Database, config_data, ch+1);
           break;
         case 0x04:
           // MySQL Port
-          mySQL_Port = atoi (&config_data[0]);
+          mySQL_Port = atoi (config_data);
           break;
         default:
           break;
@@ -91,6 +92,7 @@ main( int32_t argc, char * argv[] )
         config_index++;
       }
     }
+  }
     fclose (fp);
 
     if (config_index < 5)
