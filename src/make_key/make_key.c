@@ -91,22 +91,22 @@ int32_t main()
 {
   uint32_t ch;
   uint32_t ship_index;
-  uint8_t ship_key[128];
-  int8_t ship_string[512];
+  char ship_key[128];
+  char ship_string[255];
   FILE* fp;
 #ifdef NO_SQL
   uint32_t highid = 0;
 #else
   MYSQL * myData;
 #endif
-  int8_t myQuery[255] = {0};
-  int8_t mySQL_Host[255] = {0};
-  int8_t mySQL_Username[255] = {0};
-  int8_t mySQL_Password[255] = {0};
-  int8_t mySQL_Database[255] = {0};
+  char myQuery[512] = {0};
+  char mySQL_Host[255] = {0};
+  char mySQL_Username[255] = {0};
+  char mySQL_Password[255] = {0};
+  char mySQL_Database[255] = {0};
   uint32_t mySQL_Port;
   int32_t config_index = 0;
-  int8_t config_data[255];
+  char config_data[255];
 
 
   srand (time (0));
@@ -117,6 +117,7 @@ int32_t main()
     return 1;
   }
   else
+  {
     while (fgets (&config_data[0], 255, fp) != NULL)
     {
       strtok(config_data, "\r\n");
@@ -158,6 +159,7 @@ int32_t main()
       }
     }
     fclose (fp);
+  }
 
   if (config_index < 5)
   {
@@ -220,8 +222,8 @@ int32_t main()
 
   mysql_real_escape_string ( myData, &ship_string[0], &ship_key[0], 0x80 );
 
-  sprintf (&myQuery[0], "INSERT into ship_data (rc4key) VALUES ('%s')", ship_string );
-  if ( ! mysql_query ( myData, &myQuery[0] ) )
+  sprintf (myQuery, "INSERT into ship_data (rc4key) VALUES ('%s')", ship_string );
+  if ( ! mysql_query ( myData, myQuery ) )
   {
     ship_index = (unsigned) mysql_insert_id ( myData );
     printf ("Key generated and successfully added to database! ID: %u\n", ship_index);
@@ -242,8 +244,6 @@ int32_t main()
   fwrite (&ship_key, 1, 128, fp);
   fclose (fp);
   printf ("OK!!!\n");
-  printf ("Hit [ENTER]");
-  fgets (&ship_key[0], 1, stdin);
   strtok(ship_key, "\r\n");
   exit (1);
   return 0;
