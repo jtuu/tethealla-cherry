@@ -3,14 +3,14 @@
 #define _CRT_SECURE_NO_DEPRECATE
 #include "string.h"
 
-int8_t convert_file_name[255];
+char convert_file_name[255];
 uint16_t packet_length;
 FILE *fp;
 FILE *cp;
-int8_t quest_file_name[0x10];
+char quest_file_name[0x10];
 uint32_t quest_packet_size;
 int32_t readOK;
-int8_t packet_buffer [2048];
+char packet_buffer [2048];
 
 int32_t main(int argc, char *argv[])
 {
