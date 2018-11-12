@@ -22,10 +22,10 @@
    carriage return.
  */
 void MDString (inString, outString)
-int8_t *inString;
-int8_t *outString;
+const unsigned char *inString;
+unsigned char *outString;
 {
-  MD5(inString, strlen(inString), outString);
+  MD5(inString, strlen((const char*)inString), outString);
 }
 
 void UpdateDataFile ( const char* filename, uint32_t count, void* data, uint32_t record_size, int32_t new_record )
@@ -80,7 +80,11 @@ void LoadDataFile ( const char* filename, unsigned* count, void** data, uint32_t
         printf ("Out of memory!\nHit [ENTER]");
         exit (1);
       }
-      fread (data[ch], 1, record_size, fp);
+      if(!fread (data[ch], 1, record_size, fp))
+      {
+        printf("Failed to read...\n");
+        exit(1);
+      }
     }
     fclose (fp);
   }
@@ -97,32 +101,32 @@ void LoadDataFile ( const char* filename, unsigned* count, void** data, uint32_t
 int
 main( int32_t argc, char * argv[] )
 {
-  int8_t inputstr[255] = {0};
-  int8_t username[17];
-  int8_t password[34];
-  int8_t password_check[17];
-  int8_t md5password[34] = {0};
-  int8_t email[255];
-  int8_t email_check[255];
+  char inputstr[255] = {0};
+  char username[17];
+  char password[34];
+  char password_check[17];
+  char md5password[34] = {0};
+  char email[255];
+  char email_check[255];
   uint8_t ch;
   time_t regtime;
   uint32_t reg_seconds;
   uint8_t max_fields;
 
   MYSQL * myData;
-  int8_t myQuery[255] = {0};
+  char myQuery[511] = {0};
   MYSQL_ROW myRow ;
   MYSQL_RES * myResult;
   int32_t num_rows, pw_ok, pw_same;
   uint32_t guildcard_number;
 
-  int8_t mySQL_Host[255] = {0};
-  int8_t mySQL_Username[255] = {0};
-  int8_t mySQL_Password[255] = {0};
-  int8_t mySQL_Database[255] = {0};
+  char mySQL_Host[255] = {0};
+  char mySQL_Username[255] = {0};
+  char mySQL_Password[255] = {0};
+  char mySQL_Database[255] = {0};
   uint32_t mySQL_Port;
   int32_t config_index = 0;
-  int8_t config_data[255];
+  char config_data[255];
 
   uint8_t MDBuffer[17] = {0};
 
@@ -134,7 +138,8 @@ main( int32_t argc, char * argv[] )
     return 1;
   }
   else
-    while (fgets (&config_data[0], 255, fp) != NULL)
+  {
+    while (fgets (config_data, 255, fp) != NULL)
     {
       if (config_data[0] != 0x23)
       {
@@ -174,6 +179,7 @@ main( int32_t argc, char * argv[] )
       }
     }
     fclose (fp);
+  }
 
   if (config_index < 5)
   {
@@ -182,7 +188,7 @@ main( int32_t argc, char * argv[] )
   }
 
   if ( (myData = mysql_init((MYSQL*) 0)) &&
-    mysql_real_connect( myData, &mySQL_Host[0], &mySQL_Username[0], &mySQL_Password[0], NULL, mySQL_Port,
+    mysql_real_connect( myData, mySQL_Host, mySQL_Username, mySQL_Password, NULL, mySQL_Port,
     NULL, 0 ) )
   {
     if ( mysql_select_db( myData, &mySQL_Database[0] ) < 0 ) {
@@ -208,10 +214,10 @@ main( int32_t argc, char * argv[] )
     scanf ("%s", inputstr );
     if (strlen(inputstr) < 17)
     {
-      sprintf (&myQuery[0], "SELECT * from account_data WHERE username='%s'", inputstr );
+      sprintf (myQuery, "SELECT * from account_data WHERE username='%s'", inputstr );
       // Check to see if that account already exists.
       //printf ("Executing MySQL query: %s\n", myQuery );
-      if ( ! mysql_query ( myData, &myQuery[0] ) )
+      if ( ! mysql_query ( myData, myQuery ) )
       {
         myResult = mysql_store_result ( myData );
         num_rows = (int) mysql_num_rows ( myResult );
@@ -273,9 +279,9 @@ main( int32_t argc, char * argv[] )
     scanf ("%s", inputstr );
     memcpy (&email[0], &inputstr[0], strlen (inputstr)+1 );
     // Check to see if the e-mail address has already been registered to an account.
-    sprintf (&myQuery[0], "SELECT * from account_data WHERE email='%s'", email );
+    sprintf (myQuery, "SELECT * from account_data WHERE email='%s'", email );
     //printf ("Executing MySQL query: %s\n", myQuery );
-    if ( ! mysql_query ( myData, &myQuery[0] ) )
+    if ( ! mysql_query ( myData, myQuery ) )
     {
       myResult = mysql_store_result ( myData );
       num_rows = (int) mysql_num_rows ( myResult );
@@ -306,10 +312,10 @@ main( int32_t argc, char * argv[] )
     }
   }
   // Check to see if any accounts already registered in the database at all.
-  sprintf (&myQuery[0], "SELECT * from account_data" );
+  sprintf (myQuery, "SELECT * from account_data" );
   //printf ("Executing MySQL query: %s\n", myQuery );
   // Check to see if the e-mail address has already been registered to an account.
-  if ( ! mysql_query ( myData, &myQuery[0] ) )
+  if ( ! mysql_query ( myData, myQuery ) )
   {
     myResult = mysql_store_result ( myData );
     num_rows = (int) mysql_num_rows ( myResult );
@@ -327,7 +333,7 @@ main( int32_t argc, char * argv[] )
   //Throw some salt in the game ;)
   sprintf (&password[ch], "_%s_salt", &config_data[0] );
   //printf ("New password = %s\n", password );
-  MDString (&password[0], &MDBuffer[0] );
+  MDString ((unsigned char *)password, &MDBuffer[0] );
   for (ch=0;ch<16;ch++)
     sprintf (&md5password[ch*2], "%02x", (uint8_t) MDBuffer[ch]);
   md5password[32] = 0;
@@ -335,15 +341,15 @@ main( int32_t argc, char * argv[] )
   {
     /* First account created is always GM. */
     guildcard_number = 42000001;
-    sprintf (&myQuery[0], "INSERT into account_data (username,password,email,regtime,guildcard,isgm,isactive) VALUES ('%s','%s','%s','%u','%u','1','1')", username, md5password, email, reg_seconds, guildcard_number );
+    sprintf (myQuery, "INSERT into account_data (username,password,email,regtime,guildcard,isgm,isactive) VALUES ('%s','%s','%s','%u','%u','1','1')", username, md5password, email, reg_seconds, guildcard_number );
   }
   else
   {
-    sprintf (&myQuery[0], "INSERT into account_data (username,password,email,regtime,isactive) VALUES ('%s','%s','%s','%u','1')", username, md5password, email, reg_seconds );
+    sprintf (myQuery, "INSERT into account_data (username,password,email,regtime,isactive) VALUES ('%s','%s','%s','%u','1')", username, md5password, email, reg_seconds );
   }
   // Insert into table.
   //printf ("Executing MySQL query: %s\n", myQuery );
-  if ( ! mysql_query ( myData, &myQuery[0] ) )
+  if ( ! mysql_query ( myData, myQuery ) )
     printf ("Account successfully added to the database!");
   else
   {
