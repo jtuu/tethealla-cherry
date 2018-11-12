@@ -11,8 +11,8 @@
 uint16_t unitxt_buffer[512*1024];
 uint16_t new_unitxt_buffer[512*1024];
 uint16_t real_line_buffer[4096];
-uint8_t final_buffer[512*1024];
-uint8_t line_buffer[4096];
+char final_buffer[512*1024];
+char line_buffer[4096];
 uint16_t twobyte_buffer[4096];
 uint32_t uni_offsets[8192] = {0};
 uint32_t uni_sizes[8192] = {0};
@@ -21,11 +21,10 @@ uint32_t total_unicount;
 //uint8_t uni_header[0x128];
 uint32_t prs_size;
 
-void main(int argc)
+int main(int argc, char *argv[])
 {
   FILE *fp,*tp;
   uint32_t ch,ch2,ch3,ch4,ch5,ch6,ch7,uni_size,line_count,offset;
-  int32_t do_wrap;
 
   printf ("\nUnitxt preparation tool v0.02 by Sodaboy\nPRS compression/decompression by Fuzziqersoftware\n");
   printf ("---\n");
@@ -103,7 +102,6 @@ void main(int argc)
         ch++;
       }
       line_count++;
-      do_wrap = 0;
       final_buffer[0] = 0;
       strcat (&final_buffer[0], "#ENTRY");
       sprintf (&final_buffer[strlen(&final_buffer[0])], "%d", line_count);
@@ -243,4 +241,6 @@ void main(int argc)
     printf ("unitxt_j_prs into unitxt.txt (Hit Enter)");
     fgets (&line_buffer[0], 4096, stdin);
   }
+
+  return 0;
 }
