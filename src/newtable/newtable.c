@@ -10,16 +10,13 @@ typedef struct st_pcrys
   uint32_t tbl[18];
 } PCRYS;
 
-void main()
+int main()
 {
-  PCRYS pcrys;
-  PCRYS* pcry;
   uint32_t value;
   FILE* fp;
   FILE* bp;
   uint32_t ch;
 
-  pcry = &pcrys;
   srand (time (0));
 
   fp = fopen ("bbtable.h","w");
@@ -28,10 +25,11 @@ void main()
   for (ch=0;ch<1024+18;ch++)
   {
     value = rand();
-    fprintf (fp, "0x%08x,\n", value, value );
+    fprintf (fp, "0x%08x,\n", value );
     fwrite (&value, 1, 4, bp);
   }
   fprintf (fp, "};\n");
   fclose (fp);
 
+  return 0;
 }
