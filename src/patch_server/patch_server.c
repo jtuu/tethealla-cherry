@@ -62,23 +62,23 @@ void CRYPT_PC_CryptData(CRYPT_SETUP*,void*,uint32_t);
 
 #define SOCKET_ERROR  -1
 
-void strupr(char * temp) {
+void strupr(char *temp) {
 
   // Convert to upper case
-  int8_t *s = temp;
+  char *s = temp;
   while (*s) {
-    *s = toupper((uint8_t) *s);
+    *s = toupper(*s);
     s++;
   }
 
 }
 
-void strlwr(char * temp) {
+void strlwr(char *temp) {
 
   // Convert to upper case
-  int8_t *s = temp;
+  char *s = temp;
   while (*s) {
-    *s = tolower((uint8_t) *s);
+    *s = tolower(*s);
     s++;
   }
 
@@ -96,7 +96,7 @@ int32_t receive_from_server(int sock, char* packet);
 void debug(char *fmt, ...);
 void debug_perror(char * msg);
 void tcp_listen (int sockfd);
-int32_t tcp_accept (int sockfd, struct sockaddr *client_addr, int32_t *addr_len );
+int32_t tcp_accept (int sockfd, struct sockaddr *client_addr, uint32_t *addr_len );
 int32_t tcp_sock_connect(char* dest_addr, int32_t port);
 int32_t tcp_sock_open(struct in_addr ip, int32_t port);
 
@@ -193,7 +193,7 @@ fd_set ReadFDs, WriteFDs, ExceptFDs;
 
 #define MAX_SIMULTANEOUS_CONNECTIONS 6
 
-uint8_t dp[TCP_BUFFER_SIZE*4];
+char dp[TCP_BUFFER_SIZE*4];
 int8_t PacketData[TCP_BUFFER_SIZE];
 
 uint8_t patch_packet[TCP_BUFFER_SIZE];
@@ -260,7 +260,7 @@ void display_packet ( uint8_t* buf, int32_t len )
 void convertIPString (char* IPData, uint32_t IPLen, int32_t fromConfig )
 {
   uint32_t p,p2,p3;
-  int8_t convert_buffer[5];
+  char convert_buffer[5];
 
   p2 = 0;
   p3 = 0;
@@ -319,7 +319,7 @@ int32_t CalculateChecksum(void* data,uint32_t size)
 void load_config_file()
 {
   int32_t config_index = 0;
-  int8_t config_data[255];
+  char config_data[255];
   uint32_t ch;
 
   FILE* fp;
@@ -330,6 +330,7 @@ void load_config_file()
     exit (1);
   }
   else
+  {
     while (fgets (&config_data[0], 255, fp) != NULL)
     {
       if (config_data[0] != 0x23)
@@ -371,7 +372,7 @@ void load_config_file()
               struct sockaddr_in pn_in;
               struct hostent *pn_host;
               int32_t pn_sockfd, pn_len;
-              int8_t pn_buf[512];
+              char pn_buf[512];
               char* pn_ipdata;
 
               printf ("\n** Determining IP address ... ");
@@ -464,6 +465,7 @@ void load_config_file()
       }
     }
     fclose (fp);
+  }
 
   if (config_index < 0x13)
   {
@@ -562,7 +564,7 @@ void start_encryption(BANANA* connect)
     connectNum = serverConnectionList[c];
     workConnect = connections[connectNum];
     //debug ("%s comparing to %s", (char*) &workConnect->IP_Address[0], (char*) &connect->IP_Address[0]);
-    if ((!strcmp(&workConnect->IP_Address[0], &connect->IP_Address[0])) &&
+    if ((!strcmp((char *)workConnect->IP_Address, (char *)connect->IP_Address)) &&
       (workConnect->plySockfd >= 0))
       c3++;
   }
@@ -577,7 +579,7 @@ void start_encryption(BANANA* connect)
     {
       connectNum = serverConnectionList[c];
       workConnect = connections[connectNum];
-      if ((!strcmp(&workConnect->IP_Address[0], &connect->IP_Address[0])) &&
+      if ((!strcmp((char *)workConnect->IP_Address, (char *)&connect->IP_Address)) &&
         (workConnect->plySockfd >= 0))
       {
         if (workConnect->connected < c4)
@@ -755,18 +757,18 @@ void PatchProcessPacket (BANANA* client)
   }
 }
 
-int8_t patch_folder[PATH_MAX] = {0};
+char patch_folder[PATH_MAX] = {0};
 uint32_t patch_steps = 0;
 int32_t now_folder = -1;
 
 void scanpatches(char *path, bool recursive);
-int32_t fixpath(char *inpath, int8_t *outpath);
+int32_t fixpath(char *inpath, char *outpath);
 
 void change_client_folder (unsigned patchNum, BANANA* client)
 {
   uint32_t ch, ch2, ch3;
 
-  if (strcmp(&client->patch_folder[0], &s_data[patchNum].folder[0]) != 0)
+  if (strcmp((char *)&client->patch_folder[0], (char *)s_data[patchNum].folder) != 0)
   {
     // Client not in the right folder...
 
@@ -796,7 +798,7 @@ void change_client_folder (unsigned patchNum, BANANA* client)
             break;
           ch3++;
         }
-        strcat (&client->encryptbuf[0x04], &s_data[patchNum].patch_folders[ch]);
+        strcat ((char *)&client->encryptbuf[0x04], (char *)&s_data[patchNum].patch_folders[ch]);
         ch += (ch3 + 1);
         cipher_ptr = &client->server_cipher;
         encryptcopy (client, &client->encryptbuf[0x00], 0x44);
@@ -810,7 +812,7 @@ void change_client_folder (unsigned patchNum, BANANA* client)
   client->encryptbuf[0x00] = 0x3C;
   client->encryptbuf[0x02] = 0x06;
   memcpy (&client->encryptbuf[0x08], &s_data[patchNum].file_size, 4);
-  strcat (&client->encryptbuf[0x0C], &s_data[patchNum].file_name[0]);
+  strcat ((char *)&client->encryptbuf[0x0C], (char *)s_data[patchNum].file_name);
   cipher_ptr = &client->server_cipher;
   encryptcopy (client, &client->encryptbuf[0x00], 0x3C);
 }
@@ -819,7 +821,7 @@ void change_patch_folder (unsigned patchNum)
 {
   uint32_t ch, ch2, ch3;
 
-  if (strcmp(&patch_folder[0], &s_data[patchNum].folder[0]) != 0)
+  if (strcmp(patch_folder, (char *)s_data[patchNum].folder) != 0)
   {
     // Not in the right folder...
     while (patch_steps)
@@ -846,7 +848,7 @@ void change_patch_folder (unsigned patchNum)
             break;
           ch3++;
         }
-        strcat (&patch_packet[patch_size+0x04], &s_data[patchNum].patch_folders[ch]);
+        strcat ((char *)&patch_packet[patch_size+0x04], (char *)&s_data[patchNum].patch_folders[ch]);
         ch += (ch3 + 1);
         patch_size += 0x44;
       }
@@ -859,7 +861,7 @@ void change_patch_folder (unsigned patchNum)
 void scanpatches(char *_path, bool recursive) {
   DIR *dir;
   struct dirent *entry;
-  int8_t tmppath[PATH_MAX];
+  char tmppath[PATH_MAX] = {0};
   FILE *pf;
   uint64_t f_size;
   uint32_t f_checksum;
@@ -880,17 +882,21 @@ void scanpatches(char *_path, bool recursive) {
       }
     } else {
         snprintf(
-            s_data[serverNumPatches].full_file_name,
+            (char *)s_data[serverNumPatches].full_file_name,
             sizeof(s_data[serverNumPatches].full_file_name),
             "%s/%s", _path, entry->d_name);
 
-        pf = fopen (s_data[serverNumPatches].full_file_name, "rb");
+        pf = fopen ((char *)s_data[serverNumPatches].full_file_name, "rb");
         fseek(pf, 0L, SEEK_END);
         f_size = ftell(pf);
         rewind(pf);
 
         pd = malloc (f_size);
-        fread ( pd, 1, f_size, pf );
+        if(fread ( pd, 1, f_size, pf ) != f_size)
+        {
+          printf("Failed to read file...\n");
+          exit(0);
+        }
         fclose ( pf );
 
         f_checksum = CalculateChecksum ( pd, f_size );
@@ -898,10 +904,10 @@ void scanpatches(char *_path, bool recursive) {
         printf ("%s  Bytes: %lu  Checksum: %08x\n",s_data[serverNumPatches].full_file_name , f_size, f_checksum );
         s_data[serverNumPatches].file_size  = f_size;
         s_data[serverNumPatches].checksum = f_checksum;
-        strcpy(s_data[serverNumPatches].file_name, entry->d_name);
+        strcpy((char *)s_data[serverNumPatches].file_name, (char *)entry->d_name);
         snprintf(
-            s_data[serverNumPatches].folder,
-            sizeof(s_data[serverNumPatches].full_file_name),
+            (char *)s_data[serverNumPatches].folder,
+            sizeof(s_data[serverNumPatches].folder),
             "%s/", _path);
 
         ch2 = 0;
@@ -915,8 +921,8 @@ void scanpatches(char *_path, bool recursive) {
             else
             {
               s_data[serverNumPatches].patch_folders[ch2++] = 0;
-              strlwr (&s_data[serverNumPatches].patch_folders[ch3]);
-              if (strcmp(&s_data[serverNumPatches].patch_folders[ch3],"patches") == 0)
+              strlwr ((char *)&s_data[serverNumPatches].patch_folders[ch3]);
+              if (strcmp((char *)&s_data[serverNumPatches].patch_folders[ch3],"patches") == 0)
               {
                 ch2 = ch3;
                 s_data[serverNumPatches].patch_folders[ch2] = 0;
@@ -939,7 +945,7 @@ void scanpatches(char *_path, bool recursive) {
         ch = serverNumPatches - 1;
         memset (&patch_packet[patch_size], 0, 0x28);
         memcpy (&patch_packet[patch_size+4], &ch, 4);
-        strcat (&patch_packet[patch_size+8], entry->d_name);
+        strcat ((char *)&patch_packet[patch_size+8], (char *)entry->d_name);
         patch_packet[patch_size]   = 0x28;
         patch_packet[patch_size+2] = 0x0C;
         patch_size += 0x28;
@@ -949,7 +955,7 @@ void scanpatches(char *_path, bool recursive) {
   now_folder--;
 }
 
-int32_t fixpath(char *inpath, int8_t *outpath)
+int32_t fixpath(char *inpath, char *outpath)
 {
   int32_t   n=0;
 
@@ -1071,7 +1077,6 @@ int32_t main( int32_t argc, char * argv[] )
   if (!serverNumPatches)
   {
     printf ("There are no patches to send.\nYou need at least one patch file to send or check.\n");
-    printf ("Hit [ENTER]");
     exit (1);
   }
 
@@ -1080,8 +1085,6 @@ int32_t main( int32_t argc, char * argv[] )
   if (!fp)
   {
     printf ("\nwelcome.txt seems to be missing.\nPlease be sure it's in the same folder as patch_server.exe\n");
-    printf ("Hit [ENTER]");
-    fgets (&Welcome_Message[0], 1, stdin);
     exit (1);
   }
   fseek ( fp, 0, SEEK_END );
@@ -1089,7 +1092,11 @@ int32_t main( int32_t argc, char * argv[] )
   fseek ( fp, 0, SEEK_SET );
   if ( ch > 4096 )
      ch = 4096;
-  fread (&PacketData[0], 1, ch, fp );
+  if(!fread (&PacketData[0], 1, ch, fp ))
+  {
+    printf("Failed to read packet data...\n");
+    exit(0);
+  }
   fclose ( fp );
 
   w  = (uint16_t*) &PacketData[0];
@@ -1204,10 +1211,10 @@ int32_t main( int32_t argc, char * argv[] )
             ch2 = 1;
           else
             ch2 = 1 + ((unsigned) servertime - workConnect->lastTick);
-            workConnect->lastTick = (unsigned) servertime;
-            workConnect->packetsSec /= ch2;
-            workConnect->toBytesSec /= ch2;
-            workConnect->fromBytesSec /= ch2;
+          workConnect->lastTick = (unsigned) servertime;
+          workConnect->packetsSec /= ch2;
+          workConnect->toBytesSec /= ch2;
+          workConnect->fromBytesSec /= ch2;
         }
 
         FD_SET (workConnect->plySockfd, &ReadFDs);
@@ -1230,12 +1237,16 @@ int32_t main( int32_t argc, char * argv[] )
             {
               num_sends++;
               pd = &s_data[workConnect->s_data[workConnect->current_file]];
-              fp = fopen (&pd->full_file_name[0], "rb");
+              fp = fopen ((char *)pd->full_file_name, "rb");
               fseek (fp, workConnect->cfile_index, SEEK_SET);
               to_send = pd->file_size - workConnect->cfile_index;
               if (to_send > 24576)
                 to_send = 24576;
-              fread (&PacketData[0x10], 1, to_send, fp);
+              if (!fread (&PacketData[0x10], 1, to_send, fp))
+              {
+                printf("Failed to read packet data...\n");
+                exit(0);
+              }
               fclose (fp);
               workConnect->cfile_index += to_send;
               checksum = CalculateChecksum ( &PacketData[0x10], to_send);
@@ -1528,7 +1539,7 @@ void tcp_listen (int sockfd)
   }
 }
 
-int32_t tcp_accept (int sockfd, struct sockaddr *client_addr, int32_t *addr_len )
+int32_t tcp_accept (int sockfd, struct sockaddr *client_addr, uint32_t *addr_len )
 {
   int32_t fd;
 
@@ -1570,7 +1581,7 @@ int32_t tcp_sock_connect(char* dest_addr, int32_t port)
 /*****************************************************************************/
 int32_t tcp_sock_open(struct in_addr ip, int32_t port)
 {
-  int32_t fd, turn_on_option_flag = 1, rcSockopt;
+  int32_t fd, turn_on_option_flag = 1;
 
   struct sockaddr_in sa;
 
@@ -1591,7 +1602,7 @@ int32_t tcp_sock_open(struct in_addr ip, int32_t port)
 
   /* Reuse port (ICS?) */
 
-  rcSockopt = setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char *) &turn_on_option_flag, sizeof(turn_on_option_flag));
+  setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char *) &turn_on_option_flag, sizeof(turn_on_option_flag));
 
   /* bind() the socket to the interface */
   if (bind(fd, (struct sockaddr *)&sa, sizeof(struct sockaddr)) < 0){
@@ -1615,7 +1626,7 @@ void debug(char *fmt, ...)
 #define MAX_MESG_LEN 1024
 
   va_list args;
-  int8_t text[ MAX_MESG_LEN ];
+  char text[ MAX_MESG_LEN ];
 
   va_start (args, fmt);
   strcpy (text + vsprintf( text,fmt,args), "\r\n");
