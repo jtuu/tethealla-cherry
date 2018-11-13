@@ -159,7 +159,7 @@ uint32_t prs_compress(void* source,void* dest,uint32_t size)
                                xsize) &&
                        (xsize < 256) &&
                        ((y + (int)xsize) < x) &&
-                       ((x + xsize) <= (int)size)
+                       ((x + xsize) <= (uint32_t)size)
                 );
                 xsize--;
                 if ((int)xsize > lssize)
@@ -188,7 +188,6 @@ uint32_t prs_decompress(void* source,void* dest) // 800F7CB0 through 800F7DE4 in
     intptr_t r3,r5; // uint32_t r0,r6,r9; // 6 unnamed registers
     intptr_t bitpos = 9; // 4 named registers
     uint8_t* sourceptr = (uint8_t*)source;
-    uint8_t* sourceptr_orig = (uint8_t*)source;
     uint8_t* destptr = (uint8_t*)dest;
     uint8_t* destptr_orig = (uint8_t*)dest;
     uint8_t currentbyte;
@@ -281,7 +280,7 @@ uint32_t prs_decompress_size(void* source)
     uint8_t* sourceptr = (uint8_t*)source;
     uint8_t* destptr = 0;
     uint8_t* destptr_orig = 0;
-    uint8_t currentbyte,lastbyte;
+    uint8_t currentbyte;
     int flag;
     int offset;
     uint32_t x,t; // 2 placed variables
@@ -293,7 +292,6 @@ uint32_t prs_decompress_size(void* source)
         bitpos--;
         if (bitpos == 0)
         {
-            lastbyte = currentbyte = sourceptr[0];
             bitpos = 8;
             sourceptr++;
         }
@@ -308,7 +306,6 @@ uint32_t prs_decompress_size(void* source)
         bitpos--;
         if (bitpos == 0)
         {
-            lastbyte = currentbyte = sourceptr[0];
             bitpos = 8;
             sourceptr++;
         }
@@ -336,7 +333,6 @@ uint32_t prs_decompress_size(void* source)
                 bitpos--;
                 if (bitpos == 0)
                 {
-                    lastbyte = currentbyte = sourceptr[0];
                     bitpos = 8;
                     sourceptr++;
                 }

@@ -103,12 +103,12 @@ const uint8_t Message03[] = { "Tethealla Ship v.144" };
 
 #define SOCKET_ERROR  -1
 
-void strupr(char * temp) {
+void strupr(char *temp) {
 
   // Convert to upper case
-  int8_t *s = temp;
+  char *s = temp;
   while (*s) {
-    *s = toupper((uint8_t) *s);
+    *s = toupper(*s);
     s++;
   }
 
@@ -126,7 +126,7 @@ void WriteLog(char *fmt, ...);
 void WriteGM(char *fmt, ...);
 void ShipSend04 (uint8_t command, BANANA* client, ORANGE* ship);
 void ShipSend0E (ORANGE* ship);
-void Send01 (const int8_t *text, BANANA* client);
+void Send01 (const char *text, BANANA* client);
 void ShowArrows (BANANA* client, int32_t to_all);
 uint8_t* MakePacketEA15 (BANANA* client);
 void SendToLobby (LOBBY* l, uint32_t max_send, uint8_t* src, uint16_t size, uint32_t nosend );
@@ -135,7 +135,7 @@ void removeClientFromLobby (BANANA* client);
 void debug(char *fmt, ...);
 void debug_perror(char * msg);
 void tcp_listen (int sockfd);
-int32_t tcp_accept (int sockfd, struct sockaddr *client_addr, int32_t *addr_len );
+int32_t tcp_accept (int sockfd, struct sockaddr *client_addr, uint32_t *addr_len );
 int32_t tcp_sock_connect(char* dest_addr, int32_t port);
 int32_t tcp_sock_open(struct in_addr ip, int32_t port);
 
@@ -203,7 +203,7 @@ uint32_t normalName = 0xFFFFFFFF;
 uint32_t globalName = 0xFF1D94F7;
 uint32_t localName = 0xFFB0C4DE;
 
-uint16_t ship_banmasks[5000][4] = {0}; // IP address ban masks
+uint16_t ship_banmasks[5000][4]; // IP address ban masks
 BANDATA ship_bandata[5000];
 uint32_t num_masks = 0;
 uint32_t num_bans = 0;
@@ -246,12 +246,12 @@ playerLevel playerLevelData[12][200];
 fd_set ReadFDs, WriteFDs, ExceptFDs;
 
 saveLobby savedlobbies[MAX_SAVED_LOBBIES];
-uint8_t dp[TCP_BUFFER_SIZE*4];
+char dp[TCP_BUFFER_SIZE*4];
 uint32_t ship_ignore_list[300] = {0};
 uint32_t ship_ignore_count = 0;
 uint32_t ship_gcsend_list[MAX_GCSEND*3] = {0};
 uint32_t ship_gcsend_count = 0;
-int8_t Ship_Name[255];
+char Ship_Name[255];
 SHIPLIST shipdata[200];
 BLOCK* blocks[10];
 QUEST quests[512];
@@ -275,7 +275,7 @@ SHOP shops[7000];
 uint32_t shop_checksum;
 uint32_t shopidx[200];
 uint32_t ship_index;
-uint8_t ship_key[128];
+char ship_key[128];
 
 // New leet parameter tables!!!!111oneoneoneeleven
 
@@ -287,17 +287,17 @@ uint8_t armor_dfpvar_table[256] = {0};
 uint8_t barrier_dfpvar_table[256] = {0};
 uint8_t armor_evpvar_table[256] = {0};
 uint8_t barrier_evpvar_table[256] = {0};
-uint8_t weapon_equip_table[256][256] = {0};
-uint16_t weapon_atpmax_table[256][256] = {0};
-uint8_t grind_table[256][256] = {0};
-uint8_t special_table[256][256] = {0};
+uint8_t weapon_equip_table[256][256];
+uint16_t weapon_atpmax_table[256][256];
+uint8_t grind_table[256][256];
+uint8_t special_table[256][256];
 uint8_t stackable_table[256] = {0};
-uint32_t equip_prices[2][13][24][80] = {0};
+uint32_t equip_prices[2][13][24][80];
 int8_t max_tech_level[19][12];
 
 PSO_CRYPT* cipher_ptr;
 
-uint32_t wstrlen ( uint16_t* dest )
+uint32_t wstrlen ( uint16_t *dest )
 {
   uint32_t l = 0;
   while (*dest != 0x0000)
@@ -308,14 +308,14 @@ uint32_t wstrlen ( uint16_t* dest )
   return l;
 }
 
-void wstrcpy ( uint16_t* dest, const uint16_t* src )
+void wstrcpy ( uint16_t *dest, const uint16_t *src )
 {
   while (*src != 0x0000)
     *(dest++) = *(src++);
   *(dest++) = 0x0000;
 }
 
-void wstrcpy_char ( char* dest, const char* src )
+void wstrcpy_char ( char *dest, const char *src )
 {
   while (*src != 0x00)
   {
@@ -326,7 +326,7 @@ void wstrcpy_char ( char* dest, const char* src )
   *(dest++) = 0x00;
 }
 
-void packet_to_text ( uint8_t* buf, int32_t len )
+void packet_to_text ( uint8_t *buf, int32_t len )
 {
   int32_t c, c2, c3, c4;
 
@@ -386,7 +386,7 @@ void display_packet ( uint8_t* buf, int32_t len )
 void convertIPString (char* IPData, uint32_t IPLen, int32_t fromConfig, uint8_t* IPStore )
 {
   uint32_t p,p2,p3;
-  int8_t convert_buffer[5];
+  char convert_buffer[5];
 
   p2 = 0;
   p3 = 0;
@@ -406,8 +406,6 @@ void convertIPString (char* IPData, uint32_t IPLen, int32_t fromConfig, uint8_t*
           if (fromConfig)
             printf ("ship.ini is corrupted. (Failed to read IP information from file!)\n"); else
             printf ("Failed to determine IP address.\n");
-          printf ("Press [ENTER] to quit...");
-          fgets(&dp[0], 1, stdin);
           exit (1);
         }
       }
@@ -419,8 +417,6 @@ void convertIPString (char* IPData, uint32_t IPLen, int32_t fromConfig, uint8_t*
           if (fromConfig)
             printf ("ship.ini is corrupted. (Failed to read IP information from file!)\n"); else
             printf ("Failed to determine IP address.\n");
-          printf ("Press [ENTER] to quit...");
-          fgets(&dp[0], 1, stdin);
           exit (1);
         }
         break;
@@ -432,7 +428,7 @@ void convertIPString (char* IPData, uint32_t IPLen, int32_t fromConfig, uint8_t*
 void convertMask (char* IPData, uint32_t IPLen, uint16_t* IPStore )
 {
   uint32_t p,p2,p3;
-  int8_t convert_buffer[5];
+  char convert_buffer[5];
 
   p2 = 0;
   p3 = 0;
@@ -485,7 +481,7 @@ uint8_t hexToByte ( char* hs )
 
 void load_mask_file()
 {
-  int8_t mask_data[255];
+  char mask_data[255];
   uint32_t ch = 0;
 
   FILE* fp;
@@ -513,7 +509,7 @@ void load_mask_file()
 void load_language_file()
 {
   FILE* fp;
-  int8_t lang_data[256];
+  char lang_data[256];
   int32_t langExt = 0;
   uint32_t ch;
 
@@ -545,7 +541,7 @@ void load_language_file()
       }
       else
       {
-        memcpy (languageExts[numLanguages], &lang_data[0], strlen (&lang_data[0])+1);
+        memcpy (languageExts[numLanguages], &lang_data[0], strlen ((char *)lang_data)+1);
         for (ch=0;ch<strlen(languageExts[numLanguages]);ch++)
           if ((languageExts[numLanguages][ch] == 10) || (languageExts[numLanguages][ch] == 13))
             languageExts[numLanguages][ch] = 0;
@@ -566,7 +562,7 @@ void load_language_file()
 void load_config_file()
 {
   int32_t config_index = 0;
-  int8_t config_data[255];
+  char config_data[255];
   uint32_t ch = 0;
 
   FILE* fp;
@@ -576,11 +572,10 @@ void load_config_file()
   if ( ( fp = fopen ("ship.ini", "r" ) ) == NULL )
   {
     printf ("The configuration file ship.ini appears to be missing.\n");
-    printf ("Press [ENTER] to quit...");
-    fgets(&dp[0], 1, stdin);
     exit (1);
   }
   else
+  {
     while (fgets (&config_data[0], 255, fp) != NULL)
     {
       if (config_data[0] != 0x23)
@@ -662,8 +657,6 @@ void load_config_file()
               if (!IP_host)
               {
                 printf ("Could not resolve host name.");
-                printf ("Press [ENTER] to quit...");
-                fgets(&dp[0],1,stdin);
                 exit (1);
               }
               *(unsigned *) &loginIP[0] = *(unsigned *) IP_host->h_addr;
@@ -705,11 +698,7 @@ void load_config_file()
             printf ("\nWARNING: You have your experience rate set to a very high number.\n");
             printf ("As of ship_server.exe version 0.038, you now just use single digits\n");
             printf ("to represent 100%% increments.  (ex. 1 for 100%%, 2 for 200%%)\n\n");
-             ("If you've set the high value of %u%% experience on purpose,\n", EXPERIENCE_RATE * 100 );
-            printf ("press [ENTER] to continue, otherwise press CTRL+C to abort.\n");
-            printf (":");
-            fgets   (&dp[0],1,stdin);
-            printf ("\n\n");
+            printf ("If you've set the high value of %u%% experience on purpose,\n", EXPERIENCE_RATE * 100 );
           }
           break;
         case 0x0D:
@@ -722,20 +711,19 @@ void load_config_file()
       }
     }
     fclose (fp);
+  }
 
-    if (config_index < 0x0D)
-    {
-      printf ("ship.ini seems to be corrupted.\n");
-      printf ("Press [ENTER] to quit...");
-      fgets   (&dp[0],1,stdin);
-      exit (1);
-    }
-    common_rates[0] = 100000 / WEAPON_DROP_RATE;
-    common_rates[1] = 100000 / ARMOR_DROP_RATE;
-    common_rates[2] = 100000 / MAG_DROP_RATE;
-    common_rates[3] = 100000 / TOOL_DROP_RATE;
-    common_rates[4] = 100000 / MESETA_DROP_RATE;
-    load_mask_file();
+  if (config_index < 0x0D)
+  {
+    printf ("ship.ini seems to be corrupted.\n");
+    exit (1);
+  }
+  common_rates[0] = 100000 / WEAPON_DROP_RATE;
+  common_rates[1] = 100000 / ARMOR_DROP_RATE;
+  common_rates[2] = 100000 / MAG_DROP_RATE;
+  common_rates[3] = 100000 / TOOL_DROP_RATE;
+  common_rates[4] = 100000 / MESETA_DROP_RATE;
+  load_mask_file();
 }
 
 ORANGE logon_structure;
@@ -862,7 +850,7 @@ void ConstructBlockPacket()
 {
   uint16_t Offset;
   uint32_t ch;
-  int8_t tempName[255];
+  char tempName[255];
   char* tn;
   uint32_t BlockID;
 
@@ -1034,7 +1022,7 @@ void start_encryption(BANANA* connect)
     connectNum = serverConnectionList[c];
     workConnect = connections[connectNum];
     //debug ("%s comparing to %s", (char*) &workConnect->IP_Address[0], (char*) &connect->IP_Address[0]);
-    if ((!strcmp(&workConnect->IP_Address[0], &connect->IP_Address[0])) &&
+    if ((!strcmp((char *)&workConnect->IP_Address[0], (char *)&connect->IP_Address[0])) &&
       (workConnect->plySockfd >= 0))
       c3++;
   }
@@ -1051,7 +1039,7 @@ void start_encryption(BANANA* connect)
     {
       connectNum = serverConnectionList[c];
       workConnect = connections[connectNum];
-      if ((!strcmp(&workConnect->IP_Address[0], &connect->IP_Address[0])) &&
+      if ((!strcmp((char *)&workConnect->IP_Address[0], (char *)&connect->IP_Address[0])) &&
         (workConnect->plySockfd >= 0))
       {
         if (workConnect->connected < c4)
@@ -1171,7 +1159,7 @@ void removeClientFromLobby (BANANA* client)
 }
 
 
-void Send1A (const int8_t *mes, BANANA* client)
+void Send1A (const char *mes, BANANA* client)
 {
   uint16_t x1A_Len;
 
@@ -2048,8 +2036,8 @@ void ParseMapData (LOBBY* l, MAP_MONSTER* mapData, int32_t aMob, uint32_t num_re
 void LoadObjectData (LOBBY* l, int32_t unused, const char* filename)
 {
   FILE* fp;
-  uint32_t oldIndex, num_records, ch, ch2;
-  int8_t new_file[256];
+  uint32_t num_records, ch, ch2;
+  char new_file[256];
 
   if (!l)
     return;
@@ -2069,9 +2057,13 @@ void LoadObjectData (LOBBY* l, int32_t unused, const char* filename)
     fseek  ( fp, 0, SEEK_END );
     num_records = ftell ( fp ) / 68;
     fseek  ( fp, 0, SEEK_SET );
-    fread  ( &dp[0], 1, 68 * num_records, fp );
+    if(!fread  ( &dp[0], 1, 68 * num_records, fp ))
+    {
+      printf("Failed to read objects...\n");
+      exit(1);
+    }
     fclose ( fp );
-    oldIndex = l->objIndex;
+    // oldIndex = l->objIndex; // Unused
     ch2 = 0;
     for (ch=0;ch<num_records;ch++)
     {
@@ -2094,7 +2086,7 @@ void LoadObjectData (LOBBY* l, int32_t unused, const char* filename)
 void LoadMapData (LOBBY* l, int32_t aMob, const char* filename)
 {
   FILE* fp;
-  uint32_t oldIndex, num_records;
+  uint32_t num_records;
 
   if (!l)
     return;
@@ -2109,9 +2101,13 @@ void LoadMapData (LOBBY* l, int32_t aMob, const char* filename)
     fseek  ( fp, 0, SEEK_END );
     num_records = ftell ( fp ) / 72;
     fseek  ( fp, 0, SEEK_SET );
-    fread  ( &dp[0], 1, sizeof ( MAP_MONSTER ) * num_records, fp );
+    if(!fread  ( &dp[0], 1, sizeof ( MAP_MONSTER ) * num_records, fp ))
+    {
+      printf("Failed to read monsters...\n");
+      exit(1);
+    }
     fclose ( fp );
-    oldIndex = l->mapIndex;
+    // oldIndex = l->mapIndex; // Unused
     ParseMapData ( l, (MAP_MONSTER*) &dp[0], aMob, num_records );
     //debug ("Added %u mids, total: %u", l->mapIndex - oldIndex, l->mapIndex );
   }
@@ -2641,12 +2637,13 @@ void Send67 (BANANA* client, uint8_t preferred)
     ch = preferred;
   }
 
-  for (ch=ch;ch<15;ch++)
+  for (;ch<15;ch++)
   {
     l = &b->lobbies[ch];
     if (l->lobbyCount < 12)
     {
       for (ch2=0;ch2<12;ch2++)
+      {
         if (l->slot_use[ch2] == 0)
         {
           l->slot_use[ch2] = 1;
@@ -2657,65 +2654,66 @@ void Send67 (BANANA* client, uint8_t preferred)
           client->clientID = ch2;
           break;
         }
-        // Send68 here with joining client (use ch2 for clientid)
-        l->lobbyCount = 0;
-        for (ch2=0;ch2<12;ch2++)
-        {
-          if ((l->slot_use[ch2]) && (l->client[ch2]))
-            l->lobbyCount++;
-        }
+      }
+      // Send68 here with joining client (use ch2 for clientid)
+      l->lobbyCount = 0;
+      for (ch2=0;ch2<12;ch2++)
+      {
+        if ((l->slot_use[ch2]) && (l->client[ch2]))
+          l->lobbyCount++;
+      }
 
-        memset (&PacketData[0x00], 0, 0x10);
-        PacketData[0x04] = l->lobbyCount;
-        PacketData[0x08] = client->clientID;
-        PacketData[0x0B] = ch;
-        PacketData[0x0C] = client->block;
-        PacketData[0x0E] = shipEvent;
-        Offset = 0x16;
-        for (ch2=0;ch2<12;ch2++)
+      memset (&PacketData[0x00], 0, 0x10);
+      PacketData[0x04] = l->lobbyCount;
+      PacketData[0x08] = client->clientID;
+      PacketData[0x0B] = ch;
+      PacketData[0x0C] = client->block;
+      PacketData[0x0E] = shipEvent;
+      Offset = 0x16;
+      for (ch2=0;ch2<12;ch2++)
+      {
+        if ((l->slot_use[ch2]) && (l->client[ch2]))
         {
-          if ((l->slot_use[ch2]) && (l->client[ch2]))
-          {
-            memset (&PacketData[Offset], 0, 1316);
-            Offset2 = Offset;
-            PacketData[Offset++] = 0x01;
-            PacketData[Offset++] = 0x00;
-            lClient = l->client[ch2];
-            *(unsigned *) &PacketData[Offset] = lClient->guildcard;
-            Offset += 24;
-            *(unsigned *) &PacketData[Offset] = ch2;
-            Offset += 4;
-            memcpy (&PacketData[Offset], &lClient->character.name[0], 24);
-            Offset += 32;
-            PacketData[Offset++] = 0x02;
-            Offset += 3;
-            memcpy (&PacketData[Offset], &lClient->character.inventoryUse, 1246);
-            // Prevent crashing with NPCs
-            if (lClient->character.skinFlag)
-              memset (&PacketData[Offset+0x3A8], 0, 10);
-            Offset += 1246;
-            if (lClient->isgm == 1)
-              *(unsigned *) &PacketData[Offset2 + 0x3CA] = globalName;
+          memset (&PacketData[Offset], 0, 1316);
+          Offset2 = Offset;
+          PacketData[Offset++] = 0x01;
+          PacketData[Offset++] = 0x00;
+          lClient = l->client[ch2];
+          *(unsigned *) &PacketData[Offset] = lClient->guildcard;
+          Offset += 24;
+          *(unsigned *) &PacketData[Offset] = ch2;
+          Offset += 4;
+          memcpy (&PacketData[Offset], &lClient->character.name[0], 24);
+          Offset += 32;
+          PacketData[Offset++] = 0x02;
+          Offset += 3;
+          memcpy (&PacketData[Offset], &lClient->character.inventoryUse, 1246);
+          // Prevent crashing with NPCs
+          if (lClient->character.skinFlag)
+            memset (&PacketData[Offset+0x3A8], 0, 10);
+          Offset += 1246;
+          if (lClient->isgm == 1)
+            *(unsigned *) &PacketData[Offset2 + 0x3CA] = globalName;
+          else
+            if (isLocalGM(lClient->guildcard))
+              *(unsigned *) &PacketData[Offset2 + 0x3CA] = localName;
             else
-              if (isLocalGM(lClient->guildcard))
-                *(unsigned *) &PacketData[Offset2 + 0x3CA] = localName;
-              else
-                *(unsigned *) &PacketData[Offset2 + 0x3CA] = normalName;
-            if ((lClient->guildcard == client->guildcard) && (l->lobbyCount > 1))
-            {
-              memcpy (&PacketData2[0x00], &PacketData[0], 0x16 );
-              PacketData2[0x00] = 0x34;
-              PacketData2[0x01] = 0x05;
-              PacketData2[0x02] = 0x68;
-              PacketData2[0x04] = 0x01;
-              memcpy (&PacketData2[0x16], &PacketData[Offset2], 1316 );
-              SendToLobby ( client->lobby, 12, &PacketData2[0x00], 1332, client->guildcard );
-            }
+              *(unsigned *) &PacketData[Offset2 + 0x3CA] = normalName;
+          if ((lClient->guildcard == client->guildcard) && (l->lobbyCount > 1))
+          {
+            memcpy (&PacketData2[0x00], &PacketData[0], 0x16 );
+            PacketData2[0x00] = 0x34;
+            PacketData2[0x01] = 0x05;
+            PacketData2[0x02] = 0x68;
+            PacketData2[0x04] = 0x01;
+            memcpy (&PacketData2[0x16], &PacketData[Offset2], 1316 );
+            SendToLobby ( client->lobby, 12, &PacketData2[0x00], 1332, client->guildcard );
           }
         }
-        *(uint16_t*) &PacketData[0] = (uint16_t) Offset;
-        PacketData[2] = 0x67;
-        break;
+      }
+      *(uint16_t*) &PacketData[0] = (uint16_t) Offset;
+      PacketData[2] = 0x67;
+      break;
     }
   }
 
@@ -2794,8 +2792,9 @@ void SendA2 (uint8_t episode, uint8_t solo, uint8_t category, uint8_t gov, BANAN
   uint16_t Offset;
   uint32_t ch,ch2,ch3,show_quest,quest_flag;
   uint8_t quest_count;
-  int8_t quest_num[16];
-  int32_t qn, tier1, ep1solo;
+  char quest_num[16];
+  int32_t qn = 0;
+  int32_t tier1, ep1solo;
   LOBBY* l;
   uint8_t diff;
 
@@ -3114,7 +3113,7 @@ void Send07 (BANANA* client)
 }
 
 
-void SendB0 (const int8_t *mes, BANANA* client)
+void SendB0 (const char *mes, BANANA* client)
 {
   uint16_t xB0_Len;
 
@@ -3253,7 +3252,7 @@ void GlobalBroadcast (uint16_t *mes)
 }
 
 
-void SendEE (const int8_t *mes, BANANA* client)
+void SendEE (const char *mes, BANANA* client)
 {
   uint16_t xEE_Len;
 
@@ -3475,13 +3474,13 @@ void SendEA (uint8_t command, BANANA* client)
 
 uint8_t* MakePacketEA15 (BANANA* client)
 {
-  sprintf (&PacketData[0x00], "\x64\x08\xEA\x15\x01");
+  sprintf ((char *)&PacketData[0x00], "\x64\x08\xEA\x15\x01");
   memset  (&PacketData[0x05], 0, 3);
   *(unsigned *) &PacketData[0x08] = client->guildcard;
   *(unsigned *) &PacketData[0x0C] = client->character.teamID;
   PacketData [0x18] = (uint8_t) client->character.privilegeLevel;
   memcpy  (&PacketData [0x1C], &client->character.teamName[0], 28);
-  sprintf (&PacketData[0x38], "\x84\x6C\x98");
+  sprintf ((char *)&PacketData[0x38], "\x84\x6C\x98");
   *(unsigned *) &PacketData[0x3C] = client->guildcard;
   PacketData[0x40] = client->clientID;
   memcpy  (&PacketData[0x44], &client->character.name[0], 24);
@@ -3828,7 +3827,7 @@ void DeleteMesetaFromClient (unsigned count, uint32_t drop, BANANA* client)
 void SendItemToEnd (unsigned itemid, BANANA* client)
 {
   uint32_t ch;
-  INVENTORY_ITEM i;
+  INVENTORY_ITEM i = {0};
 
   for (ch=0;ch<client->character.inventoryUse;ch++)
   {
@@ -4154,7 +4153,6 @@ void DepositIntoBank (unsigned itemid, uint32_t count, BANANA* client)
 {
   uint32_t ch, ch2;
   int32_t found_item = -1;
-  LOBBY* l;
   uint8_t stackable = 0;
   uint32_t compare_item1 = 0;
   uint32_t compare_item2 = 0;
@@ -4167,7 +4165,7 @@ void DepositIntoBank (unsigned itemid, uint32_t count, BANANA* client)
   if (!client->lobby)
     return;
 
-  l = (LOBBY*) client->lobby;
+  // l = (LOBBY*) client->lobby; // Unused
 
   for (ch=0;ch<client->character.inventoryUse;ch++)
   {
@@ -4391,7 +4389,6 @@ uint32_t AddToInventory (INVENTORY_ITEM* i, uint32_t count, int32_t shop, BANANA
   uint32_t compare_item2 = 0;
   uint32_t item_added = 0;
   uint32_t notsend;
-  LOBBY* l;
 
   // Adds an item to the client's inventory... (out of thin air)
   // The new itemid must already be set to i->item.itemid
@@ -4399,7 +4396,7 @@ uint32_t AddToInventory (INVENTORY_ITEM* i, uint32_t count, int32_t shop, BANANA
   if (!client->lobby)
     return 0;
 
-  l = (LOBBY*) client->lobby;
+  // l = (LOBBY*) client->lobby; // Unused
 
   if (i->item.data[0] == 0x04)
   {
@@ -4743,8 +4740,6 @@ void LogonProcessPacket (ORANGE* ship)
       {
       case 0x00:
         printf ("This ship's version is incompatible with the login server.\n");
-        printf ("Press [ENTER] to quit...");
-        fgets (&dp[0],1,stdin);
         exit (1);
         break;
       case 0x02:
@@ -4760,20 +4755,14 @@ void LogonProcessPacket (ORANGE* ship)
       case 0x04:
         printf ("Please do not modify any data not instructed to when connecting to this\n");
         printf ("login server...\n");
-        printf ("Press [ENTER] to quit...");
-        fgets (&dp[0],1,stdin);
         exit (1);
         break;
       case 0x05:
         printf ("Your ship_key.bin file seems to be invalid.\n");
-        printf ("Press [ENTER] to quit...");
-        fgets (&dp[0],1,stdin);
         exit (1);
         break;
       case 0x06:
         printf ("Your ship key appears to already be in use!\n");
-        printf ("Press [ENTER] to quit...");
-        fgets (&dp[0],1,stdin);
         exit (1);
         break;
       }
@@ -6393,10 +6382,10 @@ void FeedMag (unsigned magid, uint32_t itemid, BANANA* client)
 {
   int32_t found_mag = -1;
   int32_t found_item = -1;
-  uint32_t ch, ch2, mt_index;
+  uint32_t ch, ch2, mt_index = 2;
   int32_t EvolutionClass = 0;
   MAG* m;
-  uint16_t* ft;
+  int16_t* ft;
   int16_t mIQ, mDefense, mPower, mDex, mMind;
 
   for (ch=0;ch<client->character.inventoryUse;ch++)
@@ -7230,6 +7219,7 @@ void UseItem (unsigned itemid, BANANA* client)
               SendItemToEnd (client->character.inventory[eq_armor].item.itemid, client);
             }
             else
+            {
               if ( ( eq_wep != -1 ) && ( client->character.inventory[eq_wep].item.data[1] == 0x0A ) )
               {
                 client->character.inventory[eq_wep].item.data[1]  = 0x4F; // Summit Moon
@@ -7238,7 +7228,8 @@ void UseItem (unsigned itemid, BANANA* client)
                 client->character.inventory[eq_wep].item.data[4]  = 0x00; // No attribute
                 SendItemToEnd (client->character.inventory[eq_wep].item.itemid, client);
               }
-              break;
+            }
+            break;
           case 0x09: // Star Amplifier
             if ( ( eq_armor != -1 ) && ( client->character.inventory[eq_armor].item.data[2] == 0x1C ) )
             {
@@ -7246,6 +7237,7 @@ void UseItem (unsigned itemid, BANANA* client)
               SendItemToEnd (client->character.inventory[eq_armor].item.itemid, client);
             }
             else
+            {
               if ( ( eq_wep != -1 ) && ( client->character.inventory[eq_wep].item.data[1] == 0x0C ) )
               {
                 client->character.inventory[eq_wep].item.data[1]  = 0x5C; // Twinkle Star
@@ -7254,7 +7246,8 @@ void UseItem (unsigned itemid, BANANA* client)
                 client->character.inventory[eq_wep].item.data[4]  = 0x00; // No attribute
                 SendItemToEnd (client->character.inventory[eq_wep].item.itemid, client);
               }
-              break;
+            }
+            break;
           case 0x0A: // Book of Hitogata
             if ( ( eq_wep != -1 ) && ( client->character.inventory[eq_wep].item.data[1] == 0x8C ) &&
               ( client->character.inventory[eq_wep].item.data[2] == 0x02 ) &&
@@ -7479,6 +7472,7 @@ void EquipItem (unsigned itemid, BANANA* client)
           {
             // Remove any other armor and equipped slot items.
             for (ch2=0;ch2<client->character.inventoryUse;ch2++)
+            {
               if ((client->character.inventory[ch2].item.data[0] == 0x01) &&
                 (client->character.inventory[ch2].item.data[1] != 0x02) &&
                 (client->character.inventory[ch2].flags & 0x08))
@@ -7486,7 +7480,8 @@ void EquipItem (unsigned itemid, BANANA* client)
                 client->character.inventory[ch2].flags &= ~(0x08);
                 client->character.inventory[ch2].item.data[4] = 0x00;
               }
-              break;
+            }
+            break;
           }
           break;
         case 0x02: // Check barrier equip requirements
@@ -7524,23 +7519,25 @@ void EquipItem (unsigned itemid, BANANA* client)
             }
           }
           for (ch2=0;ch2<4;ch2++)
+          {
             if (slot[ch2] == 0)
             {
               found_slot = ch2 + 1;
               break;
             }
-            if (found_slot)
-            {
-              found_slot --;
-              client->character.inventory[ch].item.data[4] = (uint8_t)(found_slot);
-            }
-            else
-            {
-              client->character.inventory[ch].flags &= ~(0x08);
-              Send1A ("There are no free slots on your armor.  Equip unit failed.", client);
-              client->todc = 1;
-            }
-            break;
+          }
+          if (found_slot)
+          {
+            found_slot --;
+            client->character.inventory[ch].item.data[4] = (uint8_t)(found_slot);
+          }
+          else
+          {
+            client->character.inventory[ch].flags &= ~(0x08);
+            Send1A ("There are no free slots on your armor.  Equip unit failed.", client);
+            client->todc = 1;
+          }
+          break;
         }
         break;
       case 0x02:
@@ -7588,6 +7585,7 @@ void DeequipItem (unsigned itemid, BANANA* client)
         case 0x01:
           // Remove any other armor (stacking?) and equipped slot items.
           for (ch2=0;ch2<client->character.inventoryUse;ch2++)
+          {
             if ((client->character.inventory[ch2].item.data[0] == 0x01) &&
               (client->character.inventory[ch2].item.data[1] != 0x02) &&
               (client->character.inventory[ch2].flags & 0x08))
@@ -7595,10 +7593,12 @@ void DeequipItem (unsigned itemid, BANANA* client)
               client->character.inventory[ch2].flags &= ~(0x08);
               client->character.inventory[ch2].item.data[4] = 0x00;
             }
-            break;
+          }
+          break;
         case 0x02:
           // Remove any other barrier (stacking?)
           for (ch2=0;ch2<client->character.inventoryUse;ch2++)
+          {
             if ((client->character.inventory[ch2].item.data[0] == 0x01) &&
               (client->character.inventory[ch2].item.data[1] == 0x02) &&
               (client->character.inventory[ch2].flags & 0x08))
@@ -7606,7 +7606,8 @@ void DeequipItem (unsigned itemid, BANANA* client)
               client->character.inventory[ch2].flags &= ~(0x08);
               client->character.inventory[ch2].item.data[4] = 0x00;
             }
-            break;
+          }
+          break;
         case 0x03:
           // Remove unit from slot
           client->character.inventory[ch].item.data[4] = 0x00;
@@ -8604,33 +8605,37 @@ void Send60 (BANANA* client)
             {
               if ((client->character.inventory[ch].item.data[1] < 0x0A) &&
                 (client->character.inventory[ch].item.data[2] < 0x05))
+              {
                 special = (client->character.inventory[ch].item.data[4] & 0x1F);
+              }
               else
+              {
                 if ((client->character.inventory[ch].item.data[1] < 0x0D) &&
                   (client->character.inventory[ch].item.data[2] < 0x04))
                   special = (client->character.inventory[ch].item.data[4] & 0x1F);
                 else
                   special = special_table[client->character.inventory[ch].item.data[1]]
-                [client->character.inventory[ch].item.data[2]];
-                switch (special)
-                {
-                case 0x09:
-                  // Master's
-                  exp_percent = 8;
-                  break;
-                case 0x0A:
-                  // Lord's
-                  exp_percent = 10;
-                  break;
-                case 0x0B:
-                  // King's
-                  exp_percent = 12;
-                  if (( l->difficulty == 0x03 ) &&
-                    ( client->equip_flags & DROID_FLAG ))
-                    exp_percent += 30;
-                  break;
-                }
+                    [client->character.inventory[ch].item.data[2]];
+              }
+              switch (special)
+              {
+              case 0x09:
+                // Master's
+                exp_percent = 8;
                 break;
+              case 0x0A:
+                // Lord's
+                exp_percent = 10;
+                break;
+              case 0x0B:
+                // King's
+                exp_percent = 12;
+                if (( l->difficulty == 0x03 ) &&
+                  ( client->equip_flags & DROID_FLAG ))
+                  exp_percent += 30;
+                break;
+              }
+              break;
             }
           }
 
@@ -9101,7 +9106,7 @@ void Send60 (BANANA* client)
         INVENTORY_ITEM work_item, work_item2;
         uint32_t ci, ai,
           compare_itemid = 0, compare_item1 = 0, compare_item2 = 0, num_attribs = 0;
-        int8_t attrib_add;
+        int8_t attrib_add = 0;
 
         memcpy ( &compare_item1,  &client->decryptbuf[0x0C], 3);
         compare_itemid = *(unsigned *) &client->decryptbuf[0x20];
@@ -10038,7 +10043,7 @@ void Send62 (BANANA* client)
         lClient = l->client[t];
         PrepGuildCard ( client->guildcard, lClient->guildcard );
         memset (&PacketData[0], 0, 0x114);
-        sprintf (&PacketData[0x00], "\x14\x01\x60");
+        sprintf ((char *)PacketData, "\x14\x01\x60");
         PacketData[0x03] = 0x00;
         PacketData[0x04] = 0x00;
         PacketData[0x08] = 0x06;
@@ -11166,7 +11171,7 @@ void Send6D (BANANA* client)
 }
 
 
-void Send01 (const int8_t *text, BANANA* client)
+void Send01 (const char *text, BANANA* client)
 {
   uint16_t mesgOfs = 0x10;
   uint32_t ch;
@@ -11191,16 +11196,16 @@ void Send01 (const int8_t *text, BANANA* client)
   encryptcopy (client, &PacketData[0], mesgOfs);
 }
 
-uint8_t chatBuf[4000];
-uint8_t cmdBuf[4000];
+char chatBuf[4000];
+char cmdBuf[4000];
 char* myCommand;
 char* myArgs[64];
 
 char* Unicode_to_ASCII (uint16_t* ucs)
 {
-  int8_t *s,c;
+  uint8_t *s,c;
 
-  s = (char*) &chatBuf[0];
+  s = (uint8_t*) &chatBuf[0];
   while (*ucs != 0x0000)
   {
     c = *(ucs++) & 0xFF;
@@ -11219,7 +11224,7 @@ void WriteLog(char *fmt, ...)
 #define MAX_GM_MESG_LEN 4096
 
   va_list args;
-  int8_t text[ MAX_GM_MESG_LEN ];
+  char text[ MAX_GM_MESG_LEN ];
   //SYSTEMTIME rawtime;
 
   FILE *fp;
@@ -11250,7 +11255,7 @@ void WriteGM(char *fmt, ...)
 #define MAX_GM_MESG_LEN 4096
 
   va_list args;
-  int8_t text[ MAX_GM_MESG_LEN ];
+  char text[ MAX_GM_MESG_LEN ];
   //SYSTEMTIME rawtime;
 
   FILE *fp;
@@ -11275,7 +11280,7 @@ void WriteGM(char *fmt, ...)
 }
 
 
-int8_t character_file[255];
+char character_file[255];
 
 void Send06 (BANANA* client)
 {
@@ -11351,7 +11356,7 @@ void Send06 (BANANA* client)
       while ( ( i < commandLen ) && ( myCmdArgs < 64 ) )
       {
         z = strcspn ( &cmdBuf[i], "," );
-        myArgs[myCmdArgs++] = &cmdBuf[i];
+        myArgs[myCmdArgs++] = (char *)&cmdBuf[i];
         i += z;
         cmdBuf[i++] = 0;
       }
@@ -11365,7 +11370,7 @@ void Send06 (BANANA* client)
 
       if ( !strcmp ( myCommand, "setpass" ) )
       {
-        if (!client->lobbyNum < 0x10)
+        if (client->lobbyNum >= 0x10) // CHECK!!!
         {
           if ( myCmdArgs == 0 )
             SendB0 ("Need new password.", client);
@@ -12134,7 +12139,7 @@ void Send06 (BANANA* client)
           if (!ignored)
           {
             cipher_ptr = &lClient->server_cipher;
-            encryptcopy ( lClient, &chatBuf[0x00], chatsize );
+            encryptcopy ( lClient, (uint8_t *)chatBuf, chatsize );
           }
         }
       }
@@ -12221,7 +12226,7 @@ void Command09(BANANA* client)
   BANANA* c;
   LOBBY* l;
   uint32_t lobbyNum, Packet11_Length, ch;
-  int8_t lb[10];
+  char lb[10];
   int32_t num_hours, num_minutes;
 
   switch ( client->decryptbuf[0x0F] )
@@ -12261,14 +12266,14 @@ void Command09(BANANA* client)
             if ((l->slot_use[ch]) && (l->client[ch]))
             {
               c = l->client[ch];
-              wstrcpy((uint16_t*) &PacketData[Packet11_Length], (uint16_t*) &c->character.name[0]);
+              wstrcpy((uint16_t *) &PacketData[Packet11_Length], (uint16_t*) &c->character.name[0]);
               Packet11_Length += wstrlen ((uint16_t*) &PacketData[Packet11_Length]);
               PacketData[Packet11_Length++] = 0x20;
               PacketData[Packet11_Length++] = 0x00;
               PacketData[Packet11_Length++] = 0x4C;
               PacketData[Packet11_Length++] = 0x00;
               sprintf(&lb[0], "%d", l->client[ch]->character.level + 1);
-              wstrcpy_char(&PacketData[Packet11_Length], &lb[0]);
+              wstrcpy_char((char *)&PacketData[Packet11_Length], &lb[0]);
               Packet11_Length += wstrlen ((uint16_t*) &PacketData[Packet11_Length]);
               PacketData[Packet11_Length++] = 0x0A;
               PacketData[Packet11_Length++] = 0x00;
@@ -12279,43 +12284,43 @@ void Command09(BANANA* client)
               switch (c->character._class)
               {
               case CLASS_HUMAR:
-                wstrcpy_char (&PacketData[Packet11_Length], "HUmar");
+                wstrcpy_char ((char *)&PacketData[Packet11_Length], "HUmar");
                 break;
               case CLASS_HUNEWEARL:
-                wstrcpy_char (&PacketData[Packet11_Length], "HUnewearl");
+                wstrcpy_char ((char *)&PacketData[Packet11_Length], "HUnewearl");
                 break;
               case CLASS_HUCAST:
-                wstrcpy_char (&PacketData[Packet11_Length], "HUcast");
+                wstrcpy_char ((char *)&PacketData[Packet11_Length], "HUcast");
                 break;
               case CLASS_HUCASEAL:
-                wstrcpy_char (&PacketData[Packet11_Length], "HUcaseal");
+                wstrcpy_char ((char *)&PacketData[Packet11_Length], "HUcaseal");
                 break;
               case CLASS_RAMAR:
-                wstrcpy_char (&PacketData[Packet11_Length], "RAmar");
+                wstrcpy_char ((char *)&PacketData[Packet11_Length], "RAmar");
                 break;
               case CLASS_RACAST:
-                wstrcpy_char (&PacketData[Packet11_Length], "RAcast");
+                wstrcpy_char ((char *)&PacketData[Packet11_Length], "RAcast");
                 break;
               case CLASS_RACASEAL:
-                wstrcpy_char (&PacketData[Packet11_Length], "RAcaseal");
+                wstrcpy_char ((char *)&PacketData[Packet11_Length], "RAcaseal");
                 break;
               case CLASS_RAMARL:
-                wstrcpy_char (&PacketData[Packet11_Length], "RAmarl");
+                wstrcpy_char ((char *)&PacketData[Packet11_Length], "RAmarl");
                 break;
               case CLASS_FONEWM:
-                wstrcpy_char (&PacketData[Packet11_Length], "FOnewm");
+                wstrcpy_char ((char *)&PacketData[Packet11_Length], "FOnewm");
                 break;
               case CLASS_FONEWEARL:
-                wstrcpy_char (&PacketData[Packet11_Length], "FOnewearl");
+                wstrcpy_char ((char *)&PacketData[Packet11_Length], "FOnewearl");
                 break;
               case CLASS_FOMARL:
-                wstrcpy_char (&PacketData[Packet11_Length], "FOmarl");
+                wstrcpy_char ((char *)&PacketData[Packet11_Length], "FOmarl");
                 break;
               case CLASS_FOMAR:
-                wstrcpy_char (&PacketData[Packet11_Length], "FOmar");
+                wstrcpy_char ((char *)&PacketData[Packet11_Length], "FOmar");
                 break;
               default:
-                wstrcpy_char (&PacketData[Packet11_Length], "Unknown");
+                wstrcpy_char ((char *)&PacketData[Packet11_Length], "Unknown");
                 break;
               }
               Packet11_Length += wstrlen ((uint16_t*) &PacketData[Packet11_Length]);
@@ -12337,13 +12342,13 @@ void Command09(BANANA* client)
         {
           client->team_info_request = lobbyNum;
           client->team_info_flag = 0;
-          wstrcpy_char (&PacketData[Packet11_Length], "Time : ");
+          wstrcpy_char ((char *)&PacketData[Packet11_Length], "Time : ");
           Packet11_Length += wstrlen ((uint16_t*) &PacketData[Packet11_Length]);
           num_minutes  = ((unsigned) servertime - l->start_time ) / 60L;
           num_hours    = num_minutes / 60L;
           num_minutes %= 60;
           sprintf(&lb[0], "%d", num_hours);
-          wstrcpy_char (&PacketData[Packet11_Length], &lb[0]);
+          wstrcpy_char ((char *)&PacketData[Packet11_Length], &lb[0]);
           Packet11_Length += wstrlen ((uint16_t*) &PacketData[Packet11_Length]);
           PacketData[Packet11_Length++] = 0x3A;
           PacketData[Packet11_Length++] = 0x00;
@@ -12354,13 +12359,13 @@ void Command09(BANANA* client)
             lb[0] = 0x30;
             lb[2] = 0x00;
           }
-          wstrcpy_char (&PacketData[Packet11_Length], &lb[0]);
+          wstrcpy_char ((char *)&PacketData[Packet11_Length], &lb[0]);
           Packet11_Length += wstrlen ((uint16_t*) &PacketData[Packet11_Length]);
           PacketData[Packet11_Length++] = 0x0A;
           PacketData[Packet11_Length++] = 0x00;
           if (l->quest_loaded)
           {
-            wstrcpy_char (&PacketData[Packet11_Length], "Quest : ");
+            wstrcpy_char ((char *)&PacketData[Packet11_Length], "Quest : ");
             Packet11_Length += wstrlen ((uint16_t*) &PacketData[Packet11_Length]);
             PacketData[Packet11_Length++] = 0x0A;
             PacketData[Packet11_Length++] = 0x00;
@@ -12379,7 +12384,7 @@ void Command09(BANANA* client)
       }
       else
       {
-        wstrcpy_char (&PacketData[0x10], "Game no longer active.");
+        wstrcpy_char ((char *)&PacketData[0x10], "Game no longer active.");
         Packet11_Length = 0x10 + (strlen ("Game no longer active.") * 2);
       }
       PacketData[Packet11_Length++] = 0x00;
@@ -12414,7 +12419,7 @@ void Command09(BANANA* client)
 void Command10(unsigned blockServer, BANANA* client)
 {
   uint8_t select_type, selected;
-  uint32_t full_select, ch, ch2, failed_to_join, lobbyNum, password_match, oldIndex;
+  uint32_t full_select, ch, ch2, failed_to_join, lobbyNum, password_match;
   LOBBY* l;
   uint16_t* p;
   uint16_t* c;
@@ -12422,7 +12427,7 @@ void Command10(unsigned blockServer, BANANA* client)
   uint32_t qm_length, qa, nr;
   uint8_t* qmap;
   QUEST* q;
-  int8_t quest_num[16];
+  char quest_num[16];
   uint32_t qn;
   int32_t do_quest;
   uint32_t quest_flag;
@@ -12468,18 +12473,22 @@ void Command10(unsigned blockServer, BANANA* client)
               failed_to_join = 1;
             }
             else
+            {
               if ((l->difficulty == 0x02) && (client->character.level < 49))
               {
                 Send01 ("Episode I\n\nYou must be level\n50 or higher\nto play on the\nvery hard\ndifficulty.", client);
                 failed_to_join = 1;
               }
               else
+              {
                 if ((l->difficulty == 0x03) && (client->character.level < 89))
                 {
                   Send01 ("Episode I\n\nYou must be level\n90 or higher\nto play on the\nultimate\ndifficulty.", client);
                   failed_to_join = 1;
                 }
-                break;
+              }
+            }
+            break;
           case 0x02:
             if ((l->difficulty == 0x01) && (client->character.level < 29))
             {
@@ -12487,18 +12496,22 @@ void Command10(unsigned blockServer, BANANA* client)
               failed_to_join = 1;
             }
             else
+            {
               if ((l->difficulty == 0x02) && (client->character.level < 59))
               {
                 Send01 ("Episode II\n\nYou must be level\n60 or higher\nto play on the\nvery hard\ndifficulty.", client);
                 failed_to_join = 1;
               }
               else
+              {
                 if ((l->difficulty == 0x03) && (client->character.level < 99))
                 {
                   Send01 ("Episode II\n\nYou must be level\n100 or higher\nto play on the\nultimate\ndifficulty.", client);
                   failed_to_join = 1;
                 }
-                break;
+              }
+            }
+            break;
           case 0x03:
             if ((l->difficulty == 0x01) && (client->character.level < 39))
             {
@@ -12506,18 +12519,22 @@ void Command10(unsigned blockServer, BANANA* client)
               failed_to_join = 1;
             }
             else
+            {
               if ((l->difficulty == 0x02) && (client->character.level < 69))
               {
                 Send01 ("Episode IV\n\nYou must be level\n70 or higher\nto play on the\nvery hard\ndifficulty.", client);
                 failed_to_join = 1;
               }
               else
+              {
                 if ((l->difficulty == 0x03) && (client->character.level < 109))
                 {
                   Send01 ("Episode IV\n\nYou must be level\n110 or higher\nto play on the\nultimate\ndifficulty.", client);
                   failed_to_join = 1;
                 }
-                break;
+              }
+            }
+            break;
           }
         }
 
@@ -12747,6 +12764,7 @@ void Command10(unsigned blockServer, BANANA* client)
                   }
 
                   for (ch=0;ch<4;ch++)
+                  {
                     if ((l->slot_use[ch]) && (l->client[ch]))
                     {
                       if ((l->battle) || (l->challenge))
@@ -12859,43 +12877,43 @@ void Command10(unsigned blockServer, BANANA* client)
                       l->client[ch]->sending_quest = client->decryptbuf[0x0B] - 1;
                       l->client[ch]->qpos = fqs;
                     }
-                    if (!client->decryptbuf[0x0A])
-                      l->quest_in_progress = 1; // when a government quest, this won't be set
-                    else
-                      l->inpquest = 1;
+                  }
+                  if (!client->decryptbuf[0x0A])
+                    l->quest_in_progress = 1; // when a government quest, this won't be set
+                  else
+                    l->inpquest = 1;
 
-                    l->quest_loaded = client->decryptbuf[0x0B];
+                  l->quest_loaded = client->decryptbuf[0x0B];
 
-                    // Time to load the map data...
+                  // Time to load the map data...
 
-                    memset ( &l->mapData[0], 0, 0xB50 * sizeof (MAP_MONSTER) ); // Erase!
-                    l->mapIndex = 0;
-                    l->rareIndex = 0;
-                    for (ch=0;ch<0x20;ch++)
-                      l->rareData[ch] = 0xFF;
+                  memset ( &l->mapData[0], 0, 0xB50 * sizeof (MAP_MONSTER) ); // Erase!
+                  l->mapIndex = 0;
+                  l->rareIndex = 0;
+                  for (ch=0;ch<0x20;ch++)
+                    l->rareData[ch] = 0xFF;
 
-                    qmap = q->mapdata;
-                    qm_length = *(unsigned*) qmap;
+                  qmap = q->mapdata;
+                  qm_length = *(unsigned*) qmap;
+                  qmap += 4;
+                  ch = 4;
+                  while ( ( qm_length - ch ) >= 80 )
+                  {
+                    qa = *(unsigned*) qmap; // Area
                     qmap += 4;
-                    ch = 4;
-                    while ( ( qm_length - ch ) >= 80 )
-                    {
-                      oldIndex = l->mapIndex;
-                      qa = *(unsigned*) qmap; // Area
-                      qmap += 4;
-                      nr = *(unsigned*) qmap; // Number of monsters
-                      qmap += 4;
-                      if ( ( l->episode == 0x03 ) && ( qa > 5 ) )
+                    nr = *(unsigned*) qmap; // Number of monsters
+                    qmap += 4;
+                    if ( ( l->episode == 0x03 ) && ( qa > 5 ) )
+                      ParseMapData ( l, (MAP_MONSTER*) qmap, 1, nr );
+                    else
+                      if ( ( l->episode == 0x02 ) && ( qa > 15 ) )
                         ParseMapData ( l, (MAP_MONSTER*) qmap, 1, nr );
                       else
-                        if ( ( l->episode == 0x02 ) && ( qa > 15 ) )
-                          ParseMapData ( l, (MAP_MONSTER*) qmap, 1, nr );
-                        else
-                          ParseMapData ( l, (MAP_MONSTER*) qmap, 0, nr );
-                      qmap += ( nr * 72 );
-                      ch += ( ( nr * 72 ) + 8 );
-                      //debug ("loaded quest area %u, mid count %u, total mids: %u", qa, l->mapIndex - oldIndex, l->mapIndex);
-                    }
+                        ParseMapData ( l, (MAP_MONSTER*) qmap, 0, nr );
+                    qmap += ( nr * 72 );
+                    ch += ( ( nr * 72 ) + 8 );
+                    //debug ("loaded quest area %u, mid count %u, total mids: %u", qa, l->mapIndex - oldIndex, l->mapIndex);
+                  }
                 }
               }
             }
@@ -13722,13 +13740,15 @@ void BlockProcessPacket (BANANA* client)
           l = client->lobby;
 
           for (ch=0;ch<12;ch++)
+          {
             if ( ( l->slot_use[ch] != 0 ) && ( l->client[ch] ) )
             {
               cipher_ptr = &client->server_cipher;
               encryptcopy (client, MakePacketEA15 (l->client[ch]), 2152 );
             }
-            ShowArrows (client, 0);
-            client->bursting = 0;
+          }
+          ShowArrows (client, 0);
+          client->bursting = 0;
         }
       }
       // Lots of fun commands here.
@@ -13985,18 +14005,22 @@ void BlockProcessPacket (BANANA* client)
                       failed_to_create = 1;
                     }
                     else
+                    {
                       if ((client->decryptbuf[0x50] == 0x02) && (client->character.level < 49))
                       {
                         Send01 ("Episode I\n\nYou must be level\n50 or higher\nto play on the\nvery hard\ndifficulty.", client);
                         failed_to_create = 1;
                       }
                       else
+                      {
                         if ((client->decryptbuf[0x50] == 0x03) && (client->character.level < 89))
                         {
                           Send01 ("Episode I\n\nYou must be level\n90 or higher\nto play on the\nultimate\ndifficulty.", client);
                           failed_to_create = 1;
                         }
-                        break;
+                      }
+                    }
+                    break;
                   case 0x02:
                     if ((client->decryptbuf[0x50] == 0x01) && (client->character.level < 29))
                     {
@@ -14004,18 +14028,22 @@ void BlockProcessPacket (BANANA* client)
                       failed_to_create = 1;
                     }
                     else
+                    {
                       if ((client->decryptbuf[0x50] == 0x02) && (client->character.level < 59))
                       {
                         Send01 ("Episode II\n\nYou must be level\n60 or higher\nto play on the\nvery hard\ndifficulty.", client);
                         failed_to_create = 1;
                       }
                       else
+                      {
                         if ((client->decryptbuf[0x50] == 0x03) && (client->character.level < 99))
                         {
                           Send01 ("Episode II\n\nYou must be level\n100 or higher\nto play on the\nultimate\ndifficulty.", client);
                           failed_to_create = 1;
                         }
-                        break;
+                      }
+                    }
+                    break;
                   case 0x03:
                     if ((client->decryptbuf[0x50] == 0x01) && (client->character.level < 39))
                     {
@@ -14023,18 +14051,22 @@ void BlockProcessPacket (BANANA* client)
                       failed_to_create = 1;
                     }
                     else
+                    {
                       if ((client->decryptbuf[0x50] == 0x02) && (client->character.level < 69))
                       {
                         Send01 ("Episode IV\n\nYou must be level\n70 or higher\nto play on the\nvery hard\ndifficulty.", client);
                         failed_to_create = 1;
                       }
                       else
+                      {
                         if ((client->decryptbuf[0x50] == 0x03) && (client->character.level < 109))
                         {
                           Send01 ("Episode IV\n\nYou must be level\n110 or higher\nto play on the\nultimate\ndifficulty.", client);
                           failed_to_create = 1;
                         }
-                        break;
+                      }
+                    }
+                    break;
                   default:
                     SendB0 ("Lol, nub.", client);
                     break;
@@ -14279,15 +14311,11 @@ void LoadBattleParam (BATTLEPARAM* dest, const char* filename, uint32_t num_reco
   if (!fp)
   {
     printf ("%s is missing.\n", filename);
-    printf ("Press [ENTER] to quit...");
-    fgets(&dp[0],1,stdin);
     exit (1);
   }
   if ( ( fread ( dest, 1, sizeof (BATTLEPARAM) * num_records, fp ) != sizeof (BATTLEPARAM) * num_records ) )
   {
     printf ("%s is corrupted.\n", filename);
-    printf ("Press [ENTER] to quit...");
-    fgets(&dp[0],1,stdin);
     exit (1);
   }
   fclose ( fp );
@@ -14317,11 +14345,11 @@ void LoadQuests (const char* filename, uint32_t category)
   FILE* qf;
   FILE* qd;
   uint32_t qs;
-  int8_t qfile[256];
-  int8_t qfile2[256];
-  int8_t qfile3[256];
-  int8_t qfile4[256];
-  int8_t qname[256];
+  char qfile[256];
+  char qfile2[256];
+  char qfile3[256];
+  char qfile4[256];
+  char qname[256];
   uint32_t qnl = 0;
   QUEST* q;
   uint32_t ch, ch2, ch3, ch4, ch5, qf2l;
@@ -14341,8 +14369,6 @@ void LoadQuests (const char* filename, uint32_t category)
   if (!fp)
   {
     printf ("%s is missing.\n", filename);
-    printf ("Press [ENTER] to quit...");
-    fgets(&dp[0],1,stdin);
     exit (1);
   }
   while (fgets (&qfile[0], 255, fp) != NULL)
@@ -14359,15 +14385,11 @@ void LoadQuests (const char* filename, uint32_t category)
     if (!qf)
     {
       printf ("%s is missing.\n", qfile3);
-      printf ("Press [ENTER] to quit...");
-      fgets(&dp[0],1,stdin);
       exit (1);
     }
     if (fgets (&qname[0], 64, fp) == NULL)
     {
       printf ("%s is corrupted.\n", filename);
-      printf ("Press [ENTER] to quit...");
-      fgets(&dp[0],1,stdin);
       exit (1);
     }
     for (ch=0;ch<64;ch++)
@@ -14387,8 +14409,6 @@ void LoadQuests (const char* filename, uint32_t category)
     if (fgets (&qname[0], 120, fp) == NULL)
     {
       printf ("%s is corrupted.\n", filename);
-      printf ("Press [ENTER] to quit...");
-      fgets(&dp[0],1,stdin);
       exit (1);
     }
     for (ch=0;ch<120;ch++)
@@ -14427,6 +14447,7 @@ void LoadQuests (const char* filename, uint32_t category)
         if (strlen(languageExts[ch4]))
         {
           if ( (strlen(&qfile4[0]) - qf2l) > 3)
+          {
             for (ch5=qf2l;ch5<strlen(&qfile4[0]) - 3;ch5++)
             {
               if ((qfile4[ch5] == 46) &&
@@ -14444,6 +14465,7 @@ void LoadQuests (const char* filename, uint32_t category)
             }
 
             if (( (strlen(&qfile4[0]) - qf2l) > 3) && (!extf))
+            {
               for (ch5=qf2l;ch5<strlen(&qfile4[0]) - 3;ch5++)
               {
                 if ((qfile4[ch5] == 46) &&
@@ -14458,9 +14480,11 @@ void LoadQuests (const char* filename, uint32_t category)
                   break;
                 }
               }
+            }
+          }
         }
 
-        qd = fopen ( &qfile4[0], "rb" );
+        qd = fopen ( qfile4, "rb" );
         if (qd != NULL)
         {
           if (ch4 == 0)
@@ -14475,38 +14499,37 @@ void LoadQuests (const char* filename, uint32_t category)
           fseek ( qd, 0, SEEK_SET );
           ql->qdata = malloc ( qs );
           questsMemory += qs;
-          fread ( ql->qdata, 1, qs, qd );
+          if(!fread ( ql->qdata, 1, qs, qd ))
+          {
+            printf("Failed to read quest data...\n");
+            exit(1);
+          }
           ch = 0;
           ch2 = 0;
           while (ch < qs)
           {
             qpc = *(uint16_t*) &ql->qdata[ch+2];
-            if ( (qpc == 0x13) && (strstr(&ql->qdata[ch+8], ".bin")) && (ch2 < PRS_BUFFER))
+            if ( (qpc == 0x13) && (strstr((char *)&ql->qdata[ch+8], ".bin")) && (ch2 < PRS_BUFFER))
             {
               memcpy ( &true_filename[0], &ql->qdata[ch+8], 16 );
               qps2 = *(unsigned*) &ql->qdata[ch+0x418];
               memcpy (&qpd_buffer[ch2], &ql->qdata[ch+0x18], qps2);
               ch2 += qps2;
             }
-            else
-              if (ch2 >= PRS_BUFFER)
-              {
-                printf ("PRS buffer too small...\n");
-                printf ("Press [ENTER] to quit...");
-                fgets(&dp[0],1,stdin);
-                exit (1);
-              }
-              qps = *(uint16_t*) &ql->qdata[ch];
-              if (qps % 8)
-                qps += ( 8 - ( qps % 8 ) );
-              ch += qps;
+            else if (ch2 >= PRS_BUFFER)
+            {
+              printf ("PRS buffer too small...\n");
+              exit (1);
+            }
+            qps = *(uint16_t*) &ql->qdata[ch];
+            if (qps % 8)
+              qps += ( 8 - ( qps % 8 ) );
+            ch += qps;
           }
           ed_size = prs_decompress (&qpd_buffer[0], &qpdc_buffer[0]);
           if (ed_size > PRS_BUFFER)
           {
-            printf ("Memory corrupted!\n", ed_size );
-            printf ("Press [ENTER] to quit...");
-            fgets(&dp[0],1,stdin);
+            printf ("Memory corrupted!\n" );
             exit (1);
           }
           fclose (qd);
@@ -14544,32 +14567,27 @@ void LoadQuests (const char* filename, uint32_t category)
             while (ch < qs)
             {
               qpc = *(uint16_t*) &ql->qdata[ch+2];
-              if ( (qpc == 0x13) && (strstr(&ql->qdata[ch+8], ".dat")) && (ch2 < PRS_BUFFER))
+              if ( (qpc == 0x13) && (strstr((char *)&ql->qdata[ch+8], ".dat")) && (ch2 < PRS_BUFFER))
               {
                 qps2 = *(unsigned *) &ql->qdata[ch+0x418];
                 memcpy (&qpd_buffer[ch2], &ql->qdata[ch+0x18], qps2);
                 ch2 += qps2;
               }
-              else
-                if (ch2 >= PRS_BUFFER)
-                {
-                  printf ("PRS buffer too small...\n");
-                  printf ("Press [ENTER] to quit...");
-                  fgets(&dp[0],1,stdin);
-                  exit (1);
-                }
+              else if (ch2 >= PRS_BUFFER)
+              {
+                printf ("PRS buffer too small...\n");
+                exit (1);
+              }
 
-                qps = *(uint16_t*) &ql->qdata[ch];
-                if (qps % 8)
-                  qps += ( 8 - ( qps % 8 ) );
-                ch += qps;
+              qps = *(uint16_t*) &ql->qdata[ch];
+              if (qps % 8)
+                qps += ( 8 - ( qps % 8 ) );
+              ch += qps;
             }
             ed_size = prs_decompress (&qpd_buffer[0], &qpdc_buffer[0]);
             if (ed_size > PRS_BUFFER)
             {
-              printf ("Memory corrupted!\n", ed_size );
-              printf ("Press [ENTER] to quit...");
-              fgets(&dp[0],1,stdin);
+              printf ("Memory corrupted!\n");
               exit (1);
             }
             ed_ofs = 0;
@@ -14585,8 +14603,6 @@ void LoadQuests (const char* filename, uint32_t category)
                 if (ed[2] > 17)
                 {
                   printf ("Area out of range in quest!\n");
-                  printf ("Press [ENTER] to quit...");
-                  fgets(&dp[0],1,stdin);
                   exit(1);
                 }
                 num_records = ed[3] / 68L;
@@ -14613,8 +14629,6 @@ void LoadQuests (const char* filename, uint32_t category)
                 if (ed[2] > 17)
                 {
                   printf ("Area out of range in quest!\n");
-                  printf ("Press [ENTER] to quit...");
-                  fgets(&dp[0],1,stdin);
                   exit(1);
                 }
                 qm_ofs += 4;
@@ -14733,8 +14747,6 @@ void LoadQuests (const char* filename, uint32_t category)
           if (ch4 == 0)
           {
             printf ("Quest file %s is missing!  Could not load the quest.\n", qfile4);
-            printf ("Press [ENTER] to quit...");
-            fgets(&dp[0],1,stdin);
             exit(1);
           }
           else
@@ -14773,7 +14785,7 @@ void FreeCSV()
 void LoadCSV(const char* filename)
 {
   FILE* fp;
-  int8_t csv_data[1024];
+  char csv_data[1024];
   uint32_t ch, ch2, ch3 = 0;
   //unsigned ch4;
   int32_t open_quote = 0;
@@ -14787,8 +14799,6 @@ void LoadCSV(const char* filename)
   if ( ( fp = fopen (filename, "r" ) ) == NULL )
   {
     printf ("The parameter file %s appears to be missing.\n", filename);
-    printf ("Press [ENTER] to quit...");
-    fgets(&dp[0],1,stdin);
     exit (1);
   }
 
@@ -14831,8 +14841,6 @@ void LoadCSV(const char* filename)
     if (csv_lines > 1023)
     {
       printf ("CSV file has too many entries.\n");
-      printf ("Press [ENTER] to quit...");
-      fgets(&dp[0],1,stdin);
       exit (1);
     }
   }
@@ -14907,8 +14915,6 @@ void LoadTechParam()
   if (csv_lines != 19)
   {
     printf ("Technique CSV file is corrupt.\n");
-    printf ("Press [ENTER] to quit...");
-    fgets(&dp[0],1,stdin);
     exit (1);
   }
   for (ch=0;ch<19;ch++) // For technique
@@ -14920,8 +14926,6 @@ void LoadTechParam()
       else
       {
         printf ("Technique CSV file is corrupt.\n");
-        printf ("Press [ENTER] to quit...");
-        fgets(&dp[0],1,stdin);
         exit (1);
       }
     }
@@ -14936,11 +14940,13 @@ void LoadShopData2()
   if (!fp)
   {
     printf ("shop/shop2.dat is missing.");
-    printf ("Press [ENTER] to quit...");
-    fgets(&dp[0],1,stdin);
     exit (1);
   }
-  fread (&equip_prices[0], 1, sizeof (equip_prices), fp);
+  if(!fread (&equip_prices[0], 1, sizeof (equip_prices), fp))
+  {
+    printf ("Failed to read shop data...\n");
+    exit(1);
+  }
   fclose (fp);
 }
 
@@ -14965,7 +14971,7 @@ int32_t main()
   struct in_addr block_in[10];
   int32_t ship_sockfd = -1;
   int32_t pkt_len, pkt_c, bytes_sent;
-  int32_t wserror;
+  int32_t wserror = 0;
   FILE* fp;
   uint8_t* connectionChunk;
   uint8_t* connectionPtr;
@@ -15001,8 +15007,6 @@ int32_t main()
   if (!debugfile)
   {
     printf ("Could not create 60packets.txt");
-    printf ("Press [ENTER] to quit...");
-    gets(&dp[0]);
     exit(1);
   }
 #endif
@@ -15023,13 +15027,19 @@ int32_t main()
   if (!fp)
   {
     printf ("Could not locate ship_key.bin!\n");
-    printf ("Hit [ENTER] to quit...");
-    fgets (&dp[0],1,stdin);
     exit (1);
   }
 
-  fread (&ship_index, 1, 4, fp );
-  fread (&ship_key[0], 1, 128, fp );
+  if(!fread (&ship_index, 1, 4, fp ))
+  {
+    printf("Failed ot read ship index...\n");
+    exit(1);
+  }
+  if(!fread (&ship_key[0], 1, 128, fp ))
+  {
+    printf("Failed ot read ship key...\n");
+    exit(1);
+  }
   fclose (fp);
 
   printf ("OK!\n\nLoading weapon parameter file...\n");
@@ -15091,8 +15101,6 @@ int32_t main()
   if (!fp)
   {
     printf ("Can't proceed without ItemPT.gsl\n");
-    printf ("Press [ENTER] to quit...");
-    fgets (&dp[0],1,stdin);
     exit (1);
   }
   fseek (fp, 0x3000, SEEK_SET);
@@ -15103,7 +15111,11 @@ int32_t main()
   {
     for (ch=0;ch<10;ch++) // For each ID
     {
-      fread  (&ptd, 1, sizeof (PTDATA), fp);
+      if(!fread  (&ptd, 1, sizeof (PTDATA), fp))
+      {
+        printf("Failed to read Episode I data...\n");
+        exit(1);
+      }
 
       ptd.enemy_dar[44] = 100; // Dragon
       ptd.enemy_dar[45] = 100; // De Rol Le
@@ -15300,7 +15312,10 @@ int32_t main()
   {
     for (ch=0;ch<10;ch++) // For each ID
     {
-      fread (&ptd, 1, sizeof (PTDATA), fp);
+      if(!fread (&ptd, 1, sizeof (PTDATA), fp)) {
+        printf("Failed to read Episode II data...\n");
+        exit(1);
+      }
 
       ptd.enemy_dar[73] = 100; // Barba Ray
       ptd.enemy_dar[76] = 100; // Gol Dragon
@@ -15500,13 +15515,19 @@ int32_t main()
   if (!fp)
   {
     printf ("Can't proceed without PlyLevelTbl.bin!\n");
-    printf ("Press [ENTER] to quit...");
-    fgets (&dp[0],1,stdin);
     exit (1);
   }
-  fread ( &startingData, 1, 12*14, fp );
+  if(!fread ( &startingData, 1, 12*14, fp ))
+  {
+    printf("Failed to read starting data...\n");
+    exit(1);
+  }
   fseek ( fp, 0xE4, SEEK_SET );
-  fread ( &playerLevelData, 1, 28800, fp );
+  if(!fread ( &playerLevelData, 1, 28800, fp ))
+  {
+    printf("Failed to read player level data...\n");
+    exit(1);
+  }
   fclose ( fp );
 
   printf ("OK!\n\n.. done!\n\nLoading quests...\n\n");
@@ -15545,16 +15566,12 @@ int32_t main()
   if (!fp)
   {
     printf ("Can't proceed without shop.dat!\n");
-    printf ("Press [ENTER] to quit...");
-    fgets (&dp[0],1,stdin);
     exit (1);
   }
 
   if ( fread ( &shops[0], 1, 7000 * sizeof (SHOP), fp )  != (7000 * sizeof (SHOP)) )
   {
     printf ("Failed to read shop data...\n");
-    printf ("Press [ENTER] to quit...");
-    fgets (&dp[0],1,stdin);
     exit (1);
   }
 
@@ -15619,8 +15636,6 @@ int32_t main()
   if (!blockChunk)
   {
     printf ("Out of memory!\n");
-    printf ("Press [ENTER] to quit...");
-    fgets(&dp[0],1,stdin);
     exit (1);
   }
   blockPtr = blockChunk;
@@ -15638,8 +15653,6 @@ int32_t main()
   if (!connectionChunk )
   {
     printf ("Out of memory!\n");
-    printf ("Press [ENTER] to quit...");
-    fgets (&dp[0],1,stdin);
     exit (1);
   }
   connectionPtr = connectionChunk;
@@ -15666,7 +15679,11 @@ int32_t main()
     if ( num_bans > 5000 )
       num_bans = 5000;
     fseek ( fp, 0, SEEK_SET );
-    fread ( &ship_bandata[0], 1, num_bans * sizeof (BANDATA), fp );
+    if (!fread ( &ship_bandata[0], 1, num_bans * sizeof (BANDATA), fp ))
+    {
+      printf("Failed to read ban data...\n");
+      exit(1);
+    }
     fclose ( fp );
   }
   printf ("done!\n\n%u bans loaded.\n%u IP mask bans loaded.\n\n",num_bans,num_masks);
@@ -15696,8 +15713,6 @@ int32_t main()
     if (block_sockfd[ch-1] < 0)
     {
       printf ("Failed to open port %u for connections.\n", serverPort+ch );
-      printf ("Press [ENTER] to quit...");
-      fgets(&dp[0],1,stdin);
       exit (1);
     }
 
@@ -15708,8 +15723,6 @@ int32_t main()
   if (ship_sockfd < 0)
   {
     printf ("Failed to open ship port for connections.\n");
-    printf ("Press [ENTER] to quit...");
-    fgets(&dp[0],1,stdin);
     exit (1);
   }
 
@@ -15764,10 +15777,10 @@ int32_t main()
             ch2 = 1;
           else
             ch2 = 1 + ((unsigned) servertime - workConnect->lastTick);
-            workConnect->lastTick = (unsigned) servertime;
-            workConnect->packetsSec /= ch2;
-            workConnect->toBytesSec /= ch2;
-            workConnect->fromBytesSec /= ch2;
+          workConnect->lastTick = (unsigned) servertime;
+          workConnect->packetsSec /= ch2;
+          workConnect->toBytesSec /= ch2;
+          workConnect->fromBytesSec /= ch2;
         }
 
         FD_SET (workConnect->plySockfd, &ReadFDs);
@@ -16135,13 +16148,11 @@ void tcp_listen (int sockfd)
   if (listen(sockfd, 10) < 0)
   {
     debug_perror ("Could not listen for connection");
-    debug_perror ("Press [ENTER] to quit...");
-    fgets(&dp[0],1,stdin);
     exit(1);
   }
 }
 
-int32_t tcp_accept (int sockfd, struct sockaddr *client_addr, int32_t *addr_len )
+int32_t tcp_accept (int sockfd, struct sockaddr *client_addr, uint32_t *addr_len )
 {
   int32_t fd;
 
@@ -16184,7 +16195,7 @@ int32_t tcp_sock_connect(char* dest_addr, int32_t port)
 /*****************************************************************************/
 int32_t tcp_sock_open(struct in_addr ip, int32_t port)
 {
-  int32_t fd, turn_on_option_flag = 1, rcSockopt;
+  int32_t fd, turn_on_option_flag = 1;
 
   struct sockaddr_in sa;
 
@@ -16196,8 +16207,6 @@ int32_t tcp_sock_open(struct in_addr ip, int32_t port)
   /* Error */
   if( fd < 0 ){
     debug_perror ("Could not create socket");
-    debug_perror ("Press [ENTER] to quit...");
-    fgets(&dp[0],1,stdin);
     exit(1);
   }
 
@@ -16207,13 +16216,11 @@ int32_t tcp_sock_open(struct in_addr ip, int32_t port)
 
   /* Reuse port */
 
-  rcSockopt = setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char *) &turn_on_option_flag, sizeof(turn_on_option_flag));
+  setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char *) &turn_on_option_flag, sizeof(turn_on_option_flag));
 
   /* bind() the socket to the interface */
   if (bind(fd, (struct sockaddr *)&sa, sizeof(struct sockaddr)) < 0){
     debug_perror("Could not bind to port");
-    debug_perror("Press [ENTER] to quit...");
-    fgets(&dp[0],1,stdin);
     exit(1);
   }
 
@@ -16233,7 +16240,7 @@ void debug(char *fmt, ...)
 #define MAX_MESG_LEN 1024
 
   va_list args;
-  int8_t text[ MAX_MESG_LEN ];
+  char text[ MAX_MESG_LEN ];
 
   va_start (args, fmt);
   strcpy (text + vsprintf( text,fmt,args), "\r\n");
@@ -16259,11 +16266,9 @@ static void pso_crypt_init_key_bb(uint8_t *data)
 void pso_crypt_decrypt_bb(PSO_CRYPT *pcry, uint8_t *data, unsigned
               length)
 {
-  uint32_t eax, ecx, edx, ebx, ebp, esi, edi;
+  uint32_t edx, ebx, ebp, esi, edi;
 
   edx = 0;
-  ecx = 0;
-  eax = 0;
   while (edx < length)
   {
     ebx = *(uint32_t *) &data[edx];
@@ -16294,11 +16299,9 @@ void pso_crypt_decrypt_bb(PSO_CRYPT *pcry, uint8_t *data, unsigned
 void pso_crypt_encrypt_bb(PSO_CRYPT *pcry, uint8_t *data, unsigned
               length)
 {
-  uint32_t eax, ecx, edx, ebx, ebp, esi, edi;
+  uint32_t edx, ebx, ebp, esi, edi;
 
   edx = 0;
-  ecx = 0;
-  eax = 0;
   while (edx < length)
   {
     ebx = *(uint32_t *) &data[edx];

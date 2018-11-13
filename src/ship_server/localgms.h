@@ -27,7 +27,7 @@ int32_t localgmrights[11];
 int32_t readLocalGMFile()
 {
     FILE* gmfile;
-    int8_t inistring[512];
+    char inistring[512];
     int32_t i;
 
   printf( "Loading Local GMs and permissions..\n" );
@@ -38,7 +38,10 @@ int32_t readLocalGMFile()
     {
         printf( "Local GM File Loaded, Parsing...\n" );
 
-        fgets(inistring, 512, gmfile);
+        if(!fgets(inistring, 512, gmfile)) {
+          printf ("Failed to read...\n");
+          exit(1);
+        }
 
         while ( !feof(gmfile) )
         {
@@ -89,12 +92,20 @@ int32_t readLocalGMFile()
 
                 else
                 {
-                    fgets(inistring, 512, gmfile);
+                    if(!fgets(inistring, 512, gmfile))
+                    {
+                      printf ("Failed to read...\n");
+                      exit(1);
+                    }
                 }
             }
             else
             {
-                fgets(inistring, 512, gmfile);
+                if(!fgets(inistring, 512, gmfile))
+                {
+                  printf ("Failed to read...\n");
+                  exit(1);
+                }
             }
         }
 
