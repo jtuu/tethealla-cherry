@@ -145,10 +145,15 @@ main( int32_t argc, char * argv[] )
       {
         if (config_index < 0x04)
         {
-          ch = strlen (&config_data[0]);
-          if (config_data[ch-1] == 0x0A)
-            config_data[ch--]  = 0x00;
-          config_data[ch] = 0;
+          for(;;)
+          {
+            ch = strlen (&config_data[0]);
+            if(!ch) break;
+            if (config_data[ch-1] == '\r' || config_data[ch-1] == '\n')
+              config_data[ch-1]  = 0x00;
+            else
+              break;
+          }
         }
         switch (config_index)
         {
