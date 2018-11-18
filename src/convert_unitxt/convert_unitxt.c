@@ -4,7 +4,7 @@
 #include  <string.h>
 #include  <time.h>
 #include  <math.h>
-#include  "src/prs/prs.cpp"
+#include  "src/prs/prs.c"
 
 //#define WORD_WRAP_LEN 26
 

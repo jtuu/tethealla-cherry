@@ -90,7 +90,7 @@
 #include  "src/login_server/pso_crypt.h"
 #include  "src/login_server/bbtable.h"
 #include  "localgms.h"
-#include  "src/prs/prs.cpp"
+#include  "src/prs/prs.c"
 #include  "def_map.h" // Map file name definitions
 #include  "def_block.h" // Blocked packet definitions
 #include  "def_packets.h" // Pre-made packet definitions

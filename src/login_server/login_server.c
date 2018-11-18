@@ -44,7 +44,7 @@
 
 #include  "pso_crypt.h"
 #include  "bbtable.h"
-#include  "src/prs/prs.cpp"
+#include  "src/prs/prs.c"
 
 #define MAX_SIMULTANEOUS_CONNECTIONS 6
 #define LOGIN_COMPILED_MAX_CONNECTIONS 300
