@@ -66,3 +66,8 @@ dkms.conf
 #Ignore binaries
 bin/*
 !bin/.keep
+
+#emacs
+*~
+\#*\#
+.\#*
