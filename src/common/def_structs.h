@@ -1,3 +1,16 @@
+#ifndef TETHEALLA_DEF_STRUCTS_H
+#define TETHEALLA_DEF_STRUCTS_H
+
+#include "src/pso_crypt/pso_crypt.h"
+
+#define TCP_BUFFER_SIZE 64000
+#define PACKET_BUFFER_SIZE ( TCP_BUFFER_SIZE * 16 )
+
+#define SHIP_COMPILED_MAX_GAMES 75
+#define MAX_SAVED_ITEMS 3000
+
+#define MAX_SENDCHECK 0x0B
+
 #define NO_ALIGN __attribute__ ((packed))
 
 typedef struct st_ptdata
@@ -398,44 +411,6 @@ typedef struct st_questmenu {
   uint32_t quest_indexes[10][32];
 } QUEST_MENU;
 
-
-/* a RC4 expanded key session */
-
-const uint8_t RC4publicKey[32] = {
-  103, 196, 247, 176, 71, 167, 89, 233, 200, 100, 044, 209, 190, 231, 83, 42,
-  6, 95, 151, 28, 140, 243, 130, 61, 107, 234, 243, 172, 77, 24, 229, 156
-};
-
-struct rc4_key {
-    uint8_t state[256];
-    uint32_t x, y;
-};
-
-
-/* Connected Logon Server Structure */
-
-typedef struct st_orange {
-  int32_t sockfd;
-  struct in_addr _ip;
-  uint8_t rcvbuf [TCP_BUFFER_SIZE];
-  uint32_t rcvread;
-  uint32_t expect;
-  uint8_t decryptbuf [TCP_BUFFER_SIZE];
-  uint8_t sndbuf [PACKET_BUFFER_SIZE];
-  uint8_t encryptbuf [TCP_BUFFER_SIZE];
-  int32_t snddata, sndwritten;
-  uint8_t packet [PACKET_BUFFER_SIZE];
-  uint32_t packetdata;
-  uint32_t packetread;
-  int32_t crypt_on;
-  uint8_t user_key[128];
-  int32_t key_change[128];
-  struct rc4_key cs_key;
-  struct rc4_key sc_key;
-  uint32_t last_ping;
-} ORANGE;
-
-
 /* Ship List Structure (Assembled from Logon Packet) */
 
 typedef struct st_shiplist {
@@ -559,3 +534,5 @@ typedef struct st_block {
   LOBBY lobbies[16+SHIP_COMPILED_MAX_GAMES];
   uint32_t count; // keep track of how many people are on this block
 } BLOCK;
+
+#endif

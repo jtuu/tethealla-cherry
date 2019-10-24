@@ -28,15 +28,11 @@
 
 #define SERVER_VERSION "0.144"
 #define USEADDR_ANY
-#define TCP_BUFFER_SIZE 64000
-#define PACKET_BUFFER_SIZE ( TCP_BUFFER_SIZE * 16 )
 //#define LOG_60
 #define SHIP_COMPILED_MAX_CONNECTIONS 900
-#define SHIP_COMPILED_MAX_GAMES 75
 #define LOGIN_RECONNECT_SECONDS 15
 #define MAX_SIMULTANEOUS_CONNECTIONS 6
 #define MAX_SAVED_LOBBIES 20
-#define MAX_SAVED_ITEMS 3000
 #define MAX_GCSEND 2000
 #define ALL_ARE_GM 0
 #define PRS_BUFFER 262144
@@ -44,22 +40,6 @@
 #define SEND_PACKET_03 0x00
 #define RECEIVE_PACKET_93 0x0A
 #define MAX_SENDCHECK 0x0B
-
-// Our Character Classes
-
-#define CLASS_HUMAR 0x00
-#define CLASS_HUNEWEARL 0x01
-#define CLASS_HUCAST 0x02
-#define CLASS_RAMAR 0x03
-#define CLASS_RACAST 0x04
-#define CLASS_RACASEAL 0x05
-#define CLASS_FOMARL 0x06
-#define CLASS_FONEWM 0x07
-#define CLASS_FONEWEARL 0x08
-#define CLASS_HUCASEAL 0x09
-#define CLASS_FOMAR 0x0A
-#define CLASS_RAMARL 0x0B
-#define CLASS_MAX 0x0C
 
 // Class equip_flags
 
@@ -94,8 +74,31 @@
 #include  "def_map.h" // Map file name definitions
 #include  "def_block.h" // Blocked packet definitions
 #include  "def_packets.h" // Pre-made packet definitions
-#include  "def_structs.h" // Various structure definitions
+#include  "src/common/def_structs.h" // Various structure definitions
 #include  "def_tables.h" // Various pre-made table definitions
+
+/* Connected Logon Server Structure */
+
+typedef struct st_orange {
+  int32_t sockfd;
+  struct in_addr _ip;
+  uint8_t rcvbuf [TCP_BUFFER_SIZE];
+  uint32_t rcvread;
+  uint32_t expect;
+  uint8_t decryptbuf [TCP_BUFFER_SIZE];
+  uint8_t sndbuf [PACKET_BUFFER_SIZE];
+  uint8_t encryptbuf [TCP_BUFFER_SIZE];
+  int32_t snddata, sndwritten;
+  uint8_t packet [PACKET_BUFFER_SIZE];
+  uint32_t packetdata;
+  uint32_t packetread;
+  int32_t crypt_on;
+  uint8_t user_key[128];
+  int32_t key_change[128];
+  struct rc4_key cs_key;
+  struct rc4_key sc_key;
+  uint32_t last_ping;
+} ORANGE;
 
 const uint8_t Message03[] = { "Tethealla Ship v.144" };
 
@@ -376,55 +379,6 @@ void packet_to_text ( uint8_t *buf, int32_t len )
   dp[c2] = 0;
 }
 
-
-void display_packet ( uint8_t* buf, int32_t len )
-{
-  packet_to_text ( buf, len );
-  printf ("%s\n\n", &dp[0]);
-}
-
-void convertIPString (char* IPData, uint32_t IPLen, int32_t fromConfig, uint8_t* IPStore )
-{
-  uint32_t p,p2,p3;
-  char convert_buffer[5];
-
-  p2 = 0;
-  p3 = 0;
-  for (p=0;p<IPLen;p++)
-  {
-    if ((IPData[p] > 0x20) && (IPData[p] != 46))
-      convert_buffer[p3++] = IPData[p]; else
-    {
-      convert_buffer[p3] = 0;
-      if (IPData[p] == 46) // .
-      {
-        IPStore[p2] = atoi (&convert_buffer[0]);
-        p2++;
-        p3 = 0;
-        if (p2>3)
-        {
-          if (fromConfig)
-            printf ("ship.ini is corrupted. (Failed to read IP information from file!)\n"); else
-            printf ("Failed to determine IP address.\n");
-          exit (1);
-        }
-      }
-      else
-      {
-        IPStore[p2] = atoi (&convert_buffer[0]);
-        if (p2 != 3)
-        {
-          if (fromConfig)
-            printf ("ship.ini is corrupted. (Failed to read IP information from file!)\n"); else
-            printf ("Failed to determine IP address.\n");
-          exit (1);
-        }
-        break;
-      }
-    }
-  }
-}
-
 void convertMask (char* IPData, uint32_t IPLen, uint16_t* IPStore )
 {
   uint32_t p,p2,p3;
@@ -466,17 +420,6 @@ void convertMask (char* IPData, uint32_t IPLen, uint16_t* IPStore )
       }
     }
   }
-}
-
-
-uint8_t hexToByte ( char* hs )
-{
-  uint32_t b;
-
-  if ( hs[0] < 58 ) b = (hs[0] - 48); else b = (hs[0] - 55);
-  b *= 16;
-  if ( hs[1] < 58 ) b += (hs[1] - 48); else b += (hs[1] - 55);
-  return (uint8_t) b;
 }
 
 void load_mask_file()
@@ -938,138 +881,6 @@ void reconnect_logon()
     printf ("Connection failed.  Retry in %u seconds...\n",  LOGIN_RECONNECT_SECONDS);
     logon_tick = 0;
   }
-}
-
-uint32_t free_connection()
-{
-  uint32_t fc;
-  BANANA* wc;
-
-  for (fc=0;fc<serverMaxConnections;fc++)
-  {
-    wc = connections[fc];
-    if (wc->plySockfd<0)
-      return fc;
-  }
-  return 0xFFFF;
-}
-
-void initialize_connection (BANANA* connect)
-{
-  uint32_t ch, ch2;
-
-  // Free backup character memory
-
-  if (connect->character_backup)
-  {
-    if (connect->mode)
-      memcpy (&connect->character, connect->character_backup, sizeof (connect->character));
-    free (connect->character_backup);
-    connect->character_backup = NULL;
-  }
-
-  if (connect->guildcard)
-  {
-    removeClientFromLobby (connect);
-
-    if ((connect->block) && (connect->block <= serverBlocks))
-      blocks[connect->block - 1]->count--;
-
-    if (connect->gotchardata == 1)
-    {
-      connect->character.playTime += (unsigned) servertime - connect->connected;
-      ShipSend04 (0x02, connect, logon);
-    }
-  }
-
-  if (connect->plySockfd >= 0)
-  {
-    ch2 = 0;
-    for (ch=0;ch<serverNumConnections;ch++)
-    {
-      if (serverConnectionList[ch] != connect->connection_index)
-        serverConnectionList[ch2++] = serverConnectionList[ch];
-    }
-    serverNumConnections = ch2;
-    close (connect->plySockfd);
-  }
-
-  if (logon_ready)
-  {
-    printf ("Player Count: %u\n", serverNumConnections);
-    ShipSend0E (logon);
-  }
-
-  memset (connect, 0, sizeof (BANANA) );
-  connect->plySockfd = -1;
-  connect->block = -1;
-  connect->lastTick = 0xFFFFFFFF;
-  connect->slotnum = -1;
-  connect->sending_quest = -1;
-}
-
-void start_encryption(BANANA* connect)
-{
-  uint32_t c, c3, c4, connectNum;
-  BANANA *workConnect, *c5;
-
-  // Limit the number of connections from an IP address to MAX_SIMULTANEOUS_CONNECTIONS.
-
-  c3 = 0;
-
-  for (c=0;c<serverNumConnections;c++)
-  {
-    connectNum = serverConnectionList[c];
-    workConnect = connections[connectNum];
-    //debug ("%s comparing to %s", (char*) &workConnect->IP_Address[0], (char*) &connect->IP_Address[0]);
-    if ((!strcmp((char *)&workConnect->IP_Address[0], (char *)&connect->IP_Address[0])) &&
-      (workConnect->plySockfd >= 0))
-      c3++;
-  }
-
-  //debug ("Matching count: %u", c3);
-
-  if (c3 > MAX_SIMULTANEOUS_CONNECTIONS)
-  {
-    // More than MAX_SIMULTANEOUS_CONNECTIONS connections from a certain IP address...
-    // Delete oldest connection to server.
-    c4 = 0xFFFFFFFF;
-    c5 = NULL;
-    for (c=0;c<serverNumConnections;c++)
-    {
-      connectNum = serverConnectionList[c];
-      workConnect = connections[connectNum];
-      if ((!strcmp((char *)&workConnect->IP_Address[0], (char *)&connect->IP_Address[0])) &&
-        (workConnect->plySockfd >= 0))
-      {
-        if (workConnect->connected < c4)
-        {
-          c4 = workConnect->connected;
-          c5 = workConnect;
-        }
-      }
-    }
-    if (c5)
-    {
-      workConnect = c5;
-      initialize_connection (workConnect);
-    }
-  }
-
-  memcpy (&connect->sndbuf[0], &Packet03[0], sizeof (Packet03));
-  for (c=0;c<0x30;c++)
-  {
-    connect->sndbuf[0x68+c] = (uint8_t) rand() % 255;
-    connect->sndbuf[0x98+c] = (uint8_t) rand() % 255;
-  }
-  connect->snddata += sizeof (Packet03);
-  cipher_ptr = &connect->server_cipher;
-  pso_crypt_table_init_bb (cipher_ptr, &connect->sndbuf[0x68]);
-  cipher_ptr = &connect->client_cipher;
-  pso_crypt_table_init_bb (cipher_ptr, &connect->sndbuf[0x98]);
-  connect->crypt_on = 1;
-  connect->sendCheck[SEND_PACKET_03] = 1;
-  connect->connected = connect->response = connect->savetime = (unsigned) servertime;
 }
 
 void SendToLobby (LOBBY* l, uint32_t max_send, uint8_t* src, uint16_t size, uint32_t nosend )
