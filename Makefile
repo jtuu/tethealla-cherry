@@ -1,28 +1,62 @@
-CC=clang
-CFLAGS=-I. -pipe -march=native -O3 -Wall
-LMYSQL=-L/usr/lib/mysql -lmysqlclient
-LMD5=-lcrypto
+CFLAGS = -I.
+LMYSQL = -L/usr/lib/mysql -lmysqlclient
+LMD5 = -lcrypto
 
-%.o: %.c
-	$(CC) -c -o $@ $< $(CFLAGS)
-all: clean account_add char_export convert_quest convert_unitxt login_server make_key newtable patch_server ship_server
+SRCDIR = src
+OBJDIR = obj
+BINDIR = bin
+
+# list of source files and corresponding object files
+SOURCES = $(wildcard $(SRCDIR)/*/*.c)
+OBJECTS := $(SOURCES:$(SRCDIR)/%=$(OBJDIR)/%)
+OBJECTS := $(OBJECTS:.c=.o)
+
+PHONIES = clean
+BINFILES =
+
+# defer until all bins are added to list
+all: allbins
+
 clean:
-	rm -f src/*/*.o
-account_add:
-	$(CC) -o bin/account_add src/account_add/account_add.c $(LMYSQL) $(LMD5) $(CFLAGS)
-char_export:
-	$(CC) -o bin/char_export src/char_export/char_export.c $(LMYSQL) $(CFLAGS)
-convert_quest:
-	$(CC) -o bin/convert_quest src/convert_quest/convert_quest.c $(CFLAGS)
-convert_unitxt:
-	$(CC) -o bin/convert_unitxt src/convert_unitxt/convert_unitxt.c $(CFLAGS)
-login_server:
-	$(CC) -o bin/login_server src/login_server/login_server.c $(LMYSQL) $(LMD5) $(CFLAGS)
-make_key:
-	$(CC) -o bin/make_key src/make_key/make_key.c $(LMYSQL) $(CFLAGS)
-newtable:
-	$(CC) -o bin/newtable src/newtable/newtable.c $(CFLAGS)
-patch_server:
-	$(CC) -o bin/patch_server src/patch_server/patch_server.c $(CFLAGS)
-ship_server:
-	$(CC) -o bin/ship_server src/ship_server/ship_server.c $(CFLAGS)
+	rm -r $(BINDIR)
+	rm -r $(OBJDIR)
+
+# macro that generates a rule that outputs a binary file.
+# first arg: name of binary to produce. must match name of source dir and source file.
+# second arg: optional list of object files to link with.
+# third arg: optional additional linker flags.
+define make_bin =
+# save bin name
+BINFILES += $(1)
+PHONIES += $(1)
+
+# bin shorthand target
+$(1): $$(BINDIR)/$(1) ;
+
+# bin file target
+$$(BINDIR)/$(1): $$(OBJDIR)/$(1)/$(1).o $(addprefix $(OBJDIR)/,$(2))
+	mkdir -p $$(BINDIR)
+	$$(CC) $$(CFLAGS) $$^ -o $$@ $(3)
+endef
+
+# generate rules for binaries
+$(eval $(call make_bin,account_add,,$(LMYSQL) $(LMD5)))
+$(eval $(call make_bin,char_export,,$(LMYSQL)))
+$(eval $(call make_bin,convert_quest))
+$(eval $(call make_bin,convert_unitxt))
+$(eval $(call make_bin,login_server,,$(LMYSQL) $(LMD5)))
+$(eval $(call make_bin,make_key,,$(LMYSQL)))
+$(eval $(call make_bin,newtable))
+$(eval $(call make_bin,patch_server))
+$(eval $(call make_bin,ship_server))
+
+.PHONY: $(PHONIES)
+allbins: $(BINFILES)
+
+# object files
+$(OBJECTS): $(OBJDIR)/%.o: $(SRCDIR)/%.c
+	mkdir -p $(@D)
+	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
+
+# .d files
+-include $(OBJECTS:.o=.d)
