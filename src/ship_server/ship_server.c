@@ -14806,21 +14806,28 @@ void FreeAllQuests()
   {
     for (uint32_t j = 10; j >= 1; j--)
     {
-      if (quests[i].ql[j - 1] != NULL && ((j - 1) == 0 || quests[i].ql[0] != quests[i].ql[j - 1]))
+	  if (quests[i].ql[j - 1] != NULL && (j == 1 || quests[i].ql[0] != quests[i].ql[j - 1]))
       {
         free(quests[i].ql[j - 1]->qdata);
         free(quests[i].ql[j - 1]);
+		quests[i].ql[j - 1]->qdata = NULL;
+		quests[i].ql[j - 1] = NULL;
       }
     }
     if (quests[i].mapdata != NULL)
     {
       free(quests[i].mapdata);
+	  quests[i].mapdata = NULL;
     }
     if (quests[i].objectdata != NULL)
     {
       free(quests[i].objectdata);
+	  quests[i].objectdata = NULL;
     }
   }
+
+  numQuests = 0;
+  questsMemory = 0;
 }
 
 void ReloadAllQuests()
