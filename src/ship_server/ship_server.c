@@ -11279,6 +11279,7 @@ void WriteGM(char *fmt, ...)
   //  rawtime.wHour, rawtime.wMinute, text);
 }
 
+void ReloadAllQuests();
 
 char character_file[255];
 
@@ -12096,6 +12097,11 @@ void Send06 (BANANA* client)
               SendToLobby ( client->lobby, 4, &warp_packet[0], sizeof (warp_packet), 0 );
             }
           }
+      }
+
+      if ( ( !strcmp( myCommand, "reloadq" ) ) && ((client->isgm)) )
+      {
+        ReloadAllQuests();
       }
     }
   }
@@ -14762,6 +14768,67 @@ void LoadQuests (const char* filename, uint32_t category)
   fclose (fp);
 }
 
+void LoadAllQuests()
+{
+  printf("Loading quests...\n\n");
+
+  memset (&quest_menus[0], 0, sizeof (quest_menus));
+
+  // 0 = Episode 1 Team
+  // 1 = Episode 2 Team
+  // 2 = Episode 4 Team
+  // 3 = Episode 1 Solo
+  // 4 = Episode 2 Solo
+  // 5 = Episode 4 Solo
+  // 6 = Episode 1 Government
+  // 7 = Episode 2 Government
+  // 8 = Episode 4 Government
+  // 9 = Battle
+  // 10 = Challenge
+
+  LoadQuests ("quest/ep1team.ini", 0);
+  LoadQuests ("quest/ep2team.ini", 1);
+  LoadQuests ("quest/ep4team.ini", 2);
+  LoadQuests ("quest/ep1solo.ini", 3);
+  LoadQuests ("quest/ep2solo.ini", 4);
+  LoadQuests ("quest/ep4solo.ini", 5);
+  LoadQuests ("quest/ep1gov.ini", 6);
+  LoadQuests ("quest/ep2gov.ini", 7);
+  LoadQuests ("quest/ep4gov.ini", 8);
+  LoadQuests ("quest/battle.ini", 9);
+
+  printf ("\n%u bytes of memory allocated for %u quests...\n\n", questsMemory, numQuests);
+}
+
+void FreeAllQuests()
+{
+  for (uint32_t i = 0; i < numQuests; i++)
+  {
+    for (uint32_t j = 10; j >= 1; j--)
+    {
+      if (quests[i].ql[j - 1] != NULL && ((j - 1) == 0 || quests[i].ql[0] != quests[i].ql[j - 1]))
+      {
+        free(quests[i].ql[j - 1]->qdata);
+        free(quests[i].ql[j - 1]);
+      }
+    }
+    if (quests[i].mapdata != NULL)
+    {
+      free(quests[i].mapdata);
+    }
+    if (quests[i].objectdata != NULL)
+    {
+      free(quests[i].objectdata);
+    }
+  }
+}
+
+void ReloadAllQuests()
+{
+  FreeAllQuests();
+  LoadAllQuests();
+}
+
 uint32_t csv_lines = 0;
 char* csv_params[1024][64]; // 1024 lines which can carry 64 parameters each
 
@@ -15530,34 +15597,8 @@ int32_t main()
   }
   fclose ( fp );
 
-  printf ("OK!\n\n.. done!\n\nLoading quests...\n\n");
-
-  memset (&quest_menus[0], 0, sizeof (quest_menus));
-
-  // 0 = Episode 1 Team
-  // 1 = Episode 2 Team
-  // 2 = Episode 4 Team
-  // 3 = Episode 1 Solo
-  // 4 = Episode 2 Solo
-  // 5 = Episode 4 Solo
-  // 6 = Episode 1 Government
-  // 7 = Episode 2 Government
-  // 8 = Episode 4 Government
-  // 9 = Battle
-  // 10 = Challenge
-
-  LoadQuests ("quest/ep1team.ini", 0);
-  LoadQuests ("quest/ep2team.ini", 1);
-  LoadQuests ("quest/ep4team.ini", 2);
-  LoadQuests ("quest/ep1solo.ini", 3);
-  LoadQuests ("quest/ep2solo.ini", 4);
-  LoadQuests ("quest/ep4solo.ini", 5);
-  LoadQuests ("quest/ep1gov.ini", 6);
-  LoadQuests ("quest/ep2gov.ini", 7);
-  LoadQuests ("quest/ep4gov.ini", 8);
-  LoadQuests ("quest/battle.ini", 9);
-
-  printf ("\n%u bytes of memory allocated for %u quests...\n\n", questsMemory, numQuests);
+  printf ("OK!\n\n.. done!\n\n");
+  LoadAllQuests();
 
   printf ("Loading shop/shop.dat ...");
 
