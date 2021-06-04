@@ -12114,6 +12114,29 @@ void Send06 (BANANA* client)
           SendB0 (usedmats, client);
         }
       }
+
+      if ( !strcmp ( myCommand, "resetmymaterials" ) )
+      {
+        if ( client->lobbyNum < 0x10 )
+          SendB0 ("Can't reset mats in the lobby!!!", client);
+        else
+        {
+          client->character.ATP -= ( client->matuse[0] * 2 );
+          client->matuse[0] = 0;
+          client->character.MST -= ( client->matuse[1] * 2 );
+          client->matuse[1] = 0;
+          client->character.EVP -= ( client->matuse[2] * 2 );
+          client->matuse[2] = 0;
+          client->character.DFP -= ( client->matuse[3] * 2 );
+          client->matuse[3] = 0;
+          client->character.LCK = 10;
+          client->matuse[4] = 0;
+          char resetmats[60];
+          sprintf(resetmats, "Reset Complete: ATP:%d MST:%d EVP:%d DFP:%d LCK:%d\n", client->matuse[0], client->matuse[1], client->matuse[2], client->matuse[3], client->matuse[4]);
+          SendB0 (resetmats, client);
+          SendB0 ("Please LOGOFF and reconnect!", client);
+        }
+      }
     }
   }
   else
