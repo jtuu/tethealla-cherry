@@ -12137,6 +12137,24 @@ void Send06 (BANANA* client)
           SendB0 ("Please LOGOFF and reconnect!", client);
         }
       }
+      
+      //Credit: TOFUMAN, who posted this on the Ephiniea forums
+      if (!strcmp(myCommand, "modsectionid"))
+      {
+        if ( myCmdArgs == 0 )
+          SendB0 ("Need to specify Section ID, 0-8", client);
+        else
+        {
+          unsigned int sectionID = atoi(myArgs[0]);
+          if ((sectionID >= ID_Viridia) && (sectionID <= ID_Whitill))
+          {
+            client->character.sectionID = sectionID;
+            SendB0 ("Please change blocks to reflect changes...", client);
+          }
+          else
+            SendB0 ("Invalid Section ID specified...", client);
+        }
+      }
     }
   }
   else
