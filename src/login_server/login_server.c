@@ -1390,7 +1390,7 @@ void SendB1 (BANANA* client)
 {
 //  SYSTEMTIME rawtime;
 	time_t rawtime = time(NULL);
-	struct tm tm = *localtime(&rawtime);
+	struct tm tm = *gmtime(&rawtime);
 	
   if ((client->guildcard) && (client->slotnum != -1))
   {
