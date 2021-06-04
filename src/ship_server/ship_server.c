@@ -12103,6 +12103,17 @@ void Send06 (BANANA* client)
       {
         ReloadAllQuests();
       }
+      if ( !strcmp ( myCommand, "showmats" ) )
+      {
+        if ( client->lobbyNum < 0x10 )
+          SendB0 ("Can't show mats in the lobby!!!", client);
+        else
+        {
+          char usedmats[41];
+          sprintf(usedmats, "ATP:%d MST:%d EVP:%d DFP:%d LCK:%d\n", client->matuse[0], client->matuse[1], client->matuse[2], client->matuse[3], client->matuse[4]);
+          SendB0 (usedmats, client);
+        }
+      }
     }
   }
   else
