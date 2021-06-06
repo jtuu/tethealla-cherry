@@ -12142,13 +12142,48 @@ void Send06 (BANANA* client)
       if (!strcmp(myCommand, "modsectionid"))
       {
         if ( myCmdArgs == 0 )
-          SendB0 ("Need to specify Section ID, 0-8", client);
+          SendB0 ("Need to specify Section ID 0-9...", client);
         else
         {
           unsigned int sectionID = atoi(myArgs[0]);
           if ((sectionID >= ID_Viridia) && (sectionID <= ID_Whitill))
           {
             client->character.sectionID = sectionID;
+            switch (sectionID)
+            {
+              case 0:
+                SendB0 ("Section ID changed to Viridia.", client);
+                break;
+              case 1:
+                SendB0 ("Section ID changed to Greennill.", client);
+                break;
+              case 2:
+                SendB0 ("Section ID changed to Skyly.", client);
+                break;
+              case 3:
+                SendB0 ("Section ID changed to Bluefull.", client);
+                break;
+              case 4:
+                SendB0 ("Section ID changed to Purplenum.", client);
+                break;
+              case 5:
+                SendB0 ("Section ID changed to Pinkal.", client);
+                break;
+              case 6:
+                SendB0 ("Section ID changed to Redria.", client);
+                break;
+              case 7:
+                SendB0 ("Section ID changed to Oran.", client);
+                break;
+              case 8:
+                SendB0 ("Section ID changed to Yellowboze.", client);
+                break;
+              case 9:
+                SendB0 ("Section ID changed to Whitill.", client);
+                break;
+              default:
+                break;
+            }
             SendB0 ("Please change blocks to reflect changes...", client);
           }
           else
