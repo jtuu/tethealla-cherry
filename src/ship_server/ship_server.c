@@ -12190,6 +12190,35 @@ void Send06 (BANANA* client)
             SendB0 ("Invalid Section ID specified...", client);
         }
       }
+
+      if (!strcmp(myCommand, "modcharname"))
+      {
+        if ( myCmdArgs == 0 )
+          SendB0 ("Need to specify new name...", client);
+        else
+        {
+          if ( strlen ( myArgs[0] ) > 10)
+          {
+            SendB0 ("Name can only be up to 10 characters...", client);
+          }
+          else
+          {
+            size_t arglen = strlen(myArgs[0]);
+            size_t i = 0;
+            size_t index = 0;
+            for (; i < arglen; i++){
+              index = 4 + (i * 2);
+              sprintf( &client->character.name[index], "%c", myArgs[0][i] );
+              client->character.name[index+1] = 0;
+            }
+            index = 4 + (arglen *2);
+            memset (&client->character.name[index], '\0', 24 - (arglen*2));
+            SendB0 ("Character name changes to: ", client);
+            SendB0 (Unicode_to_ASCII ((uint16_t*) &client->character.name[4]), client);
+            SendB0 ("\nPlease change blocks to reflect changes...\n", client);
+          }
+        }
+      }
     }
   }
   else
