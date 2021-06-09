@@ -1385,11 +1385,13 @@ void start_encryption(BANANA* connect)
   connect->connected = (unsigned) servertime;
 }
 
-//FIXME: Dummied out time stuff
+//FIXME: Converted from Windows SYSTEMTIME to linux time_t
 void SendB1 (BANANA* client)
 {
 //  SYSTEMTIME rawtime;
-
+	time_t rawtime = time(NULL);
+	struct tm tm = *gmtime(&rawtime);
+	
   if ((client->guildcard) && (client->slotnum != -1))
   {
 //    GetSystemTime (&rawtime);
@@ -1397,12 +1399,14 @@ void SendB1 (BANANA* client)
     memset (&client->encryptbuf[0x08], 0, 28);
 //    sprintf (&client->encryptbuf[8], "%u:%02u:%02u: %02u:%02u:%02u.%03u", rawtime.wYear, rawtime.wMonth, rawtime.wDay,
 //      rawtime.wHour, rawtime.wMinute, rawtime.wSecond, rawtime.wMilliseconds );
+    sprintf (&client->encryptbuf[8], "%u:%02u:%02u: %02u:%02u:%02u.%03u", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, 0 );
     cipher_ptr = &client->server_cipher;
     encryptcopy (client, &client->encryptbuf[0], 0x24 );
   }
   else
     client->todc = 1;
 }
+
 
 void Send1A (const char *mes, BANANA* client)
 {

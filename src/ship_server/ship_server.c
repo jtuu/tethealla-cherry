@@ -12103,6 +12103,122 @@ void Send06 (BANANA* client)
       {
         ReloadAllQuests();
       }
+      if ( !strcmp ( myCommand, "showmats" ) )
+      {
+        if ( client->lobbyNum < 0x10 )
+          SendB0 ("Can't show mats in the lobby!!!", client);
+        else
+        {
+          char usedmats[41];
+          sprintf(usedmats, "ATP:%d MST:%d EVP:%d DFP:%d LCK:%d\n", client->matuse[0], client->matuse[1], client->matuse[2], client->matuse[3], client->matuse[4]);
+          SendB0 (usedmats, client);
+        }
+      }
+
+      if ( !strcmp ( myCommand, "resetmymaterials" ) )
+      {
+        if ( client->lobbyNum < 0x10 )
+          SendB0 ("Can't reset mats in the lobby!!!", client);
+        else
+        {
+          client->character.ATP -= ( client->matuse[0] * 2 );
+          client->matuse[0] = 0;
+          client->character.MST -= ( client->matuse[1] * 2 );
+          client->matuse[1] = 0;
+          client->character.EVP -= ( client->matuse[2] * 2 );
+          client->matuse[2] = 0;
+          client->character.DFP -= ( client->matuse[3] * 2 );
+          client->matuse[3] = 0;
+          client->character.LCK = 10;
+          client->matuse[4] = 0;
+          char resetmats[60];
+          sprintf(resetmats, "Reset Complete: ATP:%d MST:%d EVP:%d DFP:%d LCK:%d\n", client->matuse[0], client->matuse[1], client->matuse[2], client->matuse[3], client->matuse[4]);
+          SendB0 (resetmats, client);
+          SendB0 ("Please LOGOFF and reconnect!", client);
+        }
+      }
+      
+      //Credit: TOFUMAN, who posted this on the Ephiniea forums
+      if (!strcmp(myCommand, "modsectionid"))
+      {
+        if ( myCmdArgs == 0 )
+          SendB0 ("Need to specify Section ID 0-9...", client);
+        else
+        {
+          unsigned int sectionID = atoi(myArgs[0]);
+          if ((sectionID >= ID_Viridia) && (sectionID <= ID_Whitill))
+          {
+            client->character.sectionID = sectionID;
+            switch (sectionID)
+            {
+              case 0:
+                SendB0 ("Section ID changed to Viridia.", client);
+                break;
+              case 1:
+                SendB0 ("Section ID changed to Greennill.", client);
+                break;
+              case 2:
+                SendB0 ("Section ID changed to Skyly.", client);
+                break;
+              case 3:
+                SendB0 ("Section ID changed to Bluefull.", client);
+                break;
+              case 4:
+                SendB0 ("Section ID changed to Purplenum.", client);
+                break;
+              case 5:
+                SendB0 ("Section ID changed to Pinkal.", client);
+                break;
+              case 6:
+                SendB0 ("Section ID changed to Redria.", client);
+                break;
+              case 7:
+                SendB0 ("Section ID changed to Oran.", client);
+                break;
+              case 8:
+                SendB0 ("Section ID changed to Yellowboze.", client);
+                break;
+              case 9:
+                SendB0 ("Section ID changed to Whitill.", client);
+                break;
+              default:
+                break;
+            }
+            SendB0 ("Please change blocks to reflect changes...", client);
+          }
+          else
+            SendB0 ("Invalid Section ID specified...", client);
+        }
+      }
+
+      if (!strcmp(myCommand, "modcharname"))
+      {
+        if ( myCmdArgs == 0 )
+          SendB0 ("Need to specify new name...", client);
+        else
+        {
+          if ( strlen ( myArgs[0] ) > 10)
+          {
+            SendB0 ("Name can only be up to 10 characters...", client);
+          }
+          else
+          {
+            size_t arglen = strlen(myArgs[0]);
+            size_t i = 0;
+            size_t index = 0;
+            for (; i < arglen; i++){
+              index = 4 + (i * 2);
+              sprintf( &client->character.name[index], "%c", myArgs[0][i] );
+              client->character.name[index+1] = 0;
+            }
+            index = 4 + (arglen *2);
+            memset (&client->character.name[index], '\0', 24 - (arglen*2));
+            SendB0 ("Character name changes to: ", client);
+            SendB0 (Unicode_to_ASCII ((uint16_t*) &client->character.name[4]), client);
+            SendB0 ("\nPlease change blocks to reflect changes...\n", client);
+          }
+        }
+      }
     }
   }
   else
